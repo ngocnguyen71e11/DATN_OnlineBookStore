@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sách và văn phòng phẩm</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DATN_OnlineBookStore.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DATN_OnlineBookStore</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+                <form id="searchForm" method="get" class="d-flex mb-3">
+                    <input type="text" id="searchQuery" class="form-control me-2" placeholder="Search for products" />
+                    <button type="button" id="searchButton" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - DATN_OnlineBookStore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $('#searchButton').click(function () {
+                var query = $('#searchQuery').val();
+
+                // Gửi yêu cầu AJAX đến server
+                $.ajax({
+                    url: '@Url.Action("SearchAjax", "Home")',
+                    type: 'GET',
+                    data: { query: query },
+                    success: function (data) {
+                        var resultsDiv = $('#searchResults');
+                        resultsDiv.empty(); // Xóa nội dung cũ
+
+                        if (data.length > 0) {
+                            var ul = $('<ul class="list-group"></ul>');
+                            $.each(data, function (index, product) {
+                                var li = $('<li class="list-group-item"></li>');
+                                li.append('<strong>' + product.STensanpham + '</strong> - ' + product.SMota);
+                                li.append('<a href="/Home/ProductDetails/' + product.PkISanphamId + '" class="btn btn-info btn-sm float-end">Details</a>');
+                                ul.append(li);
+                            });
+                            resultsDiv.append(ul);
+                        } else {
+                            resultsDiv.append('<p>No products found.</p>');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing the request.');
+                    }
+                });
+            });
+
+            // Optional: Kích hoạt tìm kiếm khi người dùng nhấn Enter
+            $('#searchQuery').on('keypress', function (e) {
+                if (e.which === 13) {
+                    $('#searchButton').click();
+                }
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

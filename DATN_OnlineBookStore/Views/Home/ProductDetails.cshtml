@@ -1,0 +1,116 @@
+﻿@model TblSanpham
+
+<style>
+    /* Cơ bản cho trang */
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Container cho chi tiết sản phẩm */
+    .product-detail {
+        display: flex;
+        max-width: 1200px;
+        margin: 20px auto;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px;
+        background: #fff;
+    }
+
+    /* Vùng hiển thị hình ảnh và các nút */
+    .product-images {
+        flex: 1;
+        padding-right: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .product-images img {
+            width: 100%;
+            max-width: 500px; /* Giới hạn kích thước hình ảnh */
+            height: auto;
+        }
+
+    /* Nút hành động */
+    .button-group {
+        display: flex;
+        justify-content: space-around; /* Khoảng cách đều giữa các nút */
+        width: 100%; /* Chiều rộng tối đa cho nhóm nút */
+        margin-top: 10px; /* Khoảng cách từ phần tử phía trên */
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        flex-grow: 1; /* Các nút mở rộng để lấp đầy không gian */
+        margin: 0 5px; /* Khoảng cách giữa các nút */
+    }
+
+    .btn-primary {
+        background-color: #007BFF;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+    /* Thông tin chi tiết sản phẩm */
+    .product-info {
+        flex: 2;
+        padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    h1 {
+        color: #333;
+        font-size: 24px;
+    }
+
+    .price {
+        color: #E63946;
+        font-size: 20px;
+        margin: 10px 0;
+    }
+
+    .product-description {
+        font-size: 16px;
+        color: #555;
+    }
+</style>
+
+<div class="product-detail">
+    <div class="product-images">
+        <img src="@Model.SHinhanh" alt="@Model.STensanpham" />
+        <div class="button-group">
+            <button type="button" class="btn btn-primary">Mua ngay</button>
+            <!-- Sử dụng form để gửi yêu cầu POST -->
+            <form method="post" action="@Url.Action("AddToCart", "GioHang")">
+                <input type="hidden" name="productId" value="@Model.PkISanphamId" />
+                <input type="number" name="quantity" value="1" min="1" />
+                <button type="submit" class="btn btn-primary">Thêm vào giỏ</button>
+            </form>
+        </div>
+    </div>
+    <div class="product-info">
+        <h1>@Model.STensanpham</h1>
+        <p class="price">@Model.FGiaban.ToString("C")</p>
+        <div class="product-description">
+            <p>@Model.SMota</p>
+        </div>
+    </div>
+</div>

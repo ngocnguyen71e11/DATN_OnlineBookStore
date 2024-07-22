@@ -1,0 +1,205 @@
+﻿@model List<Tuple<string, int, double, double, int>>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .checkout-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2, h3 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #totalPrice {
+            font-weight: bold;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+        }
+
+            .button:hover {
+                background-color: #0056b3;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+
+            .form-group input,
+            .form-group select {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+            }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="checkout-container">
+        <h2>Trang Thanh Toán</h2>
+        <form id="checkoutForm" method="post" action="@Url.Action("ProcessCheckout", "GioHang")">
+            <h3>Địa chỉ giao hàng</h3>
+            <div class="form-group">
+                <label for="fullName">Họ và tên người nhận</label>
+                <input type="text" id="fullName" name="fullName" required placeholder="Nhập họ và tên người nhận">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="Nhập email">
+            </div>
+            <div class="form-group">
+                <label for="phone">Số điện thoại</label>
+                <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required placeholder="Ví dụ: 0979123xxx (10 ký tự số)">
+            </div>
+            <div class="form-group">
+                <label for="country">Quốc gia</label>
+                <select id="country" name="country" required>
+                    <option value="Vietnam">Vietnam</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="city">Tỉnh/Thành Phố</label>
+                <select id="city" name="city" required>
+                    <option value="">Chọn Tỉnh/Thành Phố</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="district">Quận/Huyện</label>
+                <select id="district" name="district" required>
+                    <option value="">Chọn Quận/Huyện</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="ward">Phường/Xã</label>
+                <select id="ward" name="ward" required>
+                    <option value="">Chọn Phường/Xã</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="address">Địa chỉ nhận hàng</label>
+                <input type="text" id="address" name="address" required placeholder="Nhập địa chỉ nhận hàng">
+            </div>
+
+            <h3>Giỏ hàng</h3>
+            <table>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Thành tiền</th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Item1</td>
+                        <td>@item.Item2</td>
+                        <td>@item.Item3.ToString("C")</td>
+                        <td>@item.Item4.ToString("C")</td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="3" style="text-align:right">Tổng tiền:</td>
+                    <td id="totalPrice">@ViewBag.TotalPrice.ToString("C")</td>
+                </tr>
+            </table>
+            <button type="submit" class="button">Thanh toán</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            loadTinhs();
+
+            $('#city').change(function () {
+                var tinhId = $(this).val();
+                loadHuyens(tinhId);
+            });
+
+            $('#district').change(function () {
+                var huyenId = $(this).val();
+                loadXas(huyenId);
+            });
+        });
+
+        function loadTinhs() {
+            $.get('/api/Address/tinh', function (data) {
+                var citySelect = $('#city');
+                citySelect.empty();
+                citySelect.append('<option value="">Chọn Tỉnh/Thành Phố</option>');
+                $.each(data, function (index, tinh) {
+                    citySelect.append('<option value="' + tinh.pkITinhId + '">' + tinh.sTentinh + '</option>');
+                });
+            });
+        }
+
+        function loadHuyens(tinhId) {
+            if (tinhId) {
+                $.get('/api/Address/huyen/' + tinhId, function (data) {
+                    var districtSelect = $('#district');
+                    districtSelect.empty();
+                    districtSelect.append('<option value="">Chọn Quận/Huyện</option>');
+                    $.each(data, function (index, huyen) {
+                        districtSelect.append('<option value="' + huyen.pkIHuyenId + '">' + huyen.sTenhuyen + '</option>');
+                    });
+                });
+            }
+        }
+
+        function loadXas(huyenId) {
+            if (huyenId) {
+                $.get('/api/Address/xa/' + huyenId, function (data) {
+                    var wardSelect = $('#ward');
+                    wardSelect.empty();
+                    wardSelect.append('<option value="">Chọn Phường/Xã</option>');
+                    $.each(data, function (index, xa) {
+                        wardSelect.append('<option value="' + xa.pkIXaId + '">' + xa.sTenxa + '</option>');
+                    });
+                });
+            }
+        }
+    </script>
+</body>
+</html>
