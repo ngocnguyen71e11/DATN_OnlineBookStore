@@ -27,9 +27,9 @@
                         </li>
                     </ul>
                 </div>
-                <form id="searchForm" method="get" class="d-flex mb-3">
-                    <input type="text" id="searchQuery" class="form-control me-2" placeholder="Search for products" />
-                    <button type="button" id="searchButton" class="btn btn-primary">Search</button>
+                <form id="searchForm" method="get" class="d-flex mb-3" action="@Url.Action("Search", "Home")">
+                    <input type="text" id="searchQuery" name="query" class="form-control me-2" placeholder="Search for products" />
+                    <button type="submit" class="btn btn-primary">Search</button>
                 </form>
             </div>
         </nav>
@@ -48,48 +48,5 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script>
-        $(document).ready(function () {
-            $('#searchButton').click(function () {
-                var query = $('#searchQuery').val();
-
-                // Gửi yêu cầu AJAX đến server
-                $.ajax({
-                    url: '@Url.Action("SearchAjax", "Home")',
-                    type: 'GET',
-                    data: { query: query },
-                    success: function (data) {
-                        var resultsDiv = $('#searchResults');
-                        resultsDiv.empty(); // Xóa nội dung cũ
-
-                        if (data.length > 0) {
-                            var ul = $('<ul class="list-group"></ul>');
-                            $.each(data, function (index, product) {
-                                var li = $('<li class="list-group-item"></li>');
-                                li.append('<strong>' + product.STensanpham + '</strong> - ' + product.SMota);
-                                li.append('<a href="/Home/ProductDetails/' + product.PkISanphamId + '" class="btn btn-info btn-sm float-end">Details</a>');
-                                ul.append(li);
-                            });
-                            resultsDiv.append(ul);
-                        } else {
-                            resultsDiv.append('<p>No products found.</p>');
-                        }
-                    },
-                    error: function () {
-                        alert('An error occurred while processing the request.');
-                    }
-                });
-            });
-
-            // Optional: Kích hoạt tìm kiếm khi người dùng nhấn Enter
-            $('#searchQuery').on('keypress', function (e) {
-                if (e.which === 13) {
-                    $('#searchButton').click();
-                }
-            });
-        });
-    </script>
-
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

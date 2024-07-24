@@ -25,6 +25,10 @@ public partial class TblSanpham
 
     public bool? IsTrangthai { get; set; }
 
+    public int? FkITheloaiId { get; set; }
+
+    public DateTime? DThoigiantao { get; set; }
+
     public virtual ICollection<TblCtdonhang> TblCtdonhangs { get; } = new List<TblCtdonhang>();
 
     public virtual ICollection<TblCtgiohang> TblCtgiohangs { get; } = new List<TblCtgiohang>();

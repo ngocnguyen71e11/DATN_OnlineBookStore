@@ -1,0 +1,45 @@
+﻿@model DATN_OnlineBookStore.Models.TblDanhgium
+
+@{
+    ViewData["Title"] = "ProductReview";
+}
+
+<h1>ProductReview</h1>
+
+<h4>TblDanhgium</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ProductReview">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PkIDanhgiaId" class="control-label"></label>
+                <input asp-for="PkIDanhgiaId" class="form-control" />
+                <span asp-validation-for="PkIDanhgiaId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FkICtdonhangId" class="control-label"></label>
+                <input asp-for="FkICtdonhangId" class="form-control" />
+                <span asp-validation-for="FkICtdonhangId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FXephang" class="control-label"></label>
+                <input asp-for="FXephang" class="form-control" />
+                <span asp-validation-for="FXephang" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SMota" class="control-label"></label>
+                <input asp-for="SMota" class="form-control" />
+                <span asp-validation-for="SMota" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

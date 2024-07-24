@@ -9,8 +9,6 @@ public partial class TblCtsach
 
     public int FkISanphamId { get; set; }
 
-    public int FkITlsachId { get; set; }
-
     public string? STacgia { get; set; }
 
     public string? SNhaxuatban { get; set; }
@@ -23,7 +21,7 @@ public partial class TblCtsach
 
     public int? ISotrang { get; set; }
 
-    public virtual TblSanpham FkISanpham { get; set; } = null!;
+    public string? Ibsn { get; set; }
 
-    public virtual TblTlsach FkITlsach { get; set; } = null!;
+    public virtual TblSanpham FkISanpham { get; set; } = null!;
 }

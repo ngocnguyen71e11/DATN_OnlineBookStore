@@ -1,0 +1,25 @@
+﻿@model IEnumerable<DATN_OnlineBookStore.Models.TblDanhgium>
+
+<h2>Danh Sách Đánh Giá Của Tôi</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sản Phẩm</th>
+            <th>Xếp Hạng</th>
+            <th>Mô Tả</th>
+            <th>Ngày Đánh Giá</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.FkICtdonhang.FkISanpham.STensanpham</td>  <!-- Giả sử STensanpham là tên sản phẩm -->
+                <td>@item.FXephang</td>
+                <td>@item.SMota</td>
+                <td>@item.FkICtdonhang.FkIDonhang.DThoigianmua.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>

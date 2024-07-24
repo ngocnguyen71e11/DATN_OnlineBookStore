@@ -15,6 +15,8 @@ public partial class TblPhieunhaphang
 
     public string? SGhichu { get; set; }
 
+    public double? FThueGtgt { get; set; }
+
     public virtual TblNhacungcap FkSNcc { get; set; } = null!;
 
     public virtual ICollection<TblCtphieunhaphang> TblCtphieunhaphangs { get; } = new List<TblCtphieunhaphang>();

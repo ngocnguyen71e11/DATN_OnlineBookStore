@@ -61,17 +61,15 @@ public partial class DbOnlineBookStoreContext : DbContext
 
     public virtual DbSet<TblTaikhoan> TblTaikhoans { get; set; }
 
+    public virtual DbSet<TblTheloai> TblTheloais { get; set; }
+
     public virtual DbSet<TblTinh> TblTinhs { get; set; }
-
-    public virtual DbSet<TblTlsach> TblTlsaches { get; set; }
-
-    public virtual DbSet<TblTlvanphongpham> TblTlvanphongphams { get; set; }
 
     public virtual DbSet<TblXa> TblXas { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-HOBK3H5\\MINSHN;Initial Catalog=db_OnlineBookStore;Integrated Security=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-HOBK3H5\\MINSHN;Initial Catalog=db_OnlineBookStore;Integrated Security=True;TrustServerCertificate=True;\n");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -84,6 +82,9 @@ public partial class DbOnlineBookStoreContext : DbContext
             entity.Property(e => e.PkICtdonhangId)
                 .ValueGeneratedNever()
                 .HasColumnName("PK_iCTdonhangID");
+            entity.Property(e => e.DThoigiancapnhat)
+                .HasColumnType("datetime")
+                .HasColumnName("dThoigiancapnhat");
             entity.Property(e => e.FGiaban).HasColumnName("fGiaban");
             entity.Property(e => e.FKhuyenmai).HasColumnName("fKhuyenmai");
             entity.Property(e => e.FkIDonhangId).HasColumnName("FK_iDonhangID");
@@ -103,13 +104,11 @@ public partial class DbOnlineBookStoreContext : DbContext
 
         modelBuilder.Entity<TblCtgiohang>(entity =>
         {
-            entity.HasKey(e => e.PkICtgiohangId).HasName("PK__tblCTgio__DDD7D40B8451F389");
+            entity.HasKey(e => e.PkICtgiohangId).HasName("PK__tblCTgio__DDD7D40B8867C7EE");
 
             entity.ToTable("tblCTgiohang");
 
-            entity.Property(e => e.PkICtgiohangId)
-                .ValueGeneratedNever()
-                .HasColumnName("PK_iCTGiohangID");
+            entity.Property(e => e.PkICtgiohangId).HasColumnName("PK_iCTGiohangID");
             entity.Property(e => e.FkIGiohangId).HasColumnName("FK_iGiohangID");
             entity.Property(e => e.FkISanphamId).HasColumnName("FK_iSanphamID");
             entity.Property(e => e.ISoluong).HasColumnName("iSoluong");
@@ -211,8 +210,10 @@ public partial class DbOnlineBookStoreContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("PK_iCTsachID");
             entity.Property(e => e.FkISanphamId).HasColumnName("FK_iSanphamID");
-            entity.Property(e => e.FkITlsachId).HasColumnName("FK_iTLsachID");
             entity.Property(e => e.ISotrang).HasColumnName("iSotrang");
+            entity.Property(e => e.Ibsn)
+                .HasMaxLength(255)
+                .HasColumnName("IBSN");
             entity.Property(e => e.SNamxuatban)
                 .HasMaxLength(255)
                 .HasColumnName("sNamxuatban");
@@ -233,11 +234,6 @@ public partial class DbOnlineBookStoreContext : DbContext
                 .HasForeignKey(d => d.FkISanphamId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__tblCTsach__FK_iS__5EBF139D");
-
-            entity.HasOne(d => d.FkITlsach).WithMany(p => p.TblCtsaches)
-                .HasForeignKey(d => d.FkITlsachId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__tblCTsach__FK_iT__5FB337D6");
         });
 
         modelBuilder.Entity<TblCttrangthaidonhang>(entity =>
@@ -264,7 +260,6 @@ public partial class DbOnlineBookStoreContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("PK_iCTvanphongphamID");
             entity.Property(e => e.FkISanphamId).HasColumnName("FK_iSanphamID");
-            entity.Property(e => e.FkITlvanphongphamId).HasColumnName("FK_iTLvanphongphamID");
             entity.Property(e => e.SChatlieu)
                 .HasMaxLength(255)
                 .HasColumnName("sChatlieu");
@@ -285,11 +280,6 @@ public partial class DbOnlineBookStoreContext : DbContext
                 .HasForeignKey(d => d.FkISanphamId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__tblCTvanp__FK_iS__5AEE82B9");
-
-            entity.HasOne(d => d.FkITlvanphongpham).WithMany(p => p.TblCtvanphongphams)
-                .HasForeignKey(d => d.FkITlvanphongphamId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__tblCTvanp__FK_iT__5BE2A6F2");
         });
 
         modelBuilder.Entity<TblDanhgium>(entity =>
@@ -301,6 +291,9 @@ public partial class DbOnlineBookStoreContext : DbContext
             entity.Property(e => e.PkIDanhgiaId)
                 .ValueGeneratedNever()
                 .HasColumnName("PK_iDanhgiaID");
+            entity.Property(e => e.DThoigiantao)
+                .HasColumnType("datetime")
+                .HasColumnName("dThoigiantao");
             entity.Property(e => e.FXephang).HasColumnName("fXephang");
             entity.Property(e => e.FkICtdonhangId).HasColumnName("FK_iCTdonhangID");
             entity.Property(e => e.SMota)
@@ -336,6 +329,8 @@ public partial class DbOnlineBookStoreContext : DbContext
             entity.Property(e => e.PkSDiachiKhid)
                 .ValueGeneratedNever()
                 .HasColumnName("PK_sDiachiKHID");
+            entity.Property(e => e.FkIHuyenId).HasColumnName("FK_iHuyenID");
+            entity.Property(e => e.FkITinhId).HasColumnName("FK_iTinhID");
             entity.Property(e => e.FkIXaId).HasColumnName("FK_iXaID");
             entity.Property(e => e.FkSKhid)
                 .HasMaxLength(10)
@@ -408,30 +403,6 @@ public partial class DbOnlineBookStoreContext : DbContext
                 .HasForeignKey(d => d.FkSKhid)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__tblDonhan__FK_sK__628FA481");
-        });
-        modelBuilder.Entity<TblCtgiohang>(entity =>
-        {
-            entity.HasKey(e => e.PkICtgiohangId).HasName("PK__tblCTgio__DDD7D40B8451F389");
-
-            entity.ToTable("tblCTgiohang");
-
-            entity.Property(e => e.PkICtgiohangId)
-                .ValueGeneratedOnAdd() // Đảm bảo rằng giá trị được tự động sinh ra
-                .HasColumnName("PK_iCTGiohangID");
-
-            entity.Property(e => e.FkIGiohangId).HasColumnName("FK_iGiohangID");
-            entity.Property(e => e.FkISanphamId).HasColumnName("FK_iSanphamID");
-            entity.Property(e => e.ISoluong).HasColumnName("iSoluong");
-
-            entity.HasOne(d => d.FkIGiohang).WithMany(p => p.TblCtgiohangs)
-                .HasForeignKey(d => d.FkIGiohangId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__tblCTgioh__FK_iG__6EF57B66");
-
-            entity.HasOne(d => d.FkISanpham).WithMany(p => p.TblCtgiohangs)
-                .HasForeignKey(d => d.FkISanphamId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__tblCTgioh__FK_iS__6E01572D");
         });
 
         modelBuilder.Entity<TblGiohang>(entity =>
@@ -523,6 +494,9 @@ public partial class DbOnlineBookStoreContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("dThoigianketthuc");
             entity.Property(e => e.IsTrangthai).HasColumnName("isTrangthai");
+            entity.Property(e => e.STenchuongtrinh)
+                .HasMaxLength(255)
+                .HasColumnName("sTenchuongtrinh");
         });
 
         modelBuilder.Entity<TblNhacungcap>(entity =>
@@ -627,6 +601,7 @@ public partial class DbOnlineBookStoreContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("dThoigiantao");
             entity.Property(e => e.FChietkhau).HasColumnName("fChietkhau");
+            entity.Property(e => e.FThueGtgt).HasColumnName("fThueGTGT");
             entity.Property(e => e.FkSNccid).HasColumnName("FK_sNCCID");
             entity.Property(e => e.SGhichu).HasColumnName("sGhichu");
 
@@ -645,9 +620,13 @@ public partial class DbOnlineBookStoreContext : DbContext
             entity.Property(e => e.PkISanphamId)
                 .ValueGeneratedNever()
                 .HasColumnName("PK_iSanphamID");
+            entity.Property(e => e.DThoigiantao)
+                .HasColumnType("datetime")
+                .HasColumnName("dThoigiantao");
             entity.Property(e => e.FGiaban).HasColumnName("fGiaban");
             entity.Property(e => e.FGiavon).HasColumnName("fGiavon");
             entity.Property(e => e.FTrongluong).HasColumnName("fTrongluong");
+            entity.Property(e => e.FkITheloaiId).HasColumnName("FK_iTheloaiID");
             entity.Property(e => e.ITonkho).HasColumnName("iTonkho");
             entity.Property(e => e.IsTrangthai).HasColumnName("isTrangthai");
             entity.Property(e => e.SHinhanh).HasColumnName("sHinhanh");
@@ -683,6 +662,25 @@ public partial class DbOnlineBookStoreContext : DbContext
                 .HasConstraintName("FK__tblTaikho__FK_iQ__30F848ED");
         });
 
+        modelBuilder.Entity<TblTheloai>(entity =>
+        {
+            entity.HasKey(e => e.PkITheloaiId).HasName("PK__tblThelo__752A1C9668725E7C");
+
+            entity.ToTable("tblTheloai");
+
+            entity.Property(e => e.PkITheloaiId)
+                .ValueGeneratedNever()
+                .HasColumnName("PK_iTheloaiID");
+            entity.Property(e => e.FkIDanhmucId).HasColumnName("FK_iDanhmucID");
+            entity.Property(e => e.STentheloai)
+                .HasMaxLength(255)
+                .HasColumnName("sTentheloai");
+
+            entity.HasOne(d => d.FkIDanhmuc).WithMany(p => p.TblTheloais)
+                .HasForeignKey(d => d.FkIDanhmucId)
+                .HasConstraintName("FK_tblTheloai_Danhmuc");
+        });
+
         modelBuilder.Entity<TblTinh>(entity =>
         {
             entity.HasKey(e => e.PkITinhId).HasName("PK__tblTinh__F263F561D28B582A");
@@ -695,46 +693,6 @@ public partial class DbOnlineBookStoreContext : DbContext
             entity.Property(e => e.STentinh)
                 .HasMaxLength(255)
                 .HasColumnName("sTentinh");
-        });
-
-        modelBuilder.Entity<TblTlsach>(entity =>
-        {
-            entity.HasKey(e => e.PkITlsachId).HasName("PK__tblTLsac__A12BA9DA9839AA20");
-
-            entity.ToTable("tblTLsach");
-
-            entity.Property(e => e.PkITlsachId)
-                .ValueGeneratedNever()
-                .HasColumnName("PK_iTLsachID");
-            entity.Property(e => e.FkIDanhmuc).HasColumnName("FK_iDanhmuc");
-            entity.Property(e => e.STenTlsach)
-                .HasMaxLength(255)
-                .HasColumnName("sTenTLsach");
-
-            entity.HasOne(d => d.FkIDanhmucNavigation).WithMany(p => p.TblTlsaches)
-                .HasForeignKey(d => d.FkIDanhmuc)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__tblTLsach__FK_iD__5812160E");
-        });
-
-        modelBuilder.Entity<TblTlvanphongpham>(entity =>
-        {
-            entity.HasKey(e => e.PkITlvanphongphamId).HasName("PK__tblTLvan__840720E2BB821BF1");
-
-            entity.ToTable("tblTLvanphongpham");
-
-            entity.Property(e => e.PkITlvanphongphamId)
-                .ValueGeneratedNever()
-                .HasColumnName("PK_iTLvanphongphamID");
-            entity.Property(e => e.FkIDanhmucId).HasColumnName("FK_iDanhmucID");
-            entity.Property(e => e.STenTlvanphongpham)
-                .HasMaxLength(255)
-                .HasColumnName("sTenTLvanphongpham");
-
-            entity.HasOne(d => d.FkIDanhmuc).WithMany(p => p.TblTlvanphongphams)
-                .HasForeignKey(d => d.FkIDanhmucId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__tblTLvanp__FK_iD__5535A963");
         });
 
         modelBuilder.Entity<TblXa>(entity =>

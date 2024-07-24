@@ -109,8 +109,7 @@
                 type: 'POST',
                 data: { cartItemId: cartItemId, newQuantity: quantity },
                 success: function (response) {
-                    if (response.success) {
-                        alert('Cập nhật số lượng thành công! Số lượng mới: ' + response.updatedQuantity);
+                    if (response.success) {                       
                         location.reload();
                     } else {
                         alert(response.message);
@@ -129,7 +128,6 @@
                     type: 'POST',
                     data: { cartItemId: cartItemId },
                     success: function (response) {
-                        alert('Sản phẩm đã được xóa khỏi giỏ hàng.');
                         location.reload();
                     },
                     error: function () {

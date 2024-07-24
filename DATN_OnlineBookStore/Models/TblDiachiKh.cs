@@ -21,6 +21,10 @@ public partial class TblDiachiKh
 
     public bool? IsTrangthai { get; set; }
 
+    public int? FkIHuyenId { get; set; }
+
+    public int? FkITinhId { get; set; }
+
     public virtual TblXa? FkIXa { get; set; }
 
     public virtual TblKhachhang FkSKh { get; set; } = null!;

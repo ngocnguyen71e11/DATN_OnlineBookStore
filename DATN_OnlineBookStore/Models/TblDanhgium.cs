@@ -13,5 +13,7 @@ public partial class TblDanhgium
 
     public string? SMota { get; set; }
 
+    public DateTime? DThoigiantao { get; set; }
+
     public virtual TblCtdonhang FkICtdonhang { get; set; } = null!;
 }

@@ -13,5 +13,7 @@ public partial class TblKhuyenmai
 
     public bool? IsTrangthai { get; set; }
 
+    public string? STenchuongtrinh { get; set; }
+
     public virtual ICollection<TblCtkhuyenmai> TblCtkhuyenmais { get; } = new List<TblCtkhuyenmai>();
 }

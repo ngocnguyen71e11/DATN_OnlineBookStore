@@ -17,6 +17,8 @@ public partial class TblCtdonhang
 
     public double? FKhuyenmai { get; set; }
 
+    public DateTime? DThoigiancapnhat { get; set; }
+
     public virtual TblDonhang FkIDonhang { get; set; } = null!;
 
     public virtual TblSanpham FkISanpham { get; set; } = null!;

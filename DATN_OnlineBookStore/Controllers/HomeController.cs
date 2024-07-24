@@ -38,57 +38,49 @@ namespace DATN_OnlineBookStore.Controllers
 
             return View(lst);
         }
-        // GET: Home/SearchAjax
-        public async Task<IActionResult> SearchAjax(string query)
+        private async Task<List<TblSanpham>> GetRecommendations(int userId, int nRecommendations)
         {
-            if (string.IsNullOrEmpty(query))
+            var client = _clientFactory.CreateClient();
+            var requestUrl = $"http://192.168.0.101:5000/api/recommendation/user/{userId}/recommendations?n={nRecommendations}";
+            var response = await client.GetAsync(requestUrl);
+            if (response.IsSuccessStatusCode)
             {
-                return Json(new List<TblSanpham>());
+                var responseString = await response.Content.ReadAsStringAsync();
+                var recommendations = JsonConvert.DeserializeObject<List<Recommendation>>(responseString);
+                var productIds = recommendations.Select(r => r.ItemId).ToList();
+                return await db.TblSanphams.Where(p => productIds.Contains(p.PkISanphamId)).ToListAsync();
             }
-
-            var products = await db.TblSanphams
-                .Where(p => p.STensanpham.ToLower().Contains(query.ToLower().Trim()))
-                .ToListAsync();
-
-            return Json(products);
+            return new List<TblSanpham>();
         }
 
+        private class Recommendation
+        {
+            public int ItemId { get; set; }
+            public float PredictedRating { get; set; }
+        }
+        [HttpGet("Search")]
         public IActionResult Search(string query, int? page)
         {
             int pageSize = 10;
             int pageNumber = page ?? 1;
 
-            var products = db.TblSanphams
+            if (string.IsNullOrEmpty(query))
+            {
+                // Nếu không có query, trả về danh sách sản phẩm với phân trang mặc định
+                var products = db.TblSanphams
+                    .OrderBy(p => p.STensanpham)
+                    .ToPagedList(pageNumber, pageSize);
+                return View(products);
+            }
+
+            var productsWithQuery = db.TblSanphams
                 .Where(p => p.STensanpham.ToLower().Contains(query.ToLower().Trim()))
                 .OrderBy(p => p.STensanpham)
                 .ToPagedList(pageNumber, pageSize);
 
             ViewBag.SearchQuery = query;
 
-            return View(products);
-        }
-        private async Task<List<TblSanpham>> GetRecommendations(int userId, int n_recommendations)
-        {
-            try
-            {
-                var request = new HttpRequestMessage(HttpMethod.Get, $"http://localhost:5000/api/recommendation/user/{userId}/recommendations?n={n_recommendations}");
-                var client = _clientFactory.CreateClient();
-                var response = await client.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var jsonData = await response.Content.ReadAsStringAsync();
-                    var recommendationIds = JsonConvert.DeserializeObject<List<int>>(jsonData);
-
-                    var recommendations = db.TblSanphams.Where(p => recommendationIds.Contains(p.PkISanphamId)).ToList();
-                    return recommendations;
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                _logger.LogError($"Request error: {e.Message}");
-            }
-            return new List<TblSanpham>();
+            return View(productsWithQuery);
         }
 
         public IActionResult Privacy()

@@ -9,7 +9,5 @@ public partial class TblDanhmuc
 
     public string STendanhmuc { get; set; } = null!;
 
-    public virtual ICollection<TblTlsach> TblTlsaches { get; } = new List<TblTlsach>();
-
-    public virtual ICollection<TblTlvanphongpham> TblTlvanphongphams { get; } = new List<TblTlvanphongpham>();
+    public virtual ICollection<TblTheloai> TblTheloais { get; } = new List<TblTheloai>();
 }

@@ -9,8 +9,6 @@ public partial class TblCtvanphongpham
 
     public int FkISanphamId { get; set; }
 
-    public int FkITlvanphongphamId { get; set; }
-
     public string? SXuatxu { get; set; }
 
     public string? SThuonghieu { get; set; }
@@ -22,6 +20,4 @@ public partial class TblCtvanphongpham
     public string? SKichthuoc { get; set; }
 
     public virtual TblSanpham FkISanpham { get; set; } = null!;
-
-    public virtual TblTlvanphongpham FkITlvanphongpham { get; set; } = null!;
 }
