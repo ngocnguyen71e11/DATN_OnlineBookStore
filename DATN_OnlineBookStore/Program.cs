@@ -1,9 +1,10 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
-builder.Services.AddHttpClient(); // ??ng k� HttpClient
+builder.Services.AddHttpClient(); // Đăng ký HttpClient
+builder.Services.AddHttpContextAccessor(); // Đăng ký IHttpContextAccessor
 
 var app = builder.Build();
 
@@ -24,6 +25,6 @@ app.UseSession(); // Session middleware
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Access}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

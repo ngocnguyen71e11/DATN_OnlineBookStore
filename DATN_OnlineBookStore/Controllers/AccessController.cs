@@ -60,20 +60,6 @@ namespace DATN_OnlineBookStore.Controllers
         }
 
 
-        // Hàm tạo mã ngẫu nhiên
-        private string GenerateRandomCode(int length)
-        {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            var random = new Random();
-            var result = new char[length];
-            for (int i = 0; i < length; i++)
-            {
-                result[i] = chars[random.Next(chars.Length)];
-            }
-            return new string(result);
-        }
-
-
         [HttpGet]
         public IActionResult Register()
         {
@@ -98,11 +84,19 @@ namespace DATN_OnlineBookStore.Controllers
             var u = db.TblTaikhoans.FirstOrDefault(x => x.SEmail == user.SEmail && x.SMatkhau == user.SMatkhau);
             if (u != null)
             {
-                HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId); // Lưu AccountId vào session
-                return RedirectToAction("Index", "Home");
+                HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
+                if (u.FkIQuyenId == 3)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
             }
             return View();
         }
+
         [HttpGet]
         public IActionResult ChangePassword()
         {
