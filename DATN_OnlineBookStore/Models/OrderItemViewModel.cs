@@ -6,5 +6,7 @@
         public int Quantity { get; set; }
         public double Price { get; set; }
         public double Total { get; set; }
+        public int PkICtdonhangId { get; set; }
+        public bool IsReviewed { get; set; }
     }
 }

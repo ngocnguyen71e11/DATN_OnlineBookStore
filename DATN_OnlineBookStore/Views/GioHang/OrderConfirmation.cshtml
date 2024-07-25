@@ -71,7 +71,7 @@
         <div class="row">
             <aside class="sidebar col-md-3">
                 <a href="@Url.Action("CustomerView", "Customer")">Thông tin người dùng</a>
-                <a href="@Url.Action("OrderConfirmation", "Giohang")">Thông tin đơn hàng</a>
+                <a href="@Url.Action("OrderConfirmation", "GioHang")">Thông tin đơn hàng</a>
                 <a href="@Url.Action("ChangePassword", "Access")">Đổi mật khẩu</a>
                 <a href="@Url.Action("Logout", "Access")">Đăng xuất</a>
             </aside>
@@ -80,7 +80,7 @@
                 @foreach (var order in Model)
                 {
                     <div class="order-container">
-                        <div class="order-summary">                           
+                        <div class="order-summary">
                             <p>Ngày mua: @order.OrderDate.ToString("yyyy-MM-dd")</p>
                             <table class="table table-striped">
                                 <thead>
@@ -89,6 +89,7 @@
                                         <th>Số lượng</th>
                                         <th>Giá</th>
                                         <th>Tổng tiền</th>
+                                        <th>Đánh giá</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -99,11 +100,22 @@
                                             <td>@item.Quantity</td>
                                             <td>@item.Price.ToString("C")</td>
                                             <td>@item.Total.ToString("C")</td>
+                                            <td>
+                                                @if (item.IsReviewed)
+                                                {
+                                                    <a href="@Url.Action("UserReviews", "Review")">Xem danh sách đánh giá</a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("CreateReview", "Review", new { orderItemId = item.PkICtdonhangId })">Đánh giá sản phẩm</a>
+                                                }
+                                            </td>
                                         </tr>
                                     }
                                     <tr>
                                         <td colspan="3" class="total">Tổng tiền:</td>
                                         <td class="total">@order.TotalPrice.ToString("C")</td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -59,8 +59,6 @@ namespace DATN_OnlineBookStore.Controllers
             }
 
             db.SaveChanges();
-
-            // Chuyển đổi kiểu dữ liệu từ anonymous type sang Tuple
             var cartProducts = db.TblCtgiohangs
                 .Where(c => c.FkIGiohangId == cart.PkIGiohangId)
                 .Select(c => Tuple.Create(
@@ -220,34 +218,41 @@ namespace DATN_OnlineBookStore.Controllers
             var wards = db.TblXas.Where(x => x.FkIHuyenId == huyenId).ToList();
             return Json(wards);
         }
+
         [HttpPost]
-        public IActionResult ProcessCheckout(string phone, int ward, string address, int[] productIds, int[] quantities)
+        public async Task<IActionResult> ProcessCheckout(int ward, string address, int[] productIds, int[] quantities)
         {
+            var taikhoanId = HttpContext.Session.GetInt32("AccountId");
+            if (taikhoanId == null)
+            {
+                return RedirectToAction("Login", "Access");
+            }
+
             if (productIds.Length == 0 || quantities.Length == 0)
             {
                 return BadRequest("Không có sản phẩm nào trong giỏ hàng.");
             }
 
-            using (var transaction = db.Database.BeginTransaction())
+            using (var transaction = await db.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    // Truy vấn đến tblKhachhang để lấy thông tin khách hàng bằng số điện thoại
-                    var khachHang = db.TblKhachhangs.FirstOrDefault(kh => kh.SSdt == phone);
+                    // Truy vấn đến tblKhachhang để lấy thông tin khách hàng bằng ID tài khoản
+                    var khachHang = await db.TblKhachhangs.FirstOrDefaultAsync(kh => kh.FkITaikhoanId == taikhoanId.Value);
                     if (khachHang == null)
                     {
                         return NotFound("Không tìm thấy thông tin khách hàng.");
                     }
 
                     // Lấy giỏ hàng của khách hàng
-                    var cart = db.TblGiohangs.FirstOrDefault(g => g.FkIKhid == khachHang.PkSKhid);
+                    var cart = await db.TblGiohangs.FirstOrDefaultAsync(g => g.FkIKhid == khachHang.PkSKhid);
                     if (cart == null)
                     {
                         return NotFound("Giỏ hàng không tồn tại.");
                     }
 
                     // Tạo địa chỉ mới hoặc cập nhật địa chỉ hiện có
-                    var diaChi = db.TblDiachiKhs.FirstOrDefault(dc => dc.FkSKhid == khachHang.PkSKhid && dc.FkIXaId == ward && dc.SDiachicuthe == address);
+                    var diaChi = await db.TblDiachiKhs.FirstOrDefaultAsync(dc => dc.FkSKhid == khachHang.PkSKhid && dc.FkIXaId == ward && dc.SDiachicuthe == address);
                     if (diaChi == null)
                     {
                         diaChi = new TblDiachiKh
@@ -255,11 +260,11 @@ namespace DATN_OnlineBookStore.Controllers
                             FkSKhid = khachHang.PkSKhid,
                             FkIXaId = ward,
                             SDiachicuthe = address,
-                            SSdt = phone,
+                            SSdt = khachHang.SSdt,  // Assuming you want to use the customer's phone number from their profile
                             IsTrangthai = true  // Giả sử đây là địa chỉ mặc định
                         };
                         db.TblDiachiKhs.Add(diaChi);
-                        db.SaveChanges();
+                        await db.SaveChangesAsync();
                     }
 
                     // Kiểm tra lại diaChi để chắc chắn rằng nó không null
@@ -278,14 +283,14 @@ namespace DATN_OnlineBookStore.Controllers
                         FTongtien = 0, // Cập nhật sau
                     };
                     db.TblDonhangs.Add(donHangMoi);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
 
                     double totalAmount = 0;
                     var chiTietDonHangList = new List<TblCtdonhang>();
 
                     for (int i = 0; i < productIds.Length; i++)
                     {
-                        var product = db.TblSanphams.FirstOrDefault(p => p.PkISanphamId == productIds[i]);
+                        var product = await db.TblSanphams.FirstOrDefaultAsync(p => p.PkISanphamId == productIds[i]);
                         if (product == null)
                         {
                             // Xử lý khi không tìm thấy sản phẩm
@@ -306,26 +311,26 @@ namespace DATN_OnlineBookStore.Controllers
 
                     // Lưu danh sách chi tiết đơn hàng vào cơ sở dữ liệu
                     db.TblCtdonhangs.AddRange(chiTietDonHangList);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
 
                     // Cập nhật tổng tiền đơn hàng
                     donHangMoi.FTongtien = totalAmount;
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
 
                     // Xóa các sản phẩm đã thanh toán khỏi giỏ hàng
-                    var cartItemsToRemove = db.TblCtgiohangs.Where(c => productIds.Contains(c.FkISanphamId) && c.FkIGiohangId == cart.PkIGiohangId).ToList();
+                    var cartItemsToRemove = await db.TblCtgiohangs.Where(c => productIds.Contains(c.FkISanphamId) && c.FkIGiohangId == cart.PkIGiohangId).ToListAsync();
                     db.TblCtgiohangs.RemoveRange(cartItemsToRemove);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
 
                     // Commit transaction
-                    transaction.Commit();
+                    await transaction.CommitAsync();
 
                     return RedirectToAction("OrderConfirmation", new { orderId = donHangMoi.PkIDonhangId });
                 }
                 catch (Exception ex)
                 {
                     // Rollback transaction nếu có lỗi xảy ra
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     // Ghi log lỗi (bạn có thể sử dụng framework logging như Serilog, NLog, v.v.)
                     Console.WriteLine(ex.Message);
                     return StatusCode(500, "Đã có lỗi xảy ra trong quá trình xử lý đơn hàng.");
@@ -359,12 +364,16 @@ namespace DATN_OnlineBookStore.Controllers
                         ProductName = ct.FkISanpham.STensanpham,
                         Quantity = ct.ISoluong ?? 0,
                         Price = ct.FGiaban ?? 0,
-                        Total = (ct.ISoluong ?? 0) * (ct.FGiaban ?? 0)
+                        Total = (ct.ISoluong ?? 0) * (ct.FGiaban ?? 0),
+                        PkICtdonhangId = ct.PkICtdonhangId,
+                        IsReviewed = ct.TblDanhgia.Any() // Kiểm tra sản phẩm đã được đánh giá hay chưa
                     }).ToList()
                 })
                 .ToList();
 
             return View(orders);
         }
+
+
     }
 }

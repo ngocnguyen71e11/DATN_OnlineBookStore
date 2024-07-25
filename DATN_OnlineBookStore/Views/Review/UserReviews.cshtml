@@ -1,25 +1,85 @@
-﻿@model IEnumerable<DATN_OnlineBookStore.Models.TblDanhgium>
+﻿@model IEnumerable<dynamic>
 
-<h2>Danh Sách Đánh Giá Của Tôi</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Sản Phẩm</th>
-            <th>Xếp Hạng</th>
-            <th>Mô Tả</th>
-            <th>Ngày Đánh Giá</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.FkICtdonhang.FkISanpham.STensanpham</td>  <!-- Giả sử STensanpham là tên sản phẩm -->
-                <td>@item.FXephang</td>
-                <td>@item.SMota</td>
-               @*  <td>@item.FkICtdonhang.FkIDonhang.DThoigianmua.ToString("dd/MM/yyyy")</td> *@
-            </tr>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Danh sách đánh giá của tôi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
         }
-    </tbody>
-</table>
+
+        .review-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .button:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+    <div class="review-container">
+        <h2>Danh sách đánh giá của tôi</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Xếp hạng</th>
+                    <th>Mô tả</th>
+                    <th>Ngày đánh giá</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var review in Model)
+                {
+                    <tr>
+                        <td>@review.ProductName</td>
+                        <td>@review.Rating</td>
+                        <td>@review.Description</td>
+                        <td>@review.ReviewDate?.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a href="@Url.Action("OrderConfirmation", "GioHang")" class="button">Quay lại đơn hàng</a>
+    </div>
+</body>
+</html>
