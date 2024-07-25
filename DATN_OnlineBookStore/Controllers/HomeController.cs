@@ -32,8 +32,8 @@ namespace DATN_OnlineBookStore.Controllers
             var lstsanpham = db.TblSanphams.AsNoTracking().OrderBy(x => x.STensanpham);
             PagedList<TblSanpham> lst = new PagedList<TblSanpham>(lstsanpham, pageNumber, pageSize);
 
-            int userId = HttpContext.Session.GetInt32("AccountId") ?? 1; // Lấy ID người dùng từ session
-            var recommendations = await GetRecommendations(userId, 5); // Gọi API để lấy danh sách sản phẩm gợi ý
+            int userId = HttpContext.Session.GetInt32("AccountId") ?? 1;
+            var recommendations = await GetRecommendations(userId, 5); 
             ViewBag.Recommendations = recommendations;
 
             return View(lst);
@@ -66,7 +66,6 @@ namespace DATN_OnlineBookStore.Controllers
 
             if (string.IsNullOrEmpty(query))
             {
-                // Nếu không có query, trả về danh sách sản phẩm với phân trang mặc định
                 var products = db.TblSanphams
                     .OrderBy(p => p.STensanpham)
                     .ToPagedList(pageNumber, pageSize);
@@ -96,12 +95,56 @@ namespace DATN_OnlineBookStore.Controllers
 
         public IActionResult ProductDetails(int id)
         {
-            var product = db.TblSanphams.AsNoTracking().FirstOrDefault(p => p.PkISanphamId == id);
+            var product = db.TblSanphams
+                .AsNoTracking()
+                .Include(p => p.FkITheloai)
+                .ThenInclude(t => t.FkIDanhmuc)
+                .FirstOrDefault(p => p.PkISanphamId == id);
+
             if (product == null)
             {
                 return NotFound("Không tìm thấy sản phẩm");
             }
+
+            // Kiểm tra danh mục sản phẩm
+            var danhmucId = product.FkITheloai.FkIDanhmuc.PkIDanhmucId;
+            ViewBag.DanhmucId = danhmucId;
+
+            if (danhmucId == 1)
+            {
+                // Lấy thông tin chi tiết sách
+                var bookDetails = db.TblCtsaches
+                    .AsNoTracking()
+                    .FirstOrDefault(b => b.FkISanphamId == product.PkISanphamId);
+
+                if (bookDetails != null)
+                {
+                    ViewBag.BookDetails = bookDetails;
+                }
+                else
+                {
+                    Console.WriteLine("Không tìm thấy chi tiết sách cho sản phẩm này.");
+                }
+            }
+            else if (danhmucId == 12)
+            {
+                // Lấy thông tin chi tiết văn phòng phẩm
+                var officeSupplyDetails = db.TblCtvanphongphams
+                    .AsNoTracking()
+                    .FirstOrDefault(o => o.FkISanphamId == product.PkISanphamId);
+
+                if (officeSupplyDetails != null)
+                {
+                    ViewBag.OfficeSupplyDetails = officeSupplyDetails;
+                }
+                else
+                {
+                    Console.WriteLine("Không tìm thấy chi tiết văn phòng phẩm cho sản phẩm này.");
+                }
+            }
+
             return View(product);
         }
+
     }
 }
