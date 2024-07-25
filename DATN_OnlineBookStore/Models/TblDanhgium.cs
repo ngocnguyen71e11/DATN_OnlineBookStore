@@ -9,7 +9,7 @@ public partial class TblDanhgium
 
     public int FkICtdonhangId { get; set; }
 
-    public double? FXephang { get; set; }
+    public double FXephang { get; set; }
 
     public string? SMota { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using DATN_OnlineBookStore.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DATN_OnlineBookStore.Controllers
 {
@@ -29,6 +30,43 @@ namespace DATN_OnlineBookStore.Controllers
             }
             return View();
         }
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            var accountId = HttpContext.Session.GetInt32("AccountId");
+            if (accountId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = await db.TblTaikhoans.FindAsync(accountId);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Không tìm thấy tài khoản.");
+                return View(model);
+            }
+            if (model.OldPassword != user.SMatkhau)
+            {
+                ModelState.AddModelError("", "Mật khẩu cũ không chính xác.");
+                return View(model);
+            }
+            user.SMatkhau = model.NewPassword;
+            if (model.ConfirmPassword != model.NewPassword)
+            {
+                ModelState.AddModelError("", "Mật mới không khớp.");
+                return View(model);
+            }
+            db.TblTaikhoans.Update(user);
+            await db.SaveChangesAsync();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Access");
+        }
+
 
         public IActionResult Logout()
         {

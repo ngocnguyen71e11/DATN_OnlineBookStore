@@ -11,7 +11,7 @@ public partial class TblCtkhuyenmai
 
     public int FkISanphamId { get; set; }
 
-    public double? FChietkhau { get; set; }
+    public double FChietkhau { get; set; }
 
     public virtual TblKhuyenmai FkIKhuyenmai { get; set; } = null!;
 

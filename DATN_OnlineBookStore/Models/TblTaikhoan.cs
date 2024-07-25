@@ -11,7 +11,7 @@ public partial class TblTaikhoan
 
     public string SEmail { get; set; } = null!;
 
-    public string? SMatkhau { get; set; }
+    public string SMatkhau { get; set; } = null!;
 
     public virtual TblPhanquyen FkIQuyen { get; set; } = null!;
 

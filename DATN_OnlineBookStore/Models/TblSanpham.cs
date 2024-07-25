@@ -7,6 +7,8 @@ public partial class TblSanpham
 {
     public int PkISanphamId { get; set; }
 
+    public int FkITheloaiId { get; set; }
+
     public string STensanpham { get; set; } = null!;
 
     public string? SMavach { get; set; }
@@ -21,13 +23,13 @@ public partial class TblSanpham
 
     public double FGiaban { get; set; }
 
-    public double? FGiavon { get; set; }
+    public double FGiavon { get; set; }
 
     public bool? IsTrangthai { get; set; }
 
-    public int? FkITheloaiId { get; set; }
-
     public DateTime? DThoigiantao { get; set; }
+
+    public virtual TblTheloai FkITheloai { get; set; } = null!;
 
     public virtual ICollection<TblCtdonhang> TblCtdonhangs { get; } = new List<TblCtdonhang>();
 

@@ -15,15 +15,19 @@ public partial class TblDiachiKh
 
     public int? FkIXaId { get; set; }
 
-    public string? SDiachicuthe { get; set; }
-
-    public string? SSdt { get; set; }
-
-    public bool? IsTrangthai { get; set; }
-
     public int? FkIHuyenId { get; set; }
 
     public int? FkITinhId { get; set; }
+
+    public string? SDiachicuthe { get; set; }
+
+    public string SSdt { get; set; } = null!;
+
+    public bool? IsTrangthai { get; set; }
+
+    public virtual TblHuyen? FkIHuyen { get; set; }
+
+    public virtual TblTinh? FkITinh { get; set; }
 
     public virtual TblXa? FkIXa { get; set; }
 

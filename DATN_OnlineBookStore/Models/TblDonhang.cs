@@ -13,7 +13,7 @@ public partial class TblDonhang
 
     public int FkSDiachiKhid { get; set; }
 
-    public DateTime DThoigianmua { get; set; }
+    public DateTime? DThoigianmua { get; set; }
 
     public DateTime? DThoigiancapnhat { get; set; }
 

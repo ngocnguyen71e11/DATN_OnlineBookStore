@@ -1,4 +1,4 @@
-﻿@model List<Tuple<string, int?, double, double?, int>>
+﻿@model List<Tuple<string, int, double, double, int>>
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,13 +73,13 @@
                 @foreach (var item in Model)
                 {
                     <tr>
-                        <td><input type="checkbox" name="selectedItems" value="@item.Item5" data-price="@item.Item4" data-quantity="@item.Item2" data-name="@item.Item1" data-price-per-unit="@item.Item3" onchange="calculateTotalPrice()"></td>
+                        <td><input type="checkbox" name="selectedItems" value="@item.Item5" data-price="@item.Item4" onchange="calculateTotalPrice()"></td>
                         <td>@item.Item1</td>
                         <td>
                             <input type="number" value="@item.Item2" min="1" style="width: 50px;" onchange="updateCartItem('@item.Item5', this.value)">
                         </td>
                         <td>@item.Item3.ToString("C")</td>
-                        <td>@item.Item4</td>
+                        <td>@item.Item4.ToString("C")</td>
                         <td><button type="button" onclick="removeFromCart('@item.Item5')">Xóa</button></td>
                     </tr>
                 }

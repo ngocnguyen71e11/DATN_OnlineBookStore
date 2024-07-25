@@ -11,9 +11,9 @@ public partial class TblCtphieukiemke
 
     public int FkISanphamId { get; set; }
 
-    public double? FGiavon { get; set; }
+    public double FGiavon { get; set; }
 
-    public int? ITonkho { get; set; }
+    public int ITonkho { get; set; }
 
     public int? ISoluongthucte { get; set; }
 
