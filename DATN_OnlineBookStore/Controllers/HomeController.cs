@@ -139,6 +139,7 @@ namespace DATN_OnlineBookStore.Controllers
                     Console.WriteLine("Không tìm thấy chi tiết văn phòng phẩm cho sản phẩm này.");
                 }
             }
+            return View(product);
         }
     }
 }
