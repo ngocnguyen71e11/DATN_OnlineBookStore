@@ -107,8 +107,7 @@ namespace DATN_OnlineBookStore.Controllers
                 {
                     return RedirectToAction("Index", "Admin");
                 }
-            }
-            return View();
+            //return View();
         }
 
         [HttpGet]
