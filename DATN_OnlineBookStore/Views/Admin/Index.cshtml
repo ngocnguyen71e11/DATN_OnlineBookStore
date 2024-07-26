@@ -1,0 +1,45 @@
+﻿@model IEnumerable<DATN_OnlineBookStore.Models.TblTaikhoan>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SMatkhau)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FkIQuyen)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SMatkhau)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FkIQuyenId)
+            </td>
+            <td>
+                <a asp-action="EditTaikhoan" asp-route-id="@item.PkITaikhoanId">Edit</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

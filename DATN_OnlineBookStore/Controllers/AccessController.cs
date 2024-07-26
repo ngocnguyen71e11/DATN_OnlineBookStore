@@ -24,8 +24,19 @@ namespace DATN_OnlineBookStore.Controllers
             var u = db.TblTaikhoans.FirstOrDefault(x => x.SEmail == user.SEmail && x.SMatkhau == user.SMatkhau);
             if (u != null)
             {
+                if(u.FkIQuyenId==1)
+                {
+                    HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId); // Lưu AccountId vào session
+                    return RedirectToAction("Index", "Admin");
+                }
+                else if(u.FkIQuyenId==3)
+                {
+                    HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId); // Lưu AccountId vào session
+                    return RedirectToAction("Index", "Home");
+                }
                 HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId); // Lưu AccountId vào session
                 return RedirectToAction("Index", "Home");
+
             }
             return View();
         }

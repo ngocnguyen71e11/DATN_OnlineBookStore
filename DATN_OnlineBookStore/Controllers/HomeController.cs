@@ -32,9 +32,9 @@ namespace DATN_OnlineBookStore.Controllers
             var lstsanpham = db.TblSanphams.AsNoTracking().OrderBy(x => x.STensanpham);
             PagedList<TblSanpham> lst = new PagedList<TblSanpham>(lstsanpham, pageNumber, pageSize);
 
-            int userId = HttpContext.Session.GetInt32("AccountId") ?? 1; // Lấy ID người dùng từ session
-            var recommendations = await GetRecommendations(userId, 5); // Gọi API để lấy danh sách sản phẩm gợi ý
-            ViewBag.Recommendations = recommendations;
+           // int userId = HttpContext.Session.GetInt32("AccountId") ?? 1; // Lấy ID người dùng từ session
+            //var recommendations = await GetRecommendations(userId, 5); // Gọi API để lấy danh sách sản phẩm gợi ý
+           // ViewBag.Recommendations = recommendations;
 
             return View(lst);
         }
