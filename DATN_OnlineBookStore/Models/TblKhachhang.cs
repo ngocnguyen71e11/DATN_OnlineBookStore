@@ -9,9 +9,9 @@ public partial class TblKhachhang
 
     public int FkITaikhoanId { get; set; }
 
-    public string? SHo { get; set; }
+    public string SHo { get; set; } = null!;
 
-    public string? STen { get; set; }
+    public string STen { get; set; } = null!;
 
     public string? SSdt { get; set; }
 

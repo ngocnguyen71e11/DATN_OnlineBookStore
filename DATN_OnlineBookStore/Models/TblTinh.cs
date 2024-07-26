@@ -9,5 +9,7 @@ public partial class TblTinh
 
     public string STentinh { get; set; } = null!;
 
+    public virtual ICollection<TblDiachiKh> TblDiachiKhs { get; } = new List<TblDiachiKh>();
+
     public virtual ICollection<TblHuyen> TblHuyens { get; } = new List<TblHuyen>();
 }

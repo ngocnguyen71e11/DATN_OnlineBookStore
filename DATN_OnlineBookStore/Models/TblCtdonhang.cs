@@ -11,13 +11,11 @@ public partial class TblCtdonhang
 
     public int FkIDonhangId { get; set; }
 
-    public int ISoluong { get; set; }
+    public int? ISoluong { get; set; }
 
-    public double FGiaban { get; set; }
+    public double? FGiaban { get; set; }
 
     public double? FKhuyenmai { get; set; }
-
-    public DateTime? DThoigiancapnhat { get; set; }
 
     public virtual TblDonhang FkIDonhang { get; set; } = null!;
 

@@ -1,0 +1,132 @@
+﻿@model List<OrderViewModel>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DATN_OnlineBookStore.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
+    <style>
+        .sidebar {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+            .sidebar a {
+                display: block;
+                padding: 10px;
+                color: #333;
+                text-decoration: none;
+                margin-bottom: 10px;
+                border-radius: 4px;
+            }
+
+                .sidebar a:hover {
+                    background-color: #e9ecef;
+                }
+
+        .order-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .order-summary h3 {
+            margin-top: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total {
+            font-weight: bold;
+        }
+
+        .order-header {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="sidebar col-md-3">
+                <a href="@Url.Action("CustomerView", "Customer")">Thông tin người dùng</a>
+                <a href="@Url.Action("OrderConfirmation", "GioHang")">Thông tin đơn hàng</a>
+                <a href="@Url.Action("ChangePassword", "Access")">Đổi mật khẩu</a>
+                <a href="@Url.Action("Logout", "Access")">Đăng xuất</a>
+            </aside>
+            <main role="main" class="col-md-9">
+                <h1 class="order-header">Thông tin đơn hàng</h1>
+                @foreach (var order in Model)
+                {
+                    <div class="order-container">
+                        <div class="order-summary">
+                            <p>Ngày mua: @order.OrderDate.ToString("yyyy-MM-dd")</p>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Số lượng</th>
+                                        <th>Giá</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Đánh giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in order.Items)
+                                    {
+                                        <tr>
+                                            <td>@item.ProductName</td>
+                                            <td>@item.Quantity</td>
+                                            <td>@item.Price.ToString("C")</td>
+                                            <td>@item.Total.ToString("C")</td>
+                                            <td>
+                                                @if (item.IsReviewed)
+                                                {
+                                                    <a href="@Url.Action("UserReviews", "Review")">Xem danh sách đánh giá</a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@Url.Action("CreateReview", "Review", new { orderItemId = item.PkICtdonhangId })">Đánh giá sản phẩm</a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td colspan="3" class="total">Tổng tiền:</td>
+                                        <td class="total">@order.TotalPrice.ToString("C")</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </main>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

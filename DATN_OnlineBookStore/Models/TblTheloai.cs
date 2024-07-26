@@ -9,7 +9,9 @@ public partial class TblTheloai
 
     public string STentheloai { get; set; } = null!;
 
-    public int? FkIDanhmucId { get; set; }
+    public int FkIDanhmucId { get; set; }
 
-    public virtual TblDanhmuc? FkIDanhmuc { get; set; }
+    public virtual TblDanhmuc FkIDanhmuc { get; set; } = null!;
+
+    public virtual ICollection<TblSanpham> TblSanphams { get; } = new List<TblSanpham>();
 }

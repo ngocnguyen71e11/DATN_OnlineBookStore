@@ -19,9 +19,9 @@ public partial class TblCtsach
 
     public string? SNguoidich { get; set; }
 
-    public int? ISotrang { get; set; }
+    public string? Isbn { get; set; }
 
-    public string? Ibsn { get; set; }
+    public int? ISotrang { get; set; }
 
     public virtual TblSanpham FkISanpham { get; set; } = null!;
 }

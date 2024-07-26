@@ -13,5 +13,7 @@ public partial class TblHuyen
 
     public virtual TblTinh FkITinh { get; set; } = null!;
 
+    public virtual ICollection<TblDiachiKh> TblDiachiKhs { get; } = new List<TblDiachiKh>();
+
     public virtual ICollection<TblXa> TblXas { get; } = new List<TblXa>();
 }

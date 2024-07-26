@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DATN_OnlineBookStore.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
+    <style>
+        .sidebar {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+            .sidebar a {
+                display: block;
+                padding: 10px;
+                color: #333;
+                text-decoration: none;
+                margin-bottom: 10px;
+                border-radius: 4px;
+            }
+
+                .sidebar a:hover {
+                    background-color: #e9ecef;
+                }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <aside class="sidebar col-md-3">
+                <a href="@Url.Action("CustomerView", "Customer")">Thông tin người dùng</a>
+                <a href="@Url.Action("OrderConfirmation", "Giohang")">Thông tin đơn hàng</a>
+                <a href="@Url.Action("ChangePassword", "Access")">Đổi mật khẩu</a>
+                <a href="@Url.Action("Logout", "Access")">Đăng xuất</a>
+            </aside>
+            <main role="main" class="col-md-9">
+                <h1>@(Model.PkSKhid == null ? "Thêm thông tin người dùng" : "Sửa thông tin người dùng")</h1>
+                <form asp-action="CustomerView" method="post">
+                    <input type="hidden" name="FkITaikhoanId" value="@Model.FkITaikhoanId" />
+                    <input type="hidden" name="PkSKhid" value="@Model.PkSKhid" />
+                    <div class="form-group">
+                        <label for="SHo">Họ:</label>
+                        <input type="text" class="form-control" id="SHo" name="SHo" value="@Model.SHo" />
+                    </div>
+                    <div class="form-group">
+                        <label for="STen">Tên:</label>
+                        <input type="text" class="form-control" id="STen" name="STen" value="@Model.STen" />
+                    </div>
+                    <div class="form-group">
+                        <label for="SSdt">SĐT:</label>
+                        <input type="text" class="form-control" id="SSdt" name="SSdt" value="@Model.SSdt" />
+                    </div>
+                    <div class="form-group">
+                        <label for="DNgaysinh">Ngày sinh:</label>
+                        <input type="date" class="form-control" id="DNgaysinh" name="DNgaysinh" value="@Model.DNgaysinh?.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="form-group">
+                        <label for="SNghenghiep">Nghề nghiệp:</label>
+                        <input type="text" class="form-control" id="SNghenghiep" name="SNghenghiep" value="@Model.SNghenghiep" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </form>
+            </main>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

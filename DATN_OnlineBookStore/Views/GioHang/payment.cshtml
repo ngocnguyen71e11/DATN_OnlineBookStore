@@ -1,5 +1,4 @@
-﻿@model List<Tuple<string, int, double, double, int>>
-
+﻿@model CheckoutViewModel
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,13 +16,30 @@
             background-color: #f9f9f9;
         }
 
-        h2, h3 {
+        h2 {
             color: #333;
         }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .form-group input,
+            .form-group select {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+            }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
 
         th, td {
@@ -55,25 +71,6 @@
             .button:hover {
                 background-color: #0056b3;
             }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-            .form-group label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
-
-            .form-group input,
-            .form-group select {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                box-sizing: border-box;
-            }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -104,6 +101,10 @@
                 <label for="city">Tỉnh/Thành Phố</label>
                 <select id="city" name="city" required>
                     <option value="">Chọn Tỉnh/Thành Phố</option>
+                    @foreach (var tinh in ViewBag.Tinhs)
+                    {
+                        <option value="@tinh.PkITinhId">@tinh.STentinh</option>
+                    }
                 </select>
             </div>
             <div class="form-group">
@@ -131,75 +132,66 @@
                     <th>Giá</th>
                     <th>Thành tiền</th>
                 </tr>
-                @foreach (var item in Model)
+                @foreach (var item in Model.SelectedItems)
                 {
                     <tr>
-                        <td>@item.Item1</td>
-                        <td>@item.Item2</td>
-                        <td>@item.Item3.ToString("C")</td>
-                        <td>@item.Item4.ToString("C")</td>
+                        <td>@item.STensanpham</td>
+                        <td>@item.ISoluong</td>
+                        <td>@item.FGiaban.ToString("C")</td>
+                        <td>@item.ThanhTien.ToString("C")</td>
+                        <input type="hidden" name="productIds" value="@item.FkISanphamId" />
+                        <input type="hidden" name="quantities" value="@item.ISoluong" />
                     </tr>
                 }
                 <tr>
                     <td colspan="3" style="text-align:right">Tổng tiền:</td>
-                    <td id="totalPrice">@ViewBag.TotalPrice.ToString("C")</td>
+                    <td id="totalPrice">@Model.TotalPrice.ToString("C")</td>
                 </tr>
             </table>
             <button type="submit" class="button">Thanh toán</button>
         </form>
     </div>
-
     <script>
         $(document).ready(function () {
-            loadTinhs();
-
             $('#city').change(function () {
-                var tinhId = $(this).val();
-                loadHuyens(tinhId);
+                var cityId = $(this).val();
+                if (!cityId) {
+                    $('#district').empty().append('<option value="">Chọn Quận/Huyện</option>');
+                    $('#ward').empty().append('<option value="">Chọn Phường/Xã</option>');
+                    return;
+                }
+                $.getJSON(`/api/huyens/${cityId}`)
+                    .done(function (data) {
+                        var districtSelect = $('#district');
+                        districtSelect.empty().append('<option value="">Chọn Quận/Huyện</option>');
+                        data.forEach(function (huyen) {
+                            districtSelect.append(`<option value="${huyen.pkIHuyenId}">${huyen.sTenhuyen}</option>`);
+                        });
+                    })
+                    .fail(function () {
+                        alert('Error fetching districts');
+                    });
             });
 
             $('#district').change(function () {
-                var huyenId = $(this).val();
-                loadXas(huyenId);
+                var districtId = $(this).val();
+                if (!districtId) {
+                    $('#ward').empty().append('<option value="">Chọn Phường/Xã</option>');
+                    return;
+                }
+                $.getJSON(`/api/wards/${districtId}`)
+                    .done(function (data) {
+                        var wardSelect = $('#ward');
+                        wardSelect.empty().append('<option value="">Chọn Phường/Xã</option>');
+                        data.forEach(function (ward) {
+                            wardSelect.append(`<option value="${ward.pkIXaId}">${ward.sTenxa}</option>`);
+                        });
+                    })
+                    .fail(function () {
+                        alert('Error fetching wards');
+                    });
             });
         });
-
-        function loadTinhs() {
-            $.get('/api/Address/tinh', function (data) {
-                var citySelect = $('#city');
-                citySelect.empty();
-                citySelect.append('<option value="">Chọn Tỉnh/Thành Phố</option>');
-                $.each(data, function (index, tinh) {
-                    citySelect.append('<option value="' + tinh.pkITinhId + '">' + tinh.sTentinh + '</option>');
-                });
-            });
-        }
-
-        function loadHuyens(tinhId) {
-            if (tinhId) {
-                $.get('/api/Address/huyen/' + tinhId, function (data) {
-                    var districtSelect = $('#district');
-                    districtSelect.empty();
-                    districtSelect.append('<option value="">Chọn Quận/Huyện</option>');
-                    $.each(data, function (index, huyen) {
-                        districtSelect.append('<option value="' + huyen.pkIHuyenId + '">' + huyen.sTenhuyen + '</option>');
-                    });
-                });
-            }
-        }
-
-        function loadXas(huyenId) {
-            if (huyenId) {
-                $.get('/api/Address/xa/' + huyenId, function (data) {
-                    var wardSelect = $('#ward');
-                    wardSelect.empty();
-                    wardSelect.append('<option value="">Chọn Phường/Xã</option>');
-                    $.each(data, function (index, xa) {
-                        wardSelect.append('<option value="' + xa.pkIXaId + '">' + xa.sTenxa + '</option>');
-                    });
-                });
-            }
-        }
     </script>
 </body>
 </html>

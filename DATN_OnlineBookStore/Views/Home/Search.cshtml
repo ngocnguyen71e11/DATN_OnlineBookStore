@@ -7,11 +7,6 @@
 
 <h2>Search Results</h2>
 
-<form method="get" class="search-form" action="@Url.Action("Search", "Home")">
-    <input type="text" name="query" value="@ViewBag.SearchQuery" class="form-control me-2" placeholder="Search for products" />
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
-
 @if (Model != null && Model.Any())
 {
     <div class="product-container">
@@ -96,7 +91,7 @@ else
 
     .product-image img {
         width: 100%;
-        height: 200px;
+        height: 300px;
         object-fit: cover;
         display: block;
     }

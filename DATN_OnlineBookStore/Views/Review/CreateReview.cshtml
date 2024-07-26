@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Đánh giá sản phẩm";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Đánh giá sản phẩm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .review-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                width: 100%;
+                padding: 8px;
+                box-sizing: border-box;
+            }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .button:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+<body>
+    <div class="review-container">
+        <h2>Đánh giá sản phẩm</h2>
+        <form method="post" action="@Url.Action("SubmitReview", "Review")">
+            <input type="hidden" name="orderItemId" value="@ViewBag.OrderItemId" />
+            <div class="form-group">
+                <label for="productName">Sản phẩm</label>
+                <input type="text" id="productName" name="productName" value="@ViewBag.ProductName" readonly />
+            </div>
+            <div class="form-group">
+                <label for="rating">Xếp hạng (1-5)</label>
+                <input type="number" id="rating" name="rating" min="1" max="5" required />
+            </div>
+            <div class="form-group">
+                <label for="description">Mô tả</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+            <button type="submit" class="button">Gửi đánh giá</button>
+        </form>
+    </div>
+</body>
+</html>
