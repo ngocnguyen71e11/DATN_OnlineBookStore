@@ -13,7 +13,6 @@ namespace DATN_OnlineBookStore.Controllers
     {
         DbOnlineBookStoreContext db = new DbOnlineBookStoreContext();
 
-        // Thêm sản phẩm vào giỏ hàng
         public IActionResult AddToCart(int productId, int quantity = 1)
         {
             var taikhoanId = HttpContext.Session.GetInt32("AccountId");
@@ -73,8 +72,6 @@ namespace DATN_OnlineBookStore.Controllers
             return View("Cart", cartProducts);
         }
 
-        // Xóa sản phẩm khỏi giỏ hàng
-        // Cập nhật số lượng sản phẩm trong giỏ hàng
         [HttpPost]
         public IActionResult UpdateCartItem(int cartItemId, int newQuantity)
         {
@@ -94,8 +91,6 @@ namespace DATN_OnlineBookStore.Controllers
 
             return Json(new { success = false, message = "Không tìm thấy sản phẩm trong giỏ hàng." });
         }
-
-        // Xóa sản phẩm khỏi giỏ hàng
         [HttpPost]
         public IActionResult RemoveFromCart(int cartItemId)
         {
@@ -144,7 +139,7 @@ namespace DATN_OnlineBookStore.Controllers
                     c.ISoluong,
                     c.FkISanpham.FGiaban,
                     ThanhTien = c.ISoluong * c.FkISanpham.FGiaban,
-                    c.FkISanphamId // Đảm bảo rằng ID sản phẩm được bao gồm
+                    c.FkISanphamId 
                 })
                 .ToList();
 
@@ -184,22 +179,16 @@ namespace DATN_OnlineBookStore.Controllers
             var cartProducts = db.TblCtgiohangs
                 .Where(c => c.FkIGiohangId == cart.PkIGiohangId)
                 .Select(c => Tuple.Create(
-                    c.FkISanpham.STensanpham,       // Product Name
-                    c.ISoluong,                     // Quantity (nullable int)
-                    c.FkISanpham.FGiaban,           // Unit Price (double)
-                    (double?)(c.ISoluong * c.FkISanpham.FGiaban),  // Total Price (nullable double)
-                    c.PkICtgiohangId                // Cart Item ID (int)
+                    c.FkISanpham.STensanpham,      
+                    c.ISoluong,                     
+                    (double?)(c.ISoluong * c.FkISanpham.FGiaban),  
+                    c.PkICtgiohangId                
                 ))
                 .ToList();
 
             return View("Cart", cartProducts);
         }
 
-
-        // Hiển thị trang thanh toán với các sản phẩm đã chọn
-
-
-        // API để lấy danh sách tỉnh
         [HttpGet]
         public IActionResult GetTinhs()
         {
@@ -237,21 +226,16 @@ namespace DATN_OnlineBookStore.Controllers
             {
                 try
                 {
-                    // Truy vấn đến tblKhachhang để lấy thông tin khách hàng bằng ID tài khoản
                     var khachHang = await db.TblKhachhangs.FirstOrDefaultAsync(kh => kh.FkITaikhoanId == taikhoanId.Value);
                     if (khachHang == null)
                     {
                         return NotFound("Không tìm thấy thông tin khách hàng.");
                     }
-
-                    // Lấy giỏ hàng của khách hàng
                     var cart = await db.TblGiohangs.FirstOrDefaultAsync(g => g.FkIKhid == khachHang.PkSKhid);
                     if (cart == null)
                     {
                         return NotFound("Giỏ hàng không tồn tại.");
                     }
-
-                    // Tạo địa chỉ mới hoặc cập nhật địa chỉ hiện có
                     var diaChi = await db.TblDiachiKhs.FirstOrDefaultAsync(dc => dc.FkSKhid == khachHang.PkSKhid && dc.FkIXaId == ward && dc.SDiachicuthe == address);
                     if (diaChi == null)
                     {
@@ -260,27 +244,25 @@ namespace DATN_OnlineBookStore.Controllers
                             FkSKhid = khachHang.PkSKhid,
                             FkIXaId = ward,
                             SDiachicuthe = address,
-                            SSdt = khachHang.SSdt,  // Assuming you want to use the customer's phone number from their profile
-                            IsTrangthai = true  // Giả sử đây là địa chỉ mặc định
+                            SSdt = khachHang.SSdt,  
+                            IsTrangthai = true  
                         };
                         db.TblDiachiKhs.Add(diaChi);
                         await db.SaveChangesAsync();
                     }
-
-                    // Kiểm tra lại diaChi để chắc chắn rằng nó không null
+             
                     if (diaChi == null)
                     {
                         return StatusCode(500, "Lỗi khi tạo địa chỉ mới.");
                     }
 
-                    // Tạo đơn hàng mới
                     var donHangMoi = new TblDonhang
                     {
                         FkSKhid = khachHang.PkSKhid,
                         FkSDiachiKhid = diaChi.PkSDiachiKhid,
                         FkITrangthai = 1,
                         DThoigianmua = DateTime.Now,
-                        FTongtien = 0, // Cập nhật sau
+                        FTongtien = 0, 
                     };
                     db.TblDonhangs.Add(donHangMoi);
                     await db.SaveChangesAsync();
@@ -293,7 +275,6 @@ namespace DATN_OnlineBookStore.Controllers
                         var product = await db.TblSanphams.FirstOrDefaultAsync(p => p.PkISanphamId == productIds[i]);
                         if (product == null)
                         {
-                            // Xử lý khi không tìm thấy sản phẩm
                             return NotFound($"Không tìm thấy sản phẩm với ID: {productIds[i]}");
                         }
 
@@ -303,35 +284,29 @@ namespace DATN_OnlineBookStore.Controllers
                             FkISanphamId = product.PkISanphamId,
                             ISoluong = quantities[i],
                             FGiaban = product.FGiaban,
-                            FKhuyenmai = 0 // Giả sử không có khuyến mại, bạn có thể cập nhật giá trị này nếu cần
+                            FKhuyenmai = 0 
                         };
                         chiTietDonHangList.Add(chiTietDonHang);
                         totalAmount += quantities[i] * product.FGiaban;
                     }
 
-                    // Lưu danh sách chi tiết đơn hàng vào cơ sở dữ liệu
                     db.TblCtdonhangs.AddRange(chiTietDonHangList);
                     await db.SaveChangesAsync();
 
-                    // Cập nhật tổng tiền đơn hàng
                     donHangMoi.FTongtien = totalAmount;
                     await db.SaveChangesAsync();
 
-                    // Xóa các sản phẩm đã thanh toán khỏi giỏ hàng
                     var cartItemsToRemove = await db.TblCtgiohangs.Where(c => productIds.Contains(c.FkISanphamId) && c.FkIGiohangId == cart.PkIGiohangId).ToListAsync();
                     db.TblCtgiohangs.RemoveRange(cartItemsToRemove);
                     await db.SaveChangesAsync();
 
-                    // Commit transaction
                     await transaction.CommitAsync();
 
                     return RedirectToAction("OrderConfirmation", new { orderId = donHangMoi.PkIDonhangId });
                 }
                 catch (Exception ex)
                 {
-                    // Rollback transaction nếu có lỗi xảy ra
                     await transaction.RollbackAsync();
-                    // Ghi log lỗi (bạn có thể sử dụng framework logging như Serilog, NLog, v.v.)
                     Console.WriteLine(ex.Message);
                     return StatusCode(500, "Đã có lỗi xảy ra trong quá trình xử lý đơn hàng.");
                 }
@@ -366,7 +341,7 @@ namespace DATN_OnlineBookStore.Controllers
                         Price = ct.FGiaban ?? 0,
                         Total = (ct.ISoluong ?? 0) * (ct.FGiaban ?? 0),
                         PkICtdonhangId = ct.PkICtdonhangId,
-                        IsReviewed = ct.TblDanhgia.Any() // Kiểm tra sản phẩm đã được đánh giá hay chưa
+                        IsReviewed = ct.TblDanhgia.Any()
                     }).ToList()
                 })
                 .ToList();

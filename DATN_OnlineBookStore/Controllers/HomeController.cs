@@ -106,13 +106,11 @@ namespace DATN_OnlineBookStore.Controllers
                 return NotFound("Không tìm thấy sản phẩm");
             }
 
-            // Kiểm tra danh mục sản phẩm
             var danhmucId = product.FkITheloai.FkIDanhmuc.PkIDanhmucId;
             ViewBag.DanhmucId = danhmucId;
 
             if (danhmucId == 1)
             {
-                // Lấy thông tin chi tiết sách
                 var bookDetails = db.TblCtsaches
                     .AsNoTracking()
                     .FirstOrDefault(b => b.FkISanphamId == product.PkISanphamId);
@@ -128,7 +126,6 @@ namespace DATN_OnlineBookStore.Controllers
             }
             else if (danhmucId == 12)
             {
-                // Lấy thông tin chi tiết văn phòng phẩm
                 var officeSupplyDetails = db.TblCtvanphongphams
                     .AsNoTracking()
                     .FirstOrDefault(o => o.FkISanphamId == product.PkISanphamId);
@@ -142,9 +139,6 @@ namespace DATN_OnlineBookStore.Controllers
                     Console.WriteLine("Không tìm thấy chi tiết văn phòng phẩm cho sản phẩm này.");
                 }
             }
-
-            return View(product);
-        }
 
     }
 }
