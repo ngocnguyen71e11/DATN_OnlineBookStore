@@ -320,8 +320,6 @@ namespace DATN_OnlineBookStore.Controllers
             {
                 trangThai = tempTrangThai == 1;
             }
-
-            // Cập nhật thông tin sản phẩm
             product.FkITheloaiId = maTheLoai;
             product.STensanpham = string.IsNullOrWhiteSpace(form["STensanpham"]) ? product.STensanpham : form["STensanpham"];
             product.SMavach = string.IsNullOrWhiteSpace(form["SMavach"]) ? product.SMavach : form["SMavach"];
@@ -333,7 +331,7 @@ namespace DATN_OnlineBookStore.Controllers
             product.FGiavon = giaVon;
             product.IsTrangthai = trangThai;
 
-            if (maDanhMuc == 1) // Sách
+            if (maDanhMuc == 1) 
             {
                 var bookDetails = db.TblCtsaches.FirstOrDefault(b => b.FkISanphamId == id);
                 if (bookDetails != null)
@@ -349,7 +347,7 @@ namespace DATN_OnlineBookStore.Controllers
                     }
                 }
             }
-            else if (maDanhMuc == 2) // Văn phòng phẩm
+            else if (maDanhMuc == 2) 
             {
                 var officeDetails = db.TblCtvanphongphams.FirstOrDefault(o => o.FkISanphamId == id);
                 if (officeDetails != null)
@@ -372,6 +370,20 @@ namespace DATN_OnlineBookStore.Controllers
                 ModelState.AddModelError("DatabaseError", "Lỗi xảy ra khi cập nhật sản phẩm: " + ex.Message);
                 return View(product);
             }
+        }
+
+        public IActionResult DeleteProduct(int id)
+        {
+            var productItem = db.TblSanphams.FirstOrDefault(c => c.PkISanphamId == id);
+            if (productItem != null)
+            {
+                var relatedBookDetails = db.TblCtsaches.Where(c => c.FkISanphamId == id).ToList();
+                db.TblCtsaches.RemoveRange(relatedBookDetails);
+                db.TblSanphams.Remove(productItem);
+                db.SaveChanges();
+                return View(ListProduct);
+            }
+            return Json(new { success = false, message = "." });
         }
     }
 }

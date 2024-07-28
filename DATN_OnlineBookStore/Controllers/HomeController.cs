@@ -49,33 +49,33 @@ namespace DATN_OnlineBookStore.Controllers
             ViewBag.ProductRatings = productRatings;
 
             var pagedList = new PagedList<TblSanpham>(lstSanpham, pageNumber, pageSize);
-            int userId = HttpContext.Session.GetInt32("AccountId") ?? 1;
-            var recommendations = await GetRecommendations(userId, 5);
-            ViewBag.Recommendations = recommendations;
+            //int userId = HttpContext.Session.GetInt32("AccountId") ?? 1;
+            //var recommendations = await GetRecommendations(userId, 5);
+            //ViewBag.Recommendations = recommendations;
 
             return View(pagedList);
         }
 
-        private async Task<List<TblSanpham>> GetRecommendations(int userId, int nRecommendations)
-        {
-            var client = _clientFactory.CreateClient();
-            var requestUrl = $"http://192.168.0.101:5000/api/recommendation/user/{userId}/recommendations?n={nRecommendations}";
-            var response = await client.GetAsync(requestUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                var responseString = await response.Content.ReadAsStringAsync();
-                var recommendations = JsonConvert.DeserializeObject<List<Recommendation>>(responseString);
-                var productIds = recommendations.Select(r => r.ItemId).ToList();
-                return await db.TblSanphams.Where(p => productIds.Contains(p.PkISanphamId)).ToListAsync();
-            }
-            return new List<TblSanpham>();
-        }
+        //private async Task<List<TblSanpham>> GetRecommendations(int userId, int nRecommendations)
+        //{
+        //    var client = _clientFactory.CreateClient();
+        //    var requestUrl = $"http://192.168.0.101:5000/api/recommendation/user/{userId}/recommendations?n={nRecommendations}";
+        //    var response = await client.GetAsync(requestUrl);
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        var responseString = await response.Content.ReadAsStringAsync();
+        //        var recommendations = JsonConvert.DeserializeObject<List<Recommendation>>(responseString);
+        //        var productIds = recommendations.Select(r => r.ItemId).ToList();
+        //        return await db.TblSanphams.Where(p => productIds.Contains(p.PkISanphamId)).ToListAsync();
+        //    }
+        //    return new List<TblSanpham>();
+        //}
 
-        private class Recommendation
-        {
-            public int ItemId { get; set; }
-            public float PredictedRating { get; set; }
-        }
+        //private class Recommendation
+        //{
+        //    public int ItemId { get; set; }
+        //    public float PredictedRating { get; set; }
+        //}
         [HttpGet("Search")]
         public IActionResult Search(string query, int? page)
         {
@@ -142,7 +142,7 @@ namespace DATN_OnlineBookStore.Controllers
                     Console.WriteLine("Không tìm thấy chi tiết sách cho sản phẩm này.");
                 }
             }
-            else if (danhmucId == 12)
+            else if (danhmucId == 2)
             {
                 var officeSupplyDetails = db.TblCtvanphongphams
                     .AsNoTracking()
@@ -159,6 +159,47 @@ namespace DATN_OnlineBookStore.Controllers
             }
             return View(product);
         }
+        public IActionResult GetProductReviews(int productId)
+        {
+            try
+            {
+                // Fetch the product details
+                var product = db.TblSanphams.FirstOrDefault(p => p.PkISanphamId == productId);
+                if (product == null)
+                {
+                    return Json(new { success = false, message = "Product not found." });
+                }
 
+                // Fetch the related order details for the product
+                var orderDetails = db.TblCtdonhangs.Where(od => od.FkISanphamId == productId).ToList();
+
+                // Fetch the related reviews for the product
+                var reviews = db.TblDanhgia
+                    .Where(r => orderDetails.Select(od => od.PkICtdonhangId).Contains(r.FkICtdonhangId))
+                    .Select(r => new ReviewViewModel
+                    {
+                        ReviewId = r.PkIDanhgiaId,
+                        Rating = r.FXephang,
+                        Description = r.SMota,
+                        CreatedAt = r.DThoigiantao
+                    })
+                    .ToList();
+
+                // Create the view model
+                var viewModel = new ProductReviewViewModel
+                {
+                    ProductId = product.PkISanphamId,
+                    ProductName = product.STensanpham,
+                    Reviews = reviews
+                };
+
+                return Json(new { success = true, data = viewModel });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details (ex) here if needed for debugging
+                return Json(new { success = false, message = "An error occurred while fetching product reviews." });
+            }
+        }
     }
 }
