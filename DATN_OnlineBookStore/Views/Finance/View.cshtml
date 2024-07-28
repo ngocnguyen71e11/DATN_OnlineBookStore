@@ -1,0 +1,67 @@
+﻿@model IEnumerable<DATN_OnlineBookStore.Models.BillModel>
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>Báo cáo doanh thu</h1>
+<form asp-action="Index" >
+    <label for="items">Chọn thời gian :</label>
+    <select id="items" name="items">
+        <option value="1">Hôm nay</option>
+        <option value="7">7 Ngày Trước</option>
+        <option value="9">1 Tháng Trước</option>
+    </select>
+    <button type="submit">Lọc</button>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PkIDonhangId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FkSKhid)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STenKH)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DThoigiancapnhat)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTongtien)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FSLsanpham)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.PkIDonhangId)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.FkSKhid)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.STenKH)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.DThoigiancapnhat)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.FTongtien)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FTongtien)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.FSLsanpham)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

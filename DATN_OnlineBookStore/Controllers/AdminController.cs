@@ -45,7 +45,7 @@ namespace DATN_OnlineBookStore.Controllers
                 db.TblTaikhoans.Add(taikhoan);
                 db.SaveChanges();
             }
-            return RedirectToAction("Create");
+            return RedirectToAction("Index");
         }
 
         // POST: AdminController/Create
@@ -66,26 +66,41 @@ namespace DATN_OnlineBookStore.Controllers
         // GET: AdminController/Edit/5
         public ActionResult EditTaikhoan(int id)
         {
+            List<string> lstQuyen = db.TblPhanquyens.Select(p => p.STenquyen).ToList();
+            int i = 0;
+            List<SelectListItem> selectListItems = lstQuyen
+           .Select(item => new SelectListItem
+           {
+               Text = item,
+               Value = (i++).ToString(),
+           }).ToList();
+            TblTaikhoan itemEdit= db.TblTaikhoans.Where(p => p.PkITaikhoanId == id).FirstOrDefault();
+            ViewBag.FkIQuyenId = selectListItems;
             if (id != 0)
             {
 
             }
-            return View();
+            return View("EditTaikhoan",itemEdit);
         }
 
         // POST: AdminController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit( TblTaikhoan collection)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            //TblTaikhoan AccountUpdate= new TblTaikhoan();
+            //AccountUpdate = (TblTaikhoan)collection;
+            db.Update(collection);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+            //try
+            //{
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //catch
+            //{
+            //    return View();
+            //}
         }
 
         // GET: AdminController/Delete/5
