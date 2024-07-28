@@ -31,7 +31,7 @@
             @if (Model.HasPreviousPage)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Search", new { query = ViewBag.SearchQuery, page = Model.PageNumber - 1 })" aria-label="Previous">
+                    <a class="page-link" href="@Url.Action("searchProducts", new { query = ViewBag.SearchQuery, page = Model.PageNumber - 1 })" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -39,13 +39,13 @@
             @for (var i = 1; i <= Model.PageCount; i++)
             {
                 <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Search", new { query = ViewBag.SearchQuery, page = i })">@i</a>
+                    <a class="page-link" href="@Url.Action("searchProducts", new { query = ViewBag.SearchQuery, page = i })">@i</a>
                 </li>
             }
             @if (Model.HasNextPage)
             {
                 <li class="page-item">
-                    <a class="page-link" href="@Url.Action("Search", new { query = ViewBag.SearchQuery, page = Model.PageNumber + 1 })" aria-label="Next">
+                    <a class="page-link" href="@Url.Action("searchProducts", new { query = ViewBag.SearchQuery, page = Model.PageNumber + 1 })" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -55,7 +55,7 @@
 }
 else
 {
-    <p>No products found.</p>
+    <p>Không có sản phẩm phù hợp với từ khóa </p>
 }
 <style>
     body {

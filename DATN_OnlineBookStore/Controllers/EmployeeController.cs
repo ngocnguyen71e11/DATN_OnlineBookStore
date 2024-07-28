@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DATN_OnlineBookStore.Controllers
 {
-    public class StaffController : Controller
+    public class EmployeeController : Controller
     {
         DbOnlineBookStoreContext db = new DbOnlineBookStoreContext();
         // GET: StaffController

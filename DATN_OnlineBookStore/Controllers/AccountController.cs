@@ -1,10 +1,11 @@
 ﻿using DATN_OnlineBookStore.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace DATN_OnlineBookStore.Controllers
 {
-    public class AccessController : Controller
+    public class AccountController : Controller
     {
         DbOnlineBookStoreContext db = new DbOnlineBookStoreContext();
         public async Task<IActionResult> Register(string email, string password, string firstName, string lastName, string? phone, DateTime? birthDate, string gender)
@@ -53,7 +54,7 @@ namespace DATN_OnlineBookStore.Controllers
                 db.TblKhachhangs.Add(newCustomer);
                 await db.SaveChangesAsync();
 
-                return RedirectToAction("Login", "Access");
+                return RedirectToAction("Login", "Account");
             }
 
             return View(); // Trả lại trang đăng ký nếu kiểm tra hợp lệ thất bại
@@ -87,12 +88,12 @@ namespace DATN_OnlineBookStore.Controllers
                 if(u.FkIQuyenId==1)
                 {
                     HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
-                    return RedirectToAction("Order", "Admin");
+                    return RedirectToAction("viewOrderList", "Order");
                 }
                 else if(u.FkIQuyenId==3)
                 {
                     HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("viewProduct", "Product");
                 }
                 HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
                 return RedirectToAction("Index", "Home");
@@ -146,13 +147,108 @@ namespace DATN_OnlineBookStore.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login", "Access");
         }
+        public async Task<IActionResult> updateInfo()
+        {
+            var taikhoanId = HttpContext.Session.GetInt32("AccountId");
+            if (taikhoanId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
+            var customer = await db.TblKhachhangs
+                .FirstOrDefaultAsync(kh => kh.FkITaikhoanId == taikhoanId.Value);
+            return View(customer);
+        }
+        [HttpPost]
+        public async Task<IActionResult> updateInfo(TblKhachhang model)
+        {
+            var taikhoanId = HttpContext.Session.GetInt32("AccountId");
+            if (taikhoanId == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            model.FkITaikhoanId = taikhoanId.Value;
 
+            if (string.IsNullOrEmpty(model.PkSKhid))
+            {
+                model.PkSKhid = Guid.NewGuid().ToString();
+                db.TblKhachhangs.Add(model);
+            }
+            else
+            {
+                var existingCustomer = await db.TblKhachhangs
+                    .FirstOrDefaultAsync(c => c.PkSKhid == model.PkSKhid);
+
+                if (existingCustomer != null)
+                {
+                    existingCustomer.SHo = model.SHo;
+                    existingCustomer.STen = model.STen;
+                    existingCustomer.SSdt = model.SSdt;
+                    existingCustomer.DNgaysinh = model.DNgaysinh;
+                    existingCustomer.SNghenghiep = model.SNghenghiep;
+
+                    db.TblKhachhangs.Update(existingCustomer);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Không tìm thấy khách hàng với ID đã cho.");
+                    return View(model);
+                }
+            }
+            await db.SaveChangesAsync();
+            return RedirectToAction("updateInfo");
+        }
+        public ActionResult Index()
+        {
+            List<TblTaikhoan> tblTaikhoans = db.TblTaikhoans.ToList();
+            return View(tblTaikhoans);
+        }
+        public ActionResult addEmployeeAccount()
+        {
+            List<string> lstQuyen = db.TblPhanquyens.Select(p => p.STenquyen).ToList();
+            int i = 0;
+            List<SelectListItem> selectListItems = lstQuyen
+           .Select(item => new SelectListItem
+           {
+               Text = item,
+               Value = (i++).ToString(),
+           }).ToList();
+            ViewBag.FkIQuyenId = selectListItems;
+            return View("Create");
+        }
+        [HttpPost]
+        public ActionResult addEmployeeAccount(TblTaikhoan taikhoan)
+        {
+            if (taikhoan.PkITaikhoanId != null)
+            {
+                db.TblTaikhoans.Add(taikhoan);
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+        public ActionResult updateEmployeeInfo(int id)
+        {
+            List<string> lstQuyen = db.TblPhanquyens.Select(p => p.STenquyen).ToList();
+            int i = 0;
+            List<SelectListItem> selectListItems = lstQuyen
+           .Select(item => new SelectListItem
+           {
+               Text = item,
+               Value = (i++).ToString(),
+           }).ToList();
+            TblTaikhoan itemEdit = db.TblTaikhoans.Where(p => p.PkITaikhoanId == id).FirstOrDefault();
+            ViewBag.FkIQuyenId = selectListItems;
+            if (id != 0)
+            {
+
+            }
+            return View("updateEmployeeInfo", itemEdit);
+        }
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             HttpContext.Session.Remove("sEmail");
-            return RedirectToAction("Login", "Access");
+            return RedirectToAction("Login", "Account");
         }
     }
 }

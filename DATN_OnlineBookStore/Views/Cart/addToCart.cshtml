@@ -60,7 +60,7 @@
 <body>
     <div class="cart-container">
         <h2>Giỏ hàng của bạn</h2>
-        <form id="cartForm" method="post" action="@Url.Action("Checkout", "GioHang")">
+        <form id="cartForm" method="post" action="@Url.Action("checkoutCart", "Cart")">
             <table>
                 <tr>
                     <th>Chọn</th>
@@ -104,12 +104,19 @@
 
         function updateCartItem(cartItemId, quantity) {
             $.ajax({
-                url: '@Url.Action("UpdateCartItem", "GioHang")',
+                url: '@Url.Action("UpdateCartItem", "Cart")',
                 type: 'POST',
                 data: { cartItemId: cartItemId, newQuantity: quantity },
                 success: function (response) {
                     if (response.success) {
-                        location.reload();
+                        var row = $('input[value="' + cartItemId + '"]').closest('tr');
+                        row.find('input').val(quantity); // Cập nhật số lượng trong ô input
+                        var pricePerItem = parseFloat(row.find('td:eq(2)').text()); // Lấy giá mỗi sản phẩm
+                        var totalPriceCell = row.find('td.total-price');
+                        var totalPrice = (quantity * pricePerItem).toFixed(2);
+                        totalPriceCell.text(totalPrice); // Cập nhật thành tiền
+
+                        calculateTotalPrice(); // Tính lại tổng tiền của giỏ hàng
                     } else {
                         alert(response.message);
                     }
@@ -123,11 +130,17 @@
         function removeFromCart(cartItemId) {
             if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?')) {
                 $.ajax({
-                    url: '@Url.Action("RemoveFromCart", "GioHang")',
+                    url: '@Url.Action("RemoveFromCart", "Cart")',
                     type: 'POST',
                     data: { cartItemId: cartItemId },
                     success: function (response) {
-                        location.reload();
+                        if (response.success) {
+                            // Xóa sản phẩm khỏi giao diện người dùng
+                            $('tr[data-cart-item-id="' + cartItemId + '"]').remove();
+                            calculateTotalPrice(); // Tính lại tổng tiền của giỏ hàng nếu cần
+                        } else {
+                            alert(response.message); // Hiển thị thông báo lỗi từ server
+                        }
                     },
                     error: function () {
                         alert('Có lỗi xảy ra, vui lòng thử lại.');
@@ -137,7 +150,7 @@
         }
 
         $(document).ready(function () {
-            calculateTotalPrice(); // Tính tổng tiền khi trang được tải
+            calculateTotalPrice(); 
         });
     </script>
 </body>

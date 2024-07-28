@@ -1,0 +1,116 @@
+﻿@model DATN_OnlineBookStore.Models.TblDonhang
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Chi Tiết Đơn Hàng";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chi Tiết Đơn Hàng</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#confirmOrderButton').on('click', function (e) {
+                e.preventDefault(); // Prevent the default submit behavior
+
+                var orderID = $(this).data('ordid');
+
+                $.ajax({
+                    url: '@Url.Action("confirmOrderStatus", "Order")',
+                    type: 'POST',
+                    data: { orderID: orderID },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#orderStatus').text(response.status);
+                            $('#confirmOrderButton').hide(); // Hide the button after updating the status
+                        } else {
+                            alert(response.status); // Show error message
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred: " + error);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Chi Tiết Đơn Hàng</h1>
+
+    @if (Model != null)
+    {
+        <!-- Display order information -->
+        <p><strong>Ngày mua:</strong> @Model.DThoigianmua?.ToString("dd-MM-yyyy")</p>
+        <p><strong>Tổng tiền:</strong> @Model.FTongtien?.ToString("N0") VND</p>
+        <p>
+            <strong>Trạng thái:</strong>
+            <span id="orderStatus">
+                @if (Model.FkITrangthai == 1)
+                {
+                    @:Đang chờ
+                }
+                else
+                {
+                    @:Đã xử lý
+                }
+            </span>
+        </p>
+
+        @if (Model.FkITrangthai == 1)
+        {
+            <button id="confirmOrderButton" data-ordid="@Model.PkIDonhangId" class="btn btn-primary">Xác nhận đơn</button>
+        }
+
+        <!-- Display address information -->
+        <!-- Display address information -->
+        @if (Model.FkSKh != null && Model.FkSKh.TblDiachiKhs.Any())
+        {
+            <h4>Địa chỉ giao hàng</h4>
+            var displayedAddresses = new HashSet<int>();
+            @foreach (var diachi in Model.FkSKh.TblDiachiKhs)
+            {
+                if (!displayedAddresses.Contains(diachi.PkSDiachiKhid))
+                {
+                    displayedAddresses.Add(diachi.PkSDiachiKhid);
+                    <p><strong>Họ và tên:</strong> @diachi.SHo @diachi.STen</p>
+                    <p><strong>Số điện thoại:</strong> @diachi.SSdt</p>
+                    <p><strong>Địa chỉ cụ thể:</strong> @diachi.SDiachicuthe</p>
+                    <p><strong>Địa chỉ:</strong> @diachi.FkIXa?.STenxa, @diachi.FkIHuyen?.STenhuyen, @diachi.FkITinh?.STentinh</p>
+                }
+            }
+        }
+
+        <!-- Display product details within the order -->
+        <h2>Chi Tiết Sản Phẩm</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá bán</th>
+                    <th>Khuyến mại:</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.TblCtdonhangs)
+                {
+                    <tr>
+                        <td>@item.FkISanpham?.STensanpham</td>
+                        <td>@item.ISoluong</td>
+                        <td>@item.FGiaban?.ToString("N0") VND</td>
+                        <td>@item.FKhuyenmai?.ToString("N0") VND</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+    else
+    {
+        <p>Không có thông tin đơn hàng.</p>
+    }
+</body>
+</html>

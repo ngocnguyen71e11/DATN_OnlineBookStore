@@ -135,7 +135,7 @@
     <div class="product-images">
         <img src="@Model.SHinhanh" alt="@Model.STensanpham" />
         <div class="button-group">
-            <form method="post" action="@Url.Action("AddToCart", "GioHang")">
+            <form method="post" action="@Url.Action("addToCart", "Cart")">
                 <input type="hidden" name="productId" value="@Model.PkISanphamId" />
                 <input type="number" name="quantity" value="1" min="1" />
                 <button type="submit" class="btn btn-primary">Thêm vào giỏ</button>

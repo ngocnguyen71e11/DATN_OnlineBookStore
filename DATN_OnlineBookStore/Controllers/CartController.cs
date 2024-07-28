@@ -1,24 +1,18 @@
 ﻿using DATN_OnlineBookStore.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace DATN_OnlineBookStore.Controllers
 {
-    public class GioHangController : Controller
+    public class CartController : Controller
     {
         DbOnlineBookStoreContext db = new DbOnlineBookStoreContext();
-
-        public IActionResult AddToCart(int productId, int quantity = 1)
+        public IActionResult addToCart(int productId, int quantity = 1)
         {
             var taikhoanId = HttpContext.Session.GetInt32("AccountId");
             if (taikhoanId == null)
             {
-                return RedirectToAction("Login", "Access");
+                return RedirectToAction("Login", "Account");
             }
 
             var user = db.TblKhachhangs.FirstOrDefault(kh => kh.FkITaikhoanId == taikhoanId.Value);
@@ -41,6 +35,15 @@ namespace DATN_OnlineBookStore.Controllers
                 return NotFound("Sản phẩm không tồn tại.");
             }
 
+            // Check inventory
+            if (product.ITonkho < quantity)
+            {
+                // If inventory is insufficient, return an error message
+                ViewBag.ErrorMessage = "Số lượng sản phẩm không đủ trong kho. Vui lòng chọn số lượng khác.";
+                // Return to the same page or a page where the user can input a new quantity
+                return RedirectToAction("ViewProductDetails", "Product", new { id = productId }); ; // Adjust the view name as needed
+            }
+
             var cartItem = db.TblCtgiohangs.FirstOrDefault(c => c.FkISanphamId == productId && c.FkIGiohangId == cart.PkIGiohangId);
             if (cartItem == null)
             {
@@ -54,37 +57,80 @@ namespace DATN_OnlineBookStore.Controllers
             }
             else
             {
+                if (product.ITonkho < cartItem.ISoluong + quantity)
+                {
+                    ViewBag.ErrorMessage = "Số lượng sản phẩm không đủ trong kho. Vui lòng chọn số lượng khác.";
+                    return RedirectToAction("ViewProductDetails", "Product", new { id = productId }); ; 
+                }
+
                 cartItem.ISoluong += quantity;
             }
 
             db.SaveChanges();
+
             var cartProducts = db.TblCtgiohangs
                 .Where(c => c.FkIGiohangId == cart.PkIGiohangId)
                 .Select(c => Tuple.Create(
-                    c.FkISanpham.STensanpham,       // Tên sản phẩm
-                    (int?)c.ISoluong,               // Số lượng (có thể null)
-                    c.FkISanpham.FGiaban,           // Giá bán
+                    c.FkISanpham.STensanpham,       
+                    (int?)c.ISoluong,               
+                    c.FkISanpham.FGiaban,           
                     (double?)(c.ISoluong * c.FkISanpham.FGiaban),  // Tổng giá (có thể null)
                     c.PkICtgiohangId                // ID của sản phẩm trong giỏ hàng
                 ))
                 .ToList();
 
-            return View("Cart", cartProducts);
+            // Truyền dữ liệu đến view
+            return View(cartProducts);
         }
 
-        [HttpPost]
-        public IActionResult UpdateCartItem(int cartItemId, int newQuantity)
+
+        public IActionResult ViewCart()
         {
             var taikhoanId = HttpContext.Session.GetInt32("AccountId");
             if (taikhoanId == null)
             {
-                return RedirectToAction("Login", "Access");
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = db.TblKhachhangs.FirstOrDefault(kh => kh.FkITaikhoanId == taikhoanId.Value);
+            if (user == null)
+            {
+                return NotFound("Không tìm thấy thông tin khách hàng.");
+            }
+
+            var cart = db.TblGiohangs.FirstOrDefault(g => g.FkIKhid == user.PkSKhid);
+            if (cart == null)
+            {
+                return View(new List<Tuple<string, int?, double, double?, int>>());
+            }
+
+            var cartProducts = db.TblCtgiohangs
+                .Where(c => c.FkIGiohangId == cart.PkIGiohangId)
+                .Select(c => Tuple.Create(
+                    c.FkISanpham.STensanpham,
+                    (int?)c.ISoluong,
+                    c.FkISanpham.FGiaban,
+                    (double?)(c.ISoluong * c.FkISanpham.FGiaban),
+                    c.PkICtgiohangId
+                ))
+                .ToList();
+
+            return View(cartProducts);
+        }
+
+        [HttpPost]
+        public IActionResult updateCartItem(int cartItemId, int newQuantity)
+        {
+            var taikhoanId = HttpContext.Session.GetInt32("AccountId");
+            if (taikhoanId == null)
+            {
+                return RedirectToAction("Login", "Account");
             }
 
             var cartItem = db.TblCtgiohangs.FirstOrDefault(c => c.PkICtgiohangId == cartItemId);
             if (cartItem != null)
             {
-                cartItem.ISoluong = newQuantity; // Đảm bảo cập nhật số lượng chính xác
+                cartItem.ISoluong = newQuantity;
                 db.SaveChanges();
                 return Json(new { success = true, updatedQuantity = newQuantity });
             }
@@ -92,31 +138,33 @@ namespace DATN_OnlineBookStore.Controllers
             return Json(new { success = false, message = "Không tìm thấy sản phẩm trong giỏ hàng." });
         }
         [HttpPost]
-        public IActionResult RemoveFromCart(int cartItemId)
+        public IActionResult removeFromCart(int cartItemId)
         {
             var taikhoanId = HttpContext.Session.GetInt32("AccountId");
             if (taikhoanId == null)
             {
-                return RedirectToAction("Login", "Access");
+                return Json(new { success = false, message = "Bạn cần đăng nhập để thực hiện hành động này." });
             }
 
             var cartItem = db.TblCtgiohangs.FirstOrDefault(c => c.PkICtgiohangId == cartItemId);
-            if (cartItem != null)
+            if (cartItem == null)
             {
-                db.TblCtgiohangs.Remove(cartItem);
-                db.SaveChanges();
-                return Json(new { success = true });
+                return Json(new { success = false, message = "Sản phẩm không tồn tại trong giỏ hàng." });
             }
 
-            return Json(new { success = false, message = "Không tìm thấy sản phẩm trong giỏ hàng." });
+            db.TblCtgiohangs.Remove(cartItem);
+            db.SaveChanges();
+
+            return Json(new { success = true });
         }
+
         [HttpPost]
-        public IActionResult Checkout(List<int> selectedItems)
+        public IActionResult checkoutCart(List<int> selectedItems)
         {
             var taikhoanId = HttpContext.Session.GetInt32("AccountId");
             if (taikhoanId == null)
             {
-                return RedirectToAction("Login", "Access");
+                return RedirectToAction("Login", "Account");
             }
 
             var user = db.TblKhachhangs.FirstOrDefault(kh => kh.FkITaikhoanId == taikhoanId.Value);
@@ -139,7 +187,7 @@ namespace DATN_OnlineBookStore.Controllers
                     c.ISoluong,
                     c.FkISanpham.FGiaban,
                     ThanhTien = c.ISoluong * c.FkISanpham.FGiaban,
-                    c.FkISanphamId 
+                    c.FkISanphamId
                 })
                 .ToList();
 
@@ -153,42 +201,8 @@ namespace DATN_OnlineBookStore.Controllers
 
             ViewBag.Tinhs = db.TblTinhs.ToList();
 
-            return View("payment", model);
-        }
-
-        public IActionResult ViewCart()
-        {
-            var taikhoanId = HttpContext.Session.GetInt32("AccountId");
-            if (taikhoanId == null)
-            {
-                return RedirectToAction("Login", "Access");
-            }
-
-            var user = db.TblKhachhangs.FirstOrDefault(kh => kh.FkITaikhoanId == taikhoanId.Value);
-            if (user == null)
-            {
-                return NotFound("Không tìm thấy thông tin khách hàng.");
-            }
-
-            var cart = db.TblGiohangs.FirstOrDefault(g => g.FkIKhid == user.PkSKhid);
-            if (cart == null)
-            {
-                return View("Cart", new List<Tuple<string, int?, double, double?, int>>());
-            }
-
-            var cartProducts = db.TblCtgiohangs
-                .Where(c => c.FkIGiohangId == cart.PkIGiohangId)
-                .Select(c => Tuple.Create(
-                    c.FkISanpham.STensanpham,      
-                    c.ISoluong,                     
-                    (double?)(c.ISoluong * c.FkISanpham.FGiaban),  
-                    c.PkICtgiohangId                
-                ))
-                .ToList();
-
-            return View("Cart", cartProducts);
-        }
-
+            return View("checkoutCart", model);
+        }       
         [HttpGet]
         public IActionResult GetTinhs()
         {
@@ -209,7 +223,7 @@ namespace DATN_OnlineBookStore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessCheckout(IFormCollection form)
+        public async Task<IActionResult> placeOrder(IFormCollection form)
         {
             if (!int.TryParse(form["ward"], out int ward))
             {
@@ -229,7 +243,7 @@ namespace DATN_OnlineBookStore.Controllers
             var taikhoanId = HttpContext.Session.GetInt32("AccountId");
             if (taikhoanId == null)
             {
-                return RedirectToAction("Login", "Access");
+                return RedirectToAction("Login", "Account");
             }
 
             if (productIds.Length == 0 || quantities.Length == 0)
@@ -282,7 +296,7 @@ namespace DATN_OnlineBookStore.Controllers
                         FkSDiachiKhid = diaChi.PkSDiachiKhid,
                         FkITrangthai = 1,
                         DThoigianmua = DateTime.Now,
-                        FTongtien = 0, 
+                        FTongtien = 0,
                     };
                     db.TblDonhangs.Add(donHangMoi);
                     await db.SaveChangesAsync();
@@ -304,10 +318,14 @@ namespace DATN_OnlineBookStore.Controllers
                             FkISanphamId = product.PkISanphamId,
                             ISoluong = quantities[i],
                             FGiaban = product.FGiaban,
-                            FKhuyenmai = 0 
+                            FKhuyenmai = 0
                         };
                         chiTietDonHangList.Add(chiTietDonHang);
                         totalAmount += quantities[i] * product.FGiaban;
+
+                        // Cập nhật tồn kho
+                        product.ITonkho -= quantities[i];
+                        db.TblSanphams.Update(product);
                     }
 
                     db.TblCtdonhangs.AddRange(chiTietDonHangList);
@@ -322,7 +340,7 @@ namespace DATN_OnlineBookStore.Controllers
 
                     await transaction.CommitAsync();
 
-                    return RedirectToAction("OrderConfirmation", new { orderId = donHangMoi.PkIDonhangId });
+                    return RedirectToAction("orderConfirmation", new { orderId = donHangMoi.PkIDonhangId });
                 }
                 catch (Exception ex)
                 {
@@ -333,41 +351,40 @@ namespace DATN_OnlineBookStore.Controllers
             }
         }
 
-        public IActionResult OrderConfirmation()
-        {
-            var taikhoanId = HttpContext.Session.GetInt32("AccountId");
-            if (taikhoanId == null)
+        public IActionResult orderConfirmation()
             {
-                return RedirectToAction("Login", "Access");
-            }
-
-            var user = db.TblKhachhangs.FirstOrDefault(kh => kh.FkITaikhoanId == taikhoanId.Value);
-            if (user == null)
-            {
-                return NotFound("Không tìm thấy thông tin khách hàng.");
-            }
-
-            var orders = db.TblDonhangs
-                .Where(dh => dh.FkSKhid == user.PkSKhid)
-                .Select(dh => new OrderViewModel
+                var taikhoanId = HttpContext.Session.GetInt32("AccountId");
+                if (taikhoanId == null)
                 {
-                    OrderId = dh.PkIDonhangId,
-                    OrderDate = dh.DThoigianmua ?? DateTime.Now,
-                    TotalPrice = dh.FTongtien ?? 0,
-                    Items = dh.TblCtdonhangs.Select(ct => new OrderItemViewModel
+                    return RedirectToAction("Login", "Account");
+                }
+
+                var user = db.TblKhachhangs.FirstOrDefault(kh => kh.FkITaikhoanId == taikhoanId.Value);
+                if (user == null)
+                {
+                    return NotFound("Không tìm thấy thông tin khách hàng.");
+                }
+
+                var orders = db.TblDonhangs
+                    .Where(dh => dh.FkSKhid == user.PkSKhid)
+                    .Select(dh => new OrderViewModel
                     {
-                        ProductName = ct.FkISanpham.STensanpham,
-                        Quantity = ct.ISoluong ?? 0,
-                        Price = ct.FGiaban ?? 0,
-                        Total = (ct.ISoluong ?? 0) * (ct.FGiaban ?? 0),
-                        PkICtdonhangId = ct.PkICtdonhangId,
-                        IsReviewed = ct.TblDanhgia.Any()
-                    }).ToList()
-                })
-                .ToList();
+                        OrderId = dh.PkIDonhangId,
+                        OrderDate = dh.DThoigianmua ?? DateTime.Now,
+                        TotalPrice = dh.FTongtien ?? 0,
+                        Items = dh.TblCtdonhangs.Select(ct => new OrderItemViewModel
+                        {
+                            ProductName = ct.FkISanpham.STensanpham,
+                            Quantity = ct.ISoluong ?? 0,
+                            Price = ct.FGiaban ?? 0,
+                            Total = (ct.ISoluong ?? 0) * (ct.FGiaban ?? 0),
+                            PkICtdonhangId = ct.PkICtdonhangId,
+                            IsReviewed = ct.TblDanhgia.Any()
+                        }).ToList()
+                    })
+                    .ToList();
 
-            return View(orders);
-        }
-
+                return View(orders);
+            }
     }
 }

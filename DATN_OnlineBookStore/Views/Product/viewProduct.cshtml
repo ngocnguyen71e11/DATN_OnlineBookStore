@@ -8,7 +8,7 @@
     @foreach (var item in Model)
     {
         <div class="product-card">
-            <a href="@Url.Action("ProductDetails", "Home", new { id = item.PkISanphamId })">
+            <a href="@Url.Action("viewProductDetails", "Product", new { id = item.PkISanphamId })">
                 <div class="product-image">
                     <img src="@item.SHinhanh" alt="@item.STensanpham" />
                 </div>
@@ -29,7 +29,7 @@
             </a>
         </div>
     }
-    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+    @Html.PagedListPager(Model, page => Url.Action("viewProduct", new { page }))
 </div>
 
 @if (ViewBag.Recommendations != null && ViewBag.Recommendations.Count > 0)
@@ -39,7 +39,7 @@
         @foreach (var item in ViewBag.Recommendations)
         {
             <div class="product-card">
-                <a href="@Url.Action("ProductDetails", "Home", new { id = item.PkISanphamId })">
+                <a href="@Url.Action("viewProductDetails", "Product", new { id = item.PkISanphamId })">
                     <div class="product-image">
                         <img src="@item.SHinhanh" alt="@item.STensanpham" />
                     </div>

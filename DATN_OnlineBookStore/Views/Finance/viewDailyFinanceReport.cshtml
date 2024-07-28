@@ -5,7 +5,7 @@
 }
 
 <h1>Báo cáo doanh thu</h1>
-<form asp-action="Index" >
+<form asp-action="Index">
     <label for="items">Chọn thời gian :</label>
     <select id="items" name="items">
         <option value="1">Hôm nay</option>
@@ -38,30 +38,31 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
                     @Html.DisplayFor(modelItem => item.PkIDonhangId)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.FkSKhid)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.STenKH)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.DThoigiancapnhat)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.FTongtien)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FTongtien)
-            </td>
-            <td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FTongtien)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.FSLsanpham)
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

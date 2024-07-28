@@ -25,7 +25,7 @@ app.UseSession(); // Session middleware
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Staff}/{action=Index}/{id?}");
+    pattern: "{controller=Product}/{action=viewProduct}/{id?}");
 
 app.Run();
 

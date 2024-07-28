@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Edit Product";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     var categories = ViewBag.Categories as List<DATN_OnlineBookStore.Models.TblTheloai>;
     var bookDetails = ViewBag.BookDetails as DATN_OnlineBookStore.Models.TblCtsach;
     var officeDetails = ViewBag.OfficeDetails as DATN_OnlineBookStore.Models.TblCtvanphongpham;

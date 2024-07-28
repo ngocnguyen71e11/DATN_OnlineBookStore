@@ -60,12 +60,12 @@
     <div class="sidebar">
         <h1>Menu</h1>
         <ul>
-            <li><a href="@Url.Action("Order", "Admin")">Quản lý đơn hàng</a></li>
-            <li><a href="@Url.Action("ListProduct", "Admin")">Quản lý sản phẩm</a></li>
-            <li><a href="/finance-management">Quản lý tài chính</a></li>
+            <li><a href="@Url.Action("viewOrderList", "Order")">Quản lý đơn hàng</a></li>
+            <li><a href="@Url.Action("viewProductList", "Product")">Quản lý sản phẩm</a></li>
+            <li><a href="@Url.Action("Index", "Finance")">Quản lý tài chính</a></li>
             <li><a href="@Url.Action("ListSupplier", "Admin")">Quản lý đối tác</a></li>
             <li><a href="@Url.Action("Index", "Admin")">Quản lý tài khoản</a></li>
-            <li><a href="@Url.Action("Logout", "Access")">Đăng xuất</a></li>
+            <li><a href="@Url.Action("Logout", "Account")">Đăng xuất</a></li>
         </ul>
     </div>
     <div class="main-content">

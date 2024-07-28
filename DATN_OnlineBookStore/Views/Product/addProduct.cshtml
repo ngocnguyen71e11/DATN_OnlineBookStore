@@ -1,0 +1,243 @@
+﻿@{
+    ViewData["Title"] = "NewProduct";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h4>TblSanpham</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="checkoutForm" method="post" action="@Url.Action("addProduct", "Product")">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label for="danhm">Danh mục</label>
+                <select id="danhm" name="danhm" required onchange="toggleFields()">
+                    <option value="">Chọn Danh mục</option>
+                    <option value="1">Sách</option>
+                    <option value="2">Văn phòng phẩm</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="cate">Thể loại</label>
+                <select id="cate" name="cate" required>
+                    <option value="">Chọn thể loại</option>
+                    @if (ViewBag.category != null)
+                    {
+                        foreach (var tinh in ViewBag.category)
+                        {
+                            <option value="@tinh.PkITheloaiId">@tinh.STentheloai</option>
+                        }
+                    }
+                    else
+                    {
+                        <option value="">Không có danh mục</option>
+                    }
+
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="STensanpham">Tên sản phẩm</label>
+                <input type="text" id="STensanpham" name="STensanpham" required placeholder="Nhập tên sản phẩm">
+            </div>
+            <div class="form-group">
+                <label for="SMavach">Mã vạch</label>
+                <input type="text" id="SMavach" name="SMavach" required placeholder="Nhập hoặc quét mã vạch sản phẩm">
+            </div>
+            <div class="form-group">
+                <label for="SHinhanh">Hình ảnh</label>
+                <input type="text" id="SHinhanh" name="SHinhanh" required placeholder="Thêm vào hình ảnh">
+            </div>
+            <div class="form-group">
+                <label for="SMota">Mô tả</label>
+                <textarea id="SMota" name="SMota" required placeholder="Nhập mô tả của sản phẩm" rows="4" cols="50"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="ITonkho">Tồn kho</label>
+                <input type="text" id="ITonkho" name="ITonkho" required placeholder="Nhập tồn kho">
+            </div>
+            <div class="form-group">
+                <label for="FTrongluong">Trọng lượng (gram)</label>
+                <input type="text" id="FTrongluong" name="FTrongluong" required placeholder="Nhập trọng lượng sản phẩm">
+            </div>
+            <div class="form-group">
+                <label for="FGiaban">Giá bán</label>
+                <input type="text" id="FGiaban" name="FGiaban" required placeholder="Nhập giá bán">
+            </div>
+            <div class="form-group">
+                <label for="FGiavon">Giá vốn</label>
+                <input type="text" id="FGiavon" name="FGiavon" required placeholder="Nhập giá vốn">
+            </div>
+            <div class="form-group">
+                <label for="IsTrangthai">Trạng thái</label>
+                <select id="IsTrangthai" name="IsTrangthai" required>
+                    <option value="">Chọn trạng thái</option>
+                    <option value="1">Bật</option>
+                    <option value="0">Tắt phòng phẩm</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="DThoigiantao">Thời gian tạo</label>
+                <input type="datetime-local" id="DThoigiantao" name="DThoigiantao" required placeholder="Chọn thời gian tạo">
+            </div>
+            <div id="sach" style="display: none;">
+                <div class="form-group">
+                    <label for="author">Tác giả</label>
+                    <input type="text" id="author" name="author" required placeholder="Nhập tên tác giả">
+                </div>
+                <div class="form-group">
+                    <label for="publishYear">Năm xuất bản</label>
+                    <input type="number" id="publishYear" name="publishYear" required placeholder="Nhập năm xuất bản" min="1000" max="9999">
+                </div>
+                <div class="form-group">
+                    <label for="publisher">Nhà xuất bản</label>
+                    <input type="text" id="publisher" name="publisher" required placeholder="Nhập nhà xuất bản">
+                </div>
+                <div class="form-group">
+                    <label for="language">Ngôn ngữ</label>
+                    <input type="text" id="language" name="language" required placeholder="Nhập ngôn ngữ">
+                </div>
+                <div class="form-group">
+                    <label for="translator">Người dịch</label>
+                    <input type="text" id="translator" name="translator" placeholder="Nhập tên người dịch">
+                </div>
+                <div class="form-group">
+                    <label for="isbn">ISBN</label>
+                    <input type="text" id="isbn" name="isbn" required placeholder="Nhập số ISBN">
+                </div>
+                <div class="form-group">
+                    <label for="pageCount">Số trang</label>
+                    <input type="number" id="pageCount" name="pageCount" required placeholder="Nhập số trang" min="1">
+                </div>
+            </div>
+
+            <div id="vvp" style="display: none;">
+                <div class="form-group">
+                    <label for="origin">Xuất xứ</label>
+                    <input type="text" id="origin" name="origin" required placeholder="Nhập xuất xứ">
+                </div>
+                <div class="form-group">
+                    <label for="brand">Thương hiệu</label>
+                    <input type="text" id="brand" name="brand" required placeholder="Nhập thương hiệu">
+                </div>
+                <div class="form-group">
+                    <label for="color">Màu sắc</label>
+                    <input type="text" id="color" name="color" required placeholder="Nhập màu sắc">
+                </div>
+                <div class="form-group">
+                    <label for="material">Chất liệu</label>
+                    <input type="text" id="material" name="material" required placeholder="Nhập chất liệu">
+                </div>
+                <div class="form-group">
+                    <label for="size">Kích thước</label>
+                    <input type="text" id="size" name="size" required placeholder="Nhập kích thước">
+                </div>
+            </div>
+            <button type="submit" class="button">Thêm</button>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+        .form-container h4 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .control-label {
+        font-weight: bold;
+    }
+
+    .form-control, .form-container select, .form-container input[type="text"], .form-container input[type="number"], .form-container input[type="datetime-local"], .form-container textarea {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+        padding: 10px;
+        width: 100%;
+    }
+
+        .form-control:focus, .form-container select:focus, .form-container input[type="text"]:focus, .form-container input[type="number"]:focus, .form-container input[type="datetime-local"]:focus, .form-container textarea:focus {
+            border-color: #66afe9;
+            outline: 0;
+            box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+        }
+
+    .button {
+        background-color: #337ab7;
+        border-color: #2e6da4;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+    }
+
+        .button:hover {
+            background-color: #286090;
+            border-color: #204d74;
+        }
+
+    #sach, #vvp {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+        #sach h3, #vvp h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+</style>
+
+<script>
+    function toggleFields() {
+        var danhMuc = document.getElementById('danhm').value;
+        var sachFields = document.getElementById('sach');
+        var vvpFields = document.getElementById('vvp');
+
+        sachFields.style.display = danhMuc === '1' ? 'block' : 'none';
+        vvpFields.style.display = danhMuc === '2' ? 'block' : 'none';
+
+        // Cập nhật thuộc tính required dựa trên trạng thái hiển thị
+        var inputsSach = sachFields.querySelectorAll("input");
+        inputsSach.forEach(input => {
+            input.required = danhMuc === '1';
+        });
+
+        var inputsVvp = vvpFields.querySelectorAll("input");
+        inputsVvp.forEach(input => {
+            input.required = danhMuc === '2';
+        });
+    }
+
+
+    function formatDateTimeForInput() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+</script>

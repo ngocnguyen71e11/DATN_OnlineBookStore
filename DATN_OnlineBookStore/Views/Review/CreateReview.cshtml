@@ -60,7 +60,7 @@
 <body>
     <div class="review-container">
         <h2>Đánh giá sản phẩm</h2>
-        <form method="post" action="@Url.Action("SubmitReview", "Review")">
+        <form method="post" action="@Url.Action("submitProductReview", "Review")">
             <input type="hidden" name="orderItemId" value="@ViewBag.OrderItemId" />
             <div class="form-group">
                 <label for="productName">Sản phẩm</label>

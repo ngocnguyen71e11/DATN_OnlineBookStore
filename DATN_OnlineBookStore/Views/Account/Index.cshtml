@@ -1,0 +1,46 @@
+﻿@model IEnumerable<DATN_OnlineBookStore.Models.TblTaikhoan>
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SMatkhau)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FkIQuyenId)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SMatkhau)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FkIQuyenId)
+                </td>
+                <td>
+                    <a asp-action="updateEmployeeInfo" asp-route-id="@item.PkITaikhoanId">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
