@@ -26,7 +26,7 @@
 
         .product-images img {
             width: 100%;
-            max-width: 400px; 
+            max-width: 400px;
             height: auto;
             border: 1px solid #ddd;
             padding: 10px;
@@ -35,7 +35,7 @@
 
     .button-group {
         display: flex;
-        justify-content: center; 
+        justify-content: center;
     }
 
         .button-group form {
@@ -55,7 +55,7 @@
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.3s ease;
-            flex-grow: 1; 
+            flex-grow: 1;
             margin: 0 5px;
             background-color: #ff6f61;
         }
@@ -63,6 +63,7 @@
             button:hover, .button-group button:hover {
                 background-color: #e55a4f;
             }
+
     .product-info {
         flex: 2;
         padding-left: 20px;
@@ -98,6 +99,36 @@
     .product-info p {
         margin: 5px 0;
     }
+
+    .reviews {
+        margin-top: 30px;
+    }
+
+    .review {
+        border-top: 1px solid #ddd;
+        padding: 10px 0;
+    }
+
+        .review:last-child {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .review p {
+            margin: 5px 0;
+        }
+
+        .review .rating {
+            font-weight: bold;
+        }
+
+        .review .description {
+            color: #555;
+        }
+
+        .review .created-at {
+            color: #999;
+            font-size: 14px;
+        }
 </style>
 
 <div class="product-detail">
@@ -141,6 +172,25 @@
 
         <div class="product-description">
             <p>Mô tả: @Model.SMota</p>
+        </div>
+
+        <div class="reviews">
+            <h3>Đánh giá sản phẩm</h3>
+            @if (ViewBag.Reviews != null && ViewBag.Reviews.Count > 0)
+            {
+                foreach (var review in ViewBag.Reviews)
+                {
+                    <div class="review">
+                        <p class="rating">Rating: @review.Rating</p>
+                        <p class="description">@review.Description</p>
+                        <p class="created-at">Created at: @review.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                }
+            }
+            else
+            {
+                <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+            }
         </div>
     </div>
 </div>

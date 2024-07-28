@@ -165,7 +165,6 @@ namespace DATN_OnlineBookStore.Controllers
         [HttpPost]
         public async Task<IActionResult> NewProduct(IFormCollection form)
         {
-            // Phân tích và xác nhận các trường nhập liệu
             if (!int.TryParse(form["cate"], out int maTheLoai) ||
                 !int.TryParse(form["danhm"], out int maDanhMuc) ||
                 !int.TryParse(form["ITonkho"], out int soLuongTonKho) ||
@@ -175,10 +174,9 @@ namespace DATN_OnlineBookStore.Controllers
                 !int.TryParse(form["IsTrangthai"], out int trangThai))
             {
                 ModelState.AddModelError("InvalidInput", "Nhập liệu không hợp lệ cho một hoặc nhiều trường.");
-                return View("NewProduct"); // Chuyển hướng trở lại form với lỗi
+                return View("NewProduct"); 
             }
 
-            // Khởi tạo mô hình sản phẩm mới
             TblSanpham sanPhamMoi = new TblSanpham
             {
                 FkITheloaiId = maTheLoai,
@@ -194,7 +192,7 @@ namespace DATN_OnlineBookStore.Controllers
             };
             db.TblSanphams.Add(sanPhamMoi);
             db.SaveChanges();
-            if (maDanhMuc == 1) // Sách
+            if (maDanhMuc == 1) 
             {
                 TblCtsach newCtsach = new TblCtsach
                 {
@@ -209,7 +207,7 @@ namespace DATN_OnlineBookStore.Controllers
                 db.TblCtsaches.Add(newCtsach);
                 db.SaveChanges();
             }
-            else if (maDanhMuc == 2) // Văn phòng phẩm
+            else if (maDanhMuc == 2) 
             {
                 TblCtvanphongpham newCtvanphongpham = new TblCtvanphongpham
                 {
@@ -384,6 +382,48 @@ namespace DATN_OnlineBookStore.Controllers
                 return View(ListProduct);
             }
             return Json(new { success = false, message = "." });
+        }
+        public IActionResult ListSupplier()
+        {
+            List<TblNhacungcap> tblNhacungcaps = db.TblNhacungcaps.ToList();
+            return View(tblNhacungcaps);
+        }
+        public IActionResult NewSupplier()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult NewSupplier(IFormCollection form)
+        {
+            TblNhacungcap tblNhacungcap = new TblNhacungcap()
+            {
+                STenNcc = form["STenNcc"],
+                SSdt = form["SSdt"],
+                SEmail = form["SEmail"],
+                SMasothue = form["SMasothue"]
+            };
+            db.TblNhacungcaps.Add(tblNhacungcap);
+            db.SaveChanges();
+            return View("ListSupplier");
+        }
+        public IActionResult EditSupplier(int nccID)
+        {
+            var ncc = db.TblNhacungcaps.FirstOrDefault(p => p.PkINccid == nccID);
+            return View(ncc);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditSupplier(int id, IFormCollection form)
+        {
+            var ncc = db.TblNhacungcaps.FirstOrDefault(p => p.PkINccid == id);
+            if (ncc != null)
+            {
+                ncc.STenNcc = string.IsNullOrWhiteSpace(form["STenNcc"]) ? ncc.STenNcc : form["STenNcc"];
+                ncc.SSdt = string.IsNullOrWhiteSpace(form["SSdt"]) ? ncc.SSdt : form["SSdt"];
+                ncc.SEmail = string.IsNullOrWhiteSpace(form["SEmail"]) ? ncc.SEmail : form["SEmail"];
+                ncc.SMasothue = string.IsNullOrWhiteSpace(form["SMasothue"]) ? ncc.SMasothue : form["SMasothue"];
+            }
+            await db.SaveChangesAsync();
+            return RedirectToAction("ListSupplier");
         }
     }
 }

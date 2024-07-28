@@ -1,0 +1,50 @@
+﻿@model DATN_OnlineBookStore.Models.TblNhacungcap
+
+@{
+    ViewData["Title"] = "EditSupplier";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>EditSupplier</h1>
+
+<h4>TblNhacungcap</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditSupplier">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PkINccid" />
+            <div class="form-group">
+                <label asp-for="STenNcc" class="control-label">Tên nhà cung cấp</label>
+                <input asp-for="STenNcc" class="form-control" />
+                <span asp-validation-for="STenNcc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SSdt" class="control-label">Số điện thoại</label>
+                <input asp-for="SSdt" class="form-control" />
+                <span asp-validation-for="SSdt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SEmail" class="control-label">Email</label>
+                <input asp-for="SEmail" class="form-control" />
+                <span asp-validation-for="SEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SMasothue" class="control-label">Mã số thuế</label>
+                <input asp-for="SMasothue" class="form-control" />
+                <span asp-validation-for="SMasothue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
