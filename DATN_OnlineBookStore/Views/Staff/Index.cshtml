@@ -1,0 +1,70 @@
+﻿@model IEnumerable<DATN_OnlineBookStore.Models.TblNhanvien>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SHo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.STen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SSdt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DNgaysinh)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsGioitinh)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsTrangthai)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FkITaikhoan)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.SHo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.STen)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SSdt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DNgaysinh)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsGioitinh)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsTrangthai)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FkITaikhoan.PkITaikhoanId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.PkSNhanvienId">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.PkSNhanvienId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
