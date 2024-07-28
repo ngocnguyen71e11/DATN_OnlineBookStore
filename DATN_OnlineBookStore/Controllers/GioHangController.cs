@@ -209,8 +209,23 @@ namespace DATN_OnlineBookStore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessCheckout(int ward, string address, int[] productIds, int[] quantities)
+        public async Task<IActionResult> ProcessCheckout(IFormCollection form)
         {
+            if (!int.TryParse(form["ward"], out int ward))
+            {
+                return BadRequest("Invalid ward input");
+            }
+
+            string address = form["address"];
+            string phone = form["phone"];
+            string firstname = form["FirstName"];
+            string lastname = form["LastName"];
+
+            string[] productIdStrings = form["productIds"].ToString().Split(',');
+            int[] productIds = productIdStrings.Select(id => int.Parse(id)).ToArray();
+            string[] quantityStrings = form["quantities"].ToString().Split(',');
+            int[] quantities = quantityStrings.Select(qty => int.Parse(qty)).ToArray();
+
             var taikhoanId = HttpContext.Session.GetInt32("AccountId");
             if (taikhoanId == null)
             {
@@ -222,6 +237,12 @@ namespace DATN_OnlineBookStore.Controllers
                 return BadRequest("Không có sản phẩm nào trong giỏ hàng.");
             }
 
+            var xaInfo = await db.TblXas
+            .Include(x => x.FkIHuyen)
+                .ThenInclude(h => h.FkITinh)
+            .FirstOrDefaultAsync(x => x.PkIXaId == ward);
+            int huyenId = xaInfo.FkIHuyen.PkIHuyenId;
+            int tinhId = xaInfo.FkIHuyen.FkITinh.PkITinhId;
             using (var transaction = await db.Database.BeginTransactionAsync())
             {
                 try
@@ -243,17 +264,16 @@ namespace DATN_OnlineBookStore.Controllers
                         {
                             FkSKhid = khachHang.PkSKhid,
                             FkIXaId = ward,
+                            FkIHuyenId = huyenId,
+                            FkITinhId = tinhId,
                             SDiachicuthe = address,
-                            SSdt = khachHang.SSdt,  
-                            IsTrangthai = true  
+                            SHo = firstname,
+                            STen = lastname,
+                            SSdt = phone,
+                            IsTrangthai = true
                         };
                         db.TblDiachiKhs.Add(diaChi);
                         await db.SaveChangesAsync();
-                    }
-             
-                    if (diaChi == null)
-                    {
-                        return StatusCode(500, "Lỗi khi tạo địa chỉ mới.");
                     }
 
                     var donHangMoi = new TblDonhang

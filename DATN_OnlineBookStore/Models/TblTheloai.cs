@@ -12,6 +12,6 @@ public partial class TblTheloai
     public int FkIDanhmucId { get; set; }
 
     public virtual TblDanhmuc FkIDanhmuc { get; set; } = null!;
-
+    
     public virtual ICollection<TblSanpham> TblSanphams { get; } = new List<TblSanpham>();
 }

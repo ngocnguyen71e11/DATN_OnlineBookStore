@@ -29,15 +29,33 @@ namespace DATN_OnlineBookStore.Controllers
         {
             int pageSize = 10;
             int pageNumber = page == null || page < 0 ? 1 : page.Value;
-            var lstsanpham = db.TblSanphams.AsNoTracking().OrderBy(x => x.STensanpham);
-            PagedList<TblSanpham> lst = new PagedList<TblSanpham>(lstsanpham, pageNumber, pageSize);
 
+            var lstSanpham = await db.TblSanphams
+                .AsNoTracking()
+                .OrderBy(x => x.STensanpham)
+                .ToListAsync();
+            var productRatings = lstSanpham.ToDictionary(
+                p => p.PkISanphamId,
+                p => {
+                    var ratings = db.TblDanhgia
+                                    .Where(d => d.FkICtdonhangId == p.PkISanphamId)
+                                    .Select(d => d.FXephang)
+                                    .ToList();
+
+                    return ratings.Any() ? ratings.Average() : 0.0;  
+                }
+            );
+
+            ViewBag.ProductRatings = productRatings;
+
+            var pagedList = new PagedList<TblSanpham>(lstSanpham, pageNumber, pageSize);
             int userId = HttpContext.Session.GetInt32("AccountId") ?? 1;
-            var recommendations = await GetRecommendations(userId, 5); 
+            var recommendations = await GetRecommendations(userId, 5);
             ViewBag.Recommendations = recommendations;
 
-            return View(lst);
+            return View(pagedList);
         }
+
         private async Task<List<TblSanpham>> GetRecommendations(int userId, int nRecommendations)
         {
             var client = _clientFactory.CreateClient();
@@ -141,5 +159,6 @@ namespace DATN_OnlineBookStore.Controllers
             }
             return View(product);
         }
+
     }
 }

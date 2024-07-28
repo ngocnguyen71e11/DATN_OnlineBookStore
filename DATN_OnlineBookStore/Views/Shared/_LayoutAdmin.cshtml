@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sách và văn phòng phẩm</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/DATN_OnlineBookStore.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
+    @RenderSection("Styles", required: false)
+    <style>
+    body {
+        display: flex;
+        min-height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .sidebar {
+        width: 200px;
+        background-color: #f4f4f4;
+        padding: 20px;
+        height: 100vh; /* Chiều cao toàn màn hình */
+        box-shadow: 2px 0 5px 0 rgba(0,0,0,0.1);
+    }
+
+        .sidebar h1 {
+            padding: 0;
+            margin: 0 0 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+            .sidebar ul li a {
+                text-decoration: none;
+                color: #333;
+                display: block;
+                padding: 8px;
+                transition: background-color 0.3s, color 0.3s;
+            }
+
+                .sidebar ul li a:hover {
+                    background-color: #ddd;
+                    color: #000;
+                }
+
+    .main-content {
+        flex-grow: 1;
+        padding: 20px;
+        overflow: auto;
+    }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Menu</h1>
+        <ul>
+            <li><a href="@Url.Action("Order", "Admin")">Quản lý đơn hàng</a></li>
+            <li><a href="@Url.Action("ListProduct", "Admin")">Quản lý sản phẩm</a></li>
+            <li><a href="/finance-management">Quản lý tài chính</a></li>
+            <li><a href="@Url.Action("Index", "Admin")">Quản lý tài khoản</a></li>
+            <li><a href="@Url.Action("Logout", "Access")">Đăng xuất</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        @RenderBody()
+        @RenderSection("Scripts", required: false)
+    </div>
+</body>
+</html>

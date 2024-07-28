@@ -80,8 +80,12 @@
         <form id="checkoutForm" method="post" action="@Url.Action("ProcessCheckout", "GioHang")">
             <h3>Địa chỉ giao hàng</h3>
             <div class="form-group">
-                <label for="fullName">Họ và tên người nhận</label>
-                <input type="text" id="fullName" name="fullName" required placeholder="Nhập họ và tên người nhận">
+                <label for="fullName">Họ người nhận</label>
+                <input type="text" id="fullName" name="FirstName" required placeholder="Nhập họ người nhận">
+            </div>
+            <div class="form-group">
+                <label for="fullName">Tên người nhận</label>
+                <input type="text" id="fullName" name="LastName" required placeholder="Nhập tên người nhận">
             </div>
             <div class="form-group">
                 <label for="email">Email</label>

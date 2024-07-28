@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<DATN_OnlineBookStore.Models.TblTaikhoan>
-
 @{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewData["Title"] = "Index";
 }
 
@@ -19,27 +19,28 @@
                 @Html.DisplayNameFor(model => model.SMatkhau)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FkIQuyen)
+                @Html.DisplayNameFor(model => model.FkIQuyenId)
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.SEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SMatkhau)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FkIQuyenId)
-            </td>
-            <td>
-                <a asp-action="EditTaikhoan" asp-route-id="@item.PkITaikhoanId">Edit</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SMatkhau)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FkIQuyenId)
+                </td>
+                <td>
+                    <a asp-action="EditTaikhoan" asp-route-id="@item.PkITaikhoanId">Edit</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

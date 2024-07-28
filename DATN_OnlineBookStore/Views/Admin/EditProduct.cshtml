@@ -1,0 +1,216 @@
+﻿@model DATN_OnlineBookStore.Models.TblSanpham
+
+@{
+    ViewBag.Title = "Edit Product";
+    var categories = ViewBag.Categories as List<DATN_OnlineBookStore.Models.TblTheloai>;
+    var bookDetails = ViewBag.BookDetails as DATN_OnlineBookStore.Models.TblCtsach;
+    var officeDetails = ViewBag.OfficeDetails as DATN_OnlineBookStore.Models.TblCtvanphongpham;
+}
+
+<h2>Edit Product</h2>
+
+@using (Html.BeginForm("EditProduct", "Admin", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.PkISanphamId)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.STensanpham, "Product Name", new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.STensanpham, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.STensanpham)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SMavach, "Barcode", new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.SMavach, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.SMavach)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SHinhanh, "Image", new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.SHinhanh, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.SHinhanh)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.SMota, "Description", new { @class = "control-label" })
+        @Html.TextAreaFor(model => model.SMota, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.SMota)
+    </div>
+
+    <div class="form-group">
+        <label for="cate">Thể loại</label>
+        <select id="cate" name="cate" class="form-control" required>
+            <option value="">Chọn thể loại</option>
+            @if (categories != null)
+            {
+                foreach (var tinh in categories)
+                {
+                    <option value="@tinh.PkITheloaiId">@tinh.STentheloai</option>
+                }
+            }
+            else
+            {
+                <option value="">Không có danh mục</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ITonkho, "Stock Quantity", new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.ITonkho, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.ITonkho)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.FTrongluong, "Weight", new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.FTrongluong, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.FTrongluong)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.FGiaban, "Sale Price", new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.FGiaban, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.FGiaban)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.FGiavon, "Cost Price", new { @class = "control-label" })
+        @Html.TextBoxFor(model => model.FGiavon, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.FGiavon)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.IsTrangthai, "Status", new { @class = "control-label" })
+        @Html.CheckBox("IsTrangthai", Model.IsTrangthai ?? false)
+    </div>
+
+    @if (ViewBag.DanhmucId == 1)
+    {
+        <div id="bookDetails">
+            <h3>Book Details</h3>
+            <div class="form-group">
+                @Html.Label("Author", "Author", new { @class = "control-label" })
+                <input type="text" name="author" value="@bookDetails?.STacgia" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Publisher", "Publisher", new { @class = "control-label" })
+                <input type="text" name="publisher" value="@bookDetails?.SNhaxuatban" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Language", "Language", new { @class = "control-label" })
+                <input type="text" name="language" value="@bookDetails?.SNgonngu" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Translator", "Translator", new { @class = "control-label" })
+                <input type="text" name="translator" value="@bookDetails?.SNguoidich" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("ISBN", "ISBN", new { @class = "control-label" })
+                <input type="text" name="isbn" value="@bookDetails?.Isbn" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Page Count", "Page Count", new { @class = "control-label" })
+                <input type="text" name="pageCount" value="@bookDetails?.ISotrang" class="form-control" />
+            </div>
+        </div>
+    }
+    else if (ViewBag.DanhmucId == 2)
+    {
+        <div id="officeDetails">
+            <h3>Office Supply Details</h3>
+            <div class="form-group">
+                @Html.Label("Origin", "Origin", new { @class = "control-label" })
+                <input type="text" name="origin" value="@officeDetails?.SXuatxu" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Brand", "Brand", new { @class = "control-label" })
+                <input type="text" name="brand" value="@officeDetails?.SThuonghieu" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Color", "Color", new { @class = "control-label" })
+                <input type="text" name="color" value="@officeDetails?.SMausac" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Material", "Material", new { @class = "control-label" })
+                <input type="text" name="material" value="@officeDetails?.SChatlieu" class="form-control" />
+            </div>
+            <div class="form-group">
+                @Html.Label("Size", "Size", new { @class = "control-label" })
+                <input type="text" name="size" value="@officeDetails?.SKichthuoc" class="form-control" />
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .control-label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+        padding: 10px;
+        width: 100%;
+    }
+
+        .form-control:focus {
+            border-color: #66afe9;
+            outline: 0;
+            box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
+        }
+
+    .btn-primary {
+        background-color: #337ab7;
+        border-color: #2e6da4;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+    }
+
+        .btn-primary:hover {
+            background-color: #286090;
+            border-color: #204d74;
+        }
+
+    #bookDetails, #officeDetails {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+    }
+
+        #bookDetails h3, #officeDetails h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+</style>

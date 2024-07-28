@@ -86,28 +86,28 @@ namespace DATN_OnlineBookStore.Controllers
             {
                 if(u.FkIQuyenId==1)
                 {
-                    HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId); // Lưu AccountId vào session
-                    return RedirectToAction("Index", "Admin");
+                    HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
+                    return RedirectToAction("Order", "Admin");
                 }
                 else if(u.FkIQuyenId==3)
                 {
-                    HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId); // Lưu AccountId vào session
+                    HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
                     return RedirectToAction("Index", "Home");
                 }
-                HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId); // Lưu AccountId vào session
+                HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
                 return RedirectToAction("Index", "Home");
 
             }
-                HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
-                if (u.FkIQuyenId == 3)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Admin");
-                }
-            //return View();
+                //HttpContext.Session.SetInt32("AccountId", u.PkITaikhoanId);
+                //if (u.FkIQuyenId == 3)
+                //{
+                //    return RedirectToAction("Index", "Home");
+                //}
+                //else
+                //{
+                //    return RedirectToAction("Index", "Admin");
+                //}
+                return View();
         }
 
         [HttpGet]

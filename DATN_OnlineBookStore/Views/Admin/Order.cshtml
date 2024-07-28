@@ -1,0 +1,53 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Order List";
+}
+
+<h2>Danh sách đơn hàng</h2>
+
+@if (ViewBag.Orders != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mã đơn hàng</th>
+                <th>Ngày mua</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in ViewBag.Orders)
+            {
+                <tr>
+                    <td>@order.PkIDonhangId</td>
+                    <td>@order.DThoigianmua?.ToString("dd-MM-yyyy")</td>
+                    <td>@order.FTongtien.ToString("N0") VND</td>
+                    <td>
+                        @if (order.FkITrangthai == 1)
+                        {
+                            @:Đang chờ
+                        }
+                        else
+                        {
+                            @:Đã xử lý
+                        }
+                    </td>
+                    <td>
+                        <!-- Sử dụng thẻ form để gửi dữ liệu đến Action OrderDetail -->
+                        <form method="post" action="@Url.Action("OrderDetail", "Admin")">
+                            <input type="hidden" name="ordID" value="@order.PkIDonhangId" />
+                            <button type="submit" class="btn btn-primary">Chi tiết</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Không có đơn hàng nào.</p>
+}
+
