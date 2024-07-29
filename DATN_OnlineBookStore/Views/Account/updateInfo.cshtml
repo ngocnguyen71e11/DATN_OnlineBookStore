@@ -1,73 +1,230 @@
-﻿<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DATN_OnlineBookStore.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" />
-    <style>
-        .sidebar {
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+    <!doctype html>
+    <html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>eTrade || My Account</title>
+        <meta name="robots" content="noindex, follow" />
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.png">
 
-            .sidebar a {
-                display: block;
-                padding: 10px;
-                color: #333;
-                text-decoration: none;
-                margin-bottom: 10px;
-                border-radius: 4px;
-            }
+        <!-- CSS
+        ============================================ -->
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+        <link rel="stylesheet" href="/assets/css/vendor/font-awesome.css">
+        <link rel="stylesheet" href="/assets/css/vendor/flaticon/flaticon.css">
+        <link rel="stylesheet" href="/assets/css/vendor/slick.css">
+        <link rel="stylesheet" href="/assets/css/vendor/slick-theme.css">
+        <link rel="stylesheet" href="/assets/css/vendor/jquery-ui.min.css">
+        <link rel="stylesheet" href="/assets/css/vendor/sal.css">
+        <link rel="stylesheet" href="/assets/css/vendor/magnific-popup.css">
+        <link rel="stylesheet" href="/assets/css/vendor/base.css">
+        <link rel="stylesheet" href="/assets/css/style.min.css">
 
-                .sidebar a:hover {
-                    background-color: #e9ecef;
-                }
-    </style>
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="row">
-            <aside class="sidebar col-md-3">
-                <a href="@Url.Action("updateInfo", "Account")">Thông tin người dùng</a>
-                <a href="@Url.Action("orderConfirmation", "Cart")">Thông tin đơn hàng</a>
-                <a href="@Url.Action("ChangePassword", "Account")">Đổi mật khẩu</a>
-                <a href="@Url.Action("Logout", "Account")">Đăng xuất</a>
-            </aside>
-            <main role="main" class="col-md-9">
-                <h1>@(Model.PkSKhid == null ? "Thêm thông tin người dùng" : "Sửa thông tin người dùng")</h1>
-                <form asp-action="CustomerView" method="post">
-                    <input type="hidden" name="FkITaikhoanId" value="@Model.FkITaikhoanId" />
-                    <input type="hidden" name="PkSKhid" value="@Model.PkSKhid" />
-                    <div class="form-group">
-                        <label for="SHo">Họ:</label>
-                        <input type="text" class="form-control" id="SHo" name="SHo" value="@Model.SHo" />
+    </head>
+
+
+    <body class="sticky-header">
+        <!--[if lte IE 9]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+        <![endif]-->
+        <a href="#top" class="back-to-top" id="backto-top"><i class="fal fa-arrow-up"></i></a>
+        <!-- Start Header -->
+        <!-- End Header -->
+
+        <main class="main-wrapper">
+            <!-- Start Breadcrumb Area  -->
+            <!-- End Breadcrumb Area  -->
+            <!-- Start My Account Area  -->
+            <div class="axil-dashboard-area axil-section-gap">
+                <div class="container">
+                    <div class="axil-dashboard-warp">                     
+                        <div class="row">
+                            <div class="col-xl-3 col-md-4">                               
+                            </div>
+                            <div class="col-xl-9 col-md-8">
+                                <div class="tab-content">
+                                        <div class="col-lg-9">
+                                            <div class="axil-dashboard-account">
+                                            <form asp-action="updateInfo" method="post" class="account-details-form" novalidate>
+                                                <div class="row">
+                                                    <input type="hidden" name="FkITaikhoanId" value="@Model.FkITaikhoanId" />
+                                                    <input type="hidden" name="PkSKhid" value="@Model.PkSKhid" />
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="SHo">Họ:</label>
+                                                            <input type="text" class="form-control" id="SHo" name="SHo" value="@Model.SHo" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="STen">Tên:</label>
+                                                            <input type="text" class="form-control" id="STen" name="STen" value="@Model.STen" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="SSdt">SĐT:</label>
+                                                            <input type="text" class="form-control" id="SSdt" name="SSdt" value="@Model.SSdt" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="DNgaysinh">Ngày sinh:</label>
+                                                            <input type="date" class="form-control" id="DNgaysinh" name="DNgaysinh" value="@Model.DNgaysinh?.ToString("yyyy-MM-dd")" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-group">
+                                                            <label for="SNghenghiep">Nghề nghiệp:</label>
+                                                            <input type="text" class="form-control" id="SNghenghiep" name="SNghenghiep" value="@Model.SNghenghiep" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb--0">
+                                                        <input type="submit" class="axil-btn" value="Lưu thông tin">
+                                                    </div>
+                                                   </div>
+                                            </form>                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="STen">Tên:</label>
-                        <input type="text" class="form-control" id="STen" name="STen" value="@Model.STen" />
+                </div>
+            </div>
+            <!-- End My Account Area  -->
+            <!-- Start Axil Newsletter Area  -->
+            
+            <!-- End Axil Newsletter Area  -->
+        </main>
+
+        <div class="cart-dropdown" id="cart-dropdown">
+            <div class="cart-content-wrap">
+                <div class="cart-header">
+                    <h2 class="header-title">Cart review</h2>
+                    <button class="cart-close sidebar-close"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="cart-body">
+                    <ul class="cart-item-list">
+                        <li class="cart-item">
+                            <div class="item-img">
+                                <a href="single-product.html"><img src="assets/images/product/electric/product-01.png" alt="Commodo Blown Lamp"></a>
+                                <button class="close-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="item-content">
+                                <div class="product-rating">
+                                    <span class="icon">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <span class="rating-number">(64)</span>
+                                </div>
+                                <h3 class="item-title"><a href="single-product-3.html">Wireless PS Handler</a></h3>
+                                <div class="item-price"><span class="currency-symbol">$</span>155.00</div>
+                                <div class="pro-qty item-quantity">
+                                    <input type="number" class="quantity-input" value="15">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="cart-item">
+                            <div class="item-img">
+                                <a href="single-product-2.html"><img src="assets/images/product/electric/product-02.png" alt="Commodo Blown Lamp"></a>
+                                <button class="close-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="item-content">
+                                <div class="product-rating">
+                                    <span class="icon">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <span class="rating-number">(4)</span>
+                                </div>
+                                <h3 class="item-title"><a href="single-product-2.html">Gradient Light Keyboard</a></h3>
+                                <div class="item-price"><span class="currency-symbol">$</span>255.00</div>
+                                <div class="pro-qty item-quantity">
+                                    <input type="number" class="quantity-input" value="5">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="cart-item">
+                            <div class="item-img">
+                                <a href="single-product-3.html"><img src="assets/images/product/electric/product-03.png" alt="Commodo Blown Lamp"></a>
+                                <button class="close-btn"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div class="item-content">
+                                <div class="product-rating">
+                                    <span class="icon">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <span class="rating-number">(6)</span>
+                                </div>
+                                <h3 class="item-title"><a href="single-product.html">HD CC Camera</a></h3>
+                                <div class="item-price"><span class="currency-symbol">$</span>200.00</div>
+                                <div class="pro-qty item-quantity">
+                                    <input type="number" class="quantity-input" value="100">
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="cart-footer">
+                    <h3 class="cart-subtotal">
+                        <span class="subtotal-title">Subtotal:</span>
+                        <span class="subtotal-amount">$610.00</span>
+                    </h3>
+                    <div class="group-btn">
+                        <a href="cart.html" class="axil-btn btn-bg-primary viewcart-btn">View Cart</a>
+                        <a href="checkout.html" class="axil-btn btn-bg-secondary checkout-btn">Checkout</a>
                     </div>
-                    <div class="form-group">
-                        <label for="SSdt">SĐT:</label>
-                        <input type="text" class="form-control" id="SSdt" name="SSdt" value="@Model.SSdt" />
-                    </div>
-                    <div class="form-group">
-                        <label for="DNgaysinh">Ngày sinh:</label>
-                        <input type="date" class="form-control" id="DNgaysinh" name="DNgaysinh" value="@Model.DNgaysinh?.ToString("yyyy-MM-dd")" />
-                    </div>
-                    <div class="form-group">
-                        <label for="SNghenghiep">Nghề nghiệp:</label>
-                        <input type="text" class="form-control" id="SNghenghiep" name="SNghenghiep" value="@Model.SNghenghiep" />
-                    </div>
-                    <button type="submit" class="btn btn-primary">Lưu</button>
-                </form>
-            </main>
+                </div>
+            </div>
         </div>
-    </div>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-</body>
+
+        <!-- JS
+        ============================================ -->
+        <!-- Modernizer JS -->
+        <script src="/assets/js/vendor/modernizr.min.js"></script>
+        <!-- jQuery JS -->
+        <script src="assets/js/vendor/jquery.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="/assets/js/vendor/popper.min.js"></script>
+        <script src="/assets/js/vendor/bootstrap.min.js"></script>
+        <script src="/assets/js/vendor/slick.min.js"></script>
+        <script src="/assets/js/vendor/js.cookie.js"></script>
+        <!-- <script src="assets/js/vendor/jquery.style.switcher.js"></script> -->
+        <script src="/assets/js/vendor/jquery-ui.min.js"></script>
+        <script src="/assets/js/vendor/jquery.ui.touch-punch.min.js"></script>
+        <script src="/assets/js/vendor/jquery.countdown.min.js"></script>
+        <script src="/assets/js/vendor/sal.js"></script>
+        <script src="/assets/js/vendor/jquery.magnific-popup.min.js"></script>
+        <script src="/assets/js/vendor/imagesloaded.pkgd.min.js"></script>
+        <script src="/assets/js/vendor/isotope.pkgd.min.js"></script>
+        <script src="/assets/js/vendor/counterup.js"></script>
+        <script src="/assets/js/vendor/waypoints.min.js"></script>
+
+        <!-- Main JS -->
+        <script src="/assets/js/main.js"></script>
+
+    </body>
+
+
+    <!-- Mirrored from new.axilthemes.com/demo/template/etrade/my-account.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 28 Jul 2024 10:00:57 GMT -->
 </html>

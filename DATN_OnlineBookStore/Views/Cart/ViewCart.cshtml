@@ -1,99 +1,88 @@
 ﻿@model List<Tuple<string, int?, double, double?, int>>
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-        .cart-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
+<main class="main-wrapper">
 
-        h2 {
-            color: #333;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        #totalPrice {
-            font-weight: bold;
-        }
-
-        .button {
-            padding: 10px 20px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 20px;
-            display: block;
-            text-align: center;
-        }
-
-            .button:hover {
-                background-color: #0056b3;
-            }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-<body>
-    <div class="cart-container">
-        <h2>Giỏ hàng của bạn</h2>
-        <form id="cartForm" method="post" action="@Url.Action("checkoutCart", "Cart")">
-            <table>
-                <tr>
-                    <th>Chọn</th>
-                    <th>Sản phẩm</th>
-                    <th>Số lượng</th>
-                    <th>Giá</th>
-                    <th>Thành tiền</th>
-                    <th>Thao tác</th>
-                </tr>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td><input type="checkbox" name="selectedItems" value="@item.Item5" data-price="@item.Item4" data-quantity="@item.Item2" data-name="@item.Item1" data-price-per-unit="@item.Item3" onchange="calculateTotalPrice()"></td>
-                        <td>@item.Item1</td>
-                        <td>
-                            <input type="number" value="@item.Item2" min="1" style="width: 50px;" onchange="updateCartItem('@item.Item5', this.value)">
-                        </td>
-                        <td>@item.Item3.ToString("C")</td>
-                        <td>@item.Item4</td>
-                        <td><button type="button" onclick="removeFromCart('@item.Item5')">Xóa</button></td>
-                    </tr>
-                }
-                <tr>
-                    <td colspan="4" style="text-align:right">Tổng tiền:</td>
-                    <td id="totalPrice">0</td>
-                    <td></td>
-                </tr>
-            </table>
-            <button type="submit" class="button">Thanh toán</button>
-        </form>
+    <!-- Start Cart Area  -->
+    <div class="axil-product-cart-area axil-section-gap">
+        <div class="container">
+            <div class="axil-product-cart-wrap">
+                <div class="product-table-heading">
+                    <h4 class="title">Your Cart</h4>
+                    <a href="#" class="cart-clear">Clear Shoping Cart</a>
+                </div>
+                <div class="table-responsive">
+                    <form id="cartForm" method="post" action="@Url.Action("checkoutCart", "Cart")">
+                        <table class="table axil-product-table axil-cart-table mb--40">
+                            <tr>
+                                <th>Chọn</th>
+                                <th>Sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Giá</th>
+                                <th>Thành tiền</th>
+                                <th>Thao tác</th>
+                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><input type="checkbox" name="selectedItems" value="@item.Item5" data-price="@item.Item4" data-quantity="@item.Item2" data-name="@item.Item1" data-price-per-unit="@item.Item3" style="opacity: 1 !important; position: static !important;" onchange="calculateTotalPrice()"></td>
+                                    <td>@item.Item1</td>
+                                    <td class="product-quantity" data-title="Qty">
+                                        <div class="pro-qty">
+                                            <span class="dec qtybtn">-</span>
+                                            <input type="number" class="quantity-input" value="@item.Item2" onchange="updateCartItem('@item.Item5', this.value)">
+                                            <span class="inc qtybtn">+</span>
+                                        </div>
+                                    </td>
+                                    <td>@item.Item3.ToString("C")</td>
+                                    <td>@item.Item4</td>
+                                    <td><button type="button" onclick="removeFromCart('@item.Item5')">Xóa</button></td>
+                                </tr>
+                            }
+                            <tr>
+                                <td colspan="4" style="text-align:right">Tổng tiền:</td>
+                                <td id="totalPrice">0</td>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <div class="product-cupon-btn">
+                            <button type="submit" class="axil-btn btn-outline">Thanh toán</button>
+                        </div>                     
+                    </form>
+                    
+                </div>                              
+            </div>
+        </div>
     </div>
+    <!-- End Cart Area  -->
 
+</main>
     <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Xử lý sự kiện nhấn nút giảm số lượng
+        document.querySelectorAll('.dec.qtybtn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var input = this.parentNode.querySelector('.quantity-input');
+                var currentValue = parseInt(input.value, 10);
+                if (currentValue > 1) { // Giá trị tối thiểu là 1
+                    input.value = currentValue - 1;
+                    updateCartItem(input.getAttribute('data-id'), input.value);
+                }
+            });
+        });
+
+        // Xử lý sự kiện nhấn nút tăng số lượng
+        document.querySelectorAll('.inc.qtybtn').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var input = this.parentNode.querySelector('.quantity-input');
+                var currentValue = parseInt(input.value, 10);
+                input.value = currentValue + 1;
+                updateCartItem(input.getAttribute('data-id'), input.value);
+            });
+        });
+    });
         function calculateTotalPrice() {
             let totalPrice = 0;
             $('input[name="selectedItems"]:checked').each(function () {
@@ -147,7 +136,6 @@
             calculateTotalPrice();
         });
     </script>
-</body>
-</html>
+
 
 

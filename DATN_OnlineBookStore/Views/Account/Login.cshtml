@@ -3,104 +3,117 @@
 }
 @model TblTaikhoan
 
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="no-js" lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f7f7f7;
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>eTrade || Sign In</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
 
-        .login-container {
-            padding: 30px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-        }
+    <!-- CSS
+    ============================================ -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/vendor/font-awesome.css">
+    <link rel="stylesheet" href="/assets/css/vendor/flaticon/flaticon.css">
+    <link rel="stylesheet" href="/assets/css/vendor/slick.css">
+    <link rel="stylesheet" href="/assets/css/vendor/slick-theme.css">
+    <link rel="stylesheet" href="/assets/css/vendor/jquery-ui.min.css">
+    <link rel="stylesheet" href="/assets/css/vendor/sal.css">
+    <link rel="stylesheet" href="/assets/css/vendor/magnific-popup.css">
+    <link rel="stylesheet" href="/assets/css/vendor/base.css">
+    <link rel="stylesheet" href="/assets/css/style.min.css">
 
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-        }
-
-        .form-control {
-            margin-bottom: 15px;
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-
-        .btn-gradient-primary {
-            background: linear-gradient(45deg, #007BFF, #0056b3);
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-            .btn-gradient-primary:hover {
-                background: linear-gradient(45deg, #0056b3, #007BFF);
-            }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .mt-3 {
-            margin-top: 15px;
-            text-align: center;
-        }
-
-        .auth-form-btn {
-            font-weight: 600;
-        }
-
-        a {
-            color: #007BFF;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-            a:hover {
-                color: #0056b3;
-            }
-
-    </style>
 </head>
+
+
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
-        {
-            @Html.TextBoxFor(x => x.SEmail, new { @class = "form-control form-control-lg", placeholder = "Email", required = "required", autofocus = "autofocus" })
-            <div class="form-group">
-                @Html.TextBoxFor(x => x.SMatkhau, new { @class = "form-control form-control-lg", type = "password", placeholder = "Mật khẩu" })
+    <div class="axil-signin-area">
+
+        <!-- Start Header -->
+        <div class="signin-header">
+            <div class="row align-items-center">
+                <div class="col-sm-4">
+                    <a href="index.html" class="site-logo"><img src="assets/images/logo/logo.png" alt="logo"></a>
+                </div>
+                <div class="col-sm-8">
+                    <div class="singin-header-btn">
+                        <p>Not a member?</p>
+                        <a href="sign-up.html" class="axil-btn btn-bg-secondary sign-up-btn">Đăng ký ngay</a>
+                    </div>
+                </div>
             </div>
-            <div class="mt-3">
-                <button class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" type="submit">SIGN IN</button>
+        </div>
+        <!-- End Header -->
+
+        <div class="row">
+            <div class="col-xl-4 col-lg-6">
+                <div class="axil-signin-banner bg_image bg_image--9">
+                    <h3 class="title">We Offer the Best Products</h3>
+                </div>
             </div>
-            <div class="mt-3">
-                <div>Chưa có tài khoản? <a href="@Url.Action("Register", "Account")">Đăng ký</a></div>
+            <div class="col-lg-6 offset-xl-2">
+                <div class="axil-signin-form-wrap">
+                    <div class="axil-signin-form">
+                        <h3 class="title">Đăng nhập vào eTrade.</h3>
+                        <p class="b2 mb--55">Nhập thông tin chi tiết của bạn dưới đây</p>
+                        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "singin-form" }))
+                        {
+                            <div class="form-group">
+                                <label>Email</label>
+                                @Html.TextBoxFor(x => x.SEmail, new { @class = "form-control", placeholder = "Email", required = "required", autofocus = "autofocus" })
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                @Html.TextBoxFor(x => x.SMatkhau, new { @class = "form-control", type = "password", placeholder = "Mật khẩu" })
+                            </div>
+                            <div class="form-group d-flex align-items-center justify-content-between">
+                                <button type="submit" class="axil-btn btn-bg-primary submit-btn">Sign In</button>
+                                <a href="@Url.Action("ForgotPassword", "Account")" class="forgot-btn">Quên mật khẩu?</a>
+                            </div>
+                            <div class="mt-3">
+                                <div>Chưa có tài khoản? <a href="@Url.Action("Register", "Account")">Đăng ký</a></div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
-        }
+        </div>
     </div>
+
+    <!-- JS
+    ============================================ -->
+    <!-- Modernizer JS -->
+    <script src="assets/js/vendor/modernizr.min.js"></script>
+    <!-- jQuery JS -->
+    <script src="assets/js/vendor/jquery.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="assets/js/vendor/popper.min.js"></script>
+    <script src="assets/js/vendor/bootstrap.min.js"></script>
+    <script src="assets/js/vendor/slick.min.js"></script>
+    <script src="assets/js/vendor/js.cookie.js"></script>
+    <!-- <script src="assets/js/vendor/jquery.style.switcher.js"></script> -->
+    <script src="assets/js/vendor/jquery-ui.min.js"></script>
+    <script src="assets/js/vendor/jquery.ui.touch-punch.min.js"></script>
+    <script src="assets/js/vendor/jquery.countdown.min.js"></script>
+    <script src="assets/js/vendor/sal.js"></script>
+    <script src="assets/js/vendor/jquery.magnific-popup.min.js"></script>
+    <script src="assets/js/vendor/imagesloaded.pkgd.min.js"></script>
+    <script src="assets/js/vendor/isotope.pkgd.min.js"></script>
+    <script src="assets/js/vendor/counterup.js"></script>
+    <script src="assets/js/vendor/waypoints.min.js"></script>
+
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
+
 </body>
+
+
+<!-- Mirrored from new.axilthemes.com/demo/template/etrade/sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 28 Jul 2024 10:00:57 GMT -->
 </html>
+

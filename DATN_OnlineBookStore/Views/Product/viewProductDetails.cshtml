@@ -1,196 +1,338 @@
 ﻿@model DATN_OnlineBookStore.Models.TblSanpham
 
+<main class="main-wrapper">
+    <div class="axil-single-product-area bg-color-white">
+        <div class="single-product-thumb axil-section-gapcommon single-product-modern">
+            <div class="container">
+                <div class="row row--20">
+                    <div class="col-lg-6 mb--40">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="product-large-thumbnail-4 single-product-thumbnail axil-product">
+                                    <div class="thumbnail">
+                                        <img src="@Model.SHinhanh" alt="@Model.STensanpham">
+                                    </div>                                   
+                                </div>
+                            </div>                           
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb--40">
+                        <div class="single-product-content">
+                            <div class="inner">
+                                <h2 class="product-title">@Model.STensanpham</h2>
+                                <span class="price-amount">@Model.FGiaban</span>
+                                <ul class="description">
+                                    <li>Trọng lượng: @Model.FTrongluong</li>
+                                    @if (ViewBag.BookDetails != null)
+                                    {
+                                        var book = ViewBag.BookDetails;
+                                        <li>Tác giả: @book.STacgia</li>
+                                        <li>Trọng lượng: @book.SNhaxuatban</li>
+                                        <li>Năm xuất bản: @book.SNamxuatban</li>
+                                        <li>Ngôn ngữ: @book.SNgonngu</li>
+                                        <li>Số trang: @book.ISotrang</li>
+                                        <li>ISBN: @book.Isbn</li>
+                                    }
+                                    @if (ViewBag.OfficeSupplyDetails != null)
+                                    {
+                                        var officeSupply = ViewBag.OfficeSupplyDetails;
+                                        <li>Xuất xứ: @officeSupply.SXuatxu</li>
+                                        <li>Thương hiệu: @officeSupply.SThuonghieu</li>
+                                        <li>Màu sắc: @officeSupply.SMausac</li>
+                                        <li>Chất liệu: @officeSupply.SChatlieu</li>
+                                        <li>Kích thước: @officeSupply.SKichthuoc</li>
+                                    }
+                                    <li>Mô tả: @Model.SMota</li>
+                                </ul>
+                                <div class="product-variations-wrapper">
+
+                                    <form method="post" action="@Url.Action("addToCart", "Cart")">
+                                        <input type="hidden" name="productId" value="@Model.PkISanphamId" />
+                                        <div class="product-variation quantity-variant-wrapper">
+                                            <h6 class="title">Số lượng</h6>                                               
+                                                <div class="pro-qty">
+                                                    <span class="dec qtybtn">-</span>
+                                                    <input name="quantity" type="text" value="1">
+                                                    <span class="inc qtybtn">+</span>
+                                                </div>                                                
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Thêm vào giỏ</button>
+                                    </form>
+
+                                </div>
+
+                                <!-- End Product Action Wrapper  -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End .single-product-thumb -->
+        <div class="woocommerce-tabs wc-tabs-wrapper bg-lighter wc-tab-style-two">
+            <div class="container">
+                <div class="section-title-wrapper section-title-border">
+                    <h2 class="title">About This Product 💥</h2>
+                </div>
+                <div class="tabs-wrap">
+                    <ul class="nav tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="active" id="description-tab" data-bs-toggle="tab" href="#description" role="tab" aria-controls="description" aria-selected="true">Specifications</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                            <div class="reviews-wrapper">
+                                <div class="row">
+                                    <div class="col-lg-6 mb--40">
+                                        <div class="axil-comment-area pro-desc-commnet-area">
+                                            <h5 class="title">Review for this product</h5>
+                                            <ul class="comment-list">
+                                                <!-- Start Single Comment  -->
+                                                <li class="comment">
+                                                    <div class="comment-body">
+                                                        <div class="single-comment">
+                                 
+                                                            <div class="comment-inner">
+                                                                @if (ViewBag.Reviews != null && ViewBag.Reviews.Count > 0)
+                                                                {
+                                                                    foreach (var review in ViewBag.Reviews)
+                                                                    {
+                                                                        <div class="comment-img" style="width: 20%;">
+                                                                            <img src="/assets/images/blog/author-image-4.png" alt="Author Images">
+                                                                        </div>
+                                                                        <h6 class="commenter">
+                                                                            <a class="hover-flip-item-wrapper" href="#">
+                                                                                <span class="hover-flip-item">
+                                                                                    <span data-text="@review.UserName">
+                                                                                        @review.UserName
+                                                                                    </span>
+                                                                                </span>
+                                                                            </a>
+                                                                            <span class="commenter-rating rating-four-star">
+                                                                                @for (int i = 1; i <= 5; i++)
+                                                                                {
+                                                                                    if (i <= review.Rating)
+                                                                                    {
+                                                                                        <a href="#"><i class="fas fa-star"></i></a> <!-- Filled star -->
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <i class="fas fa-star empty-rating"></i> <!-- Empty star -->
+                                                                                    }
+                                                                                }
+                                                                            </span>
+                                                                        </h6>
+                                                                        <div class="comment-text">
+                                                                            <p>@review.Description</p>
+                                                                        </div>
+                                                                        <div class="comment-text">
+                                                                            <p>Created at: @review.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</p>
+                                                                        </div>
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+                                                                }
+                                                                                                                            
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <!-- End Single Comment  -->
+                                            </ul>
+                                        </div>
+                                        <!-- End .axil-commnet-area -->
+                                    </div>
+                                    <!-- End .col -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="single-product-features">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="single-features">
+                                <div class="icon">
+                                    <i class="far fa-hand-holding-box"></i>
+                                </div>
+                                <div class="content">
+                                    <h6 class="title">Easy Return</h6>
+                                    <p>Anytime you can return the product without any payment</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="single-features">
+                                <div class="icon quality">
+                                    <i class="fal fa-badge-check"></i>
+                                </div>
+                                <div class="content">
+                                    <h6 class="title">Quality Service</h6>
+                                    <p>We are dedicated to give you quality service for your happiness</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="single-features">
+                                <div class="icon original">
+                                    <i class="fal fa-box"></i>
+                                </div>
+                                <div class="content">
+                                    <h6 class="title">Original Product</h6>
+                                    <p>We deliver you each and every prodeuct is original </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- woocommerce-tabs -->
+
+    </div>
+    <!-- Start Expolre Product Area  --> 
+    <!-- End Expolre Product Area  -->
+    <div class="sale-banner-area">
+        <div class="container">
+            <div class="sale-banner-thumb">
+                <a href="shop.html"><img src="assets/images/banner/sale_banner.png" alt="Sale Banner"></a>
+            </div>
+        </div>
+    </div>
+    <div class="service-area axil-section-gapcommon">
+        <div class="container">
+            <div class="section-title-wrapper section-title-border">
+                <h2 class="title">Our Service 💥</h2>
+            </div>
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="service-box service-style-3">
+                        <div class="icon">
+                            <i class="far fa-truck"></i>
+                        </div>
+                        <div class="content">
+                            <h6 class="title">Fast &amp; Secure Delivery</h6>
+                            <p>Tell about your service.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="service-box service-style-3">
+                        <div class="icon">
+                            <i class="fal fa-badge-check"></i>
+                        </div>
+                        <div class="content">
+                            <h6 class="title">Money Back Guarantee</h6>
+                            <p>Within 10 days.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="service-box service-style-3">
+                        <div class="icon">
+                            <i class="far fa-hand-holding-box"></i>
+                        </div>
+                        <div class="content">
+                            <h6 class="title">24 Hour Return Policy</h6>
+                            <p>No question ask.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="service-box service-style-3">
+                        <div class="icon">
+                            <i class="far fa-headset"></i>
+                        </div>
+                        <div class="content">
+                            <h6 class="title">Pro Quality Support</h6>
+                            <p>24/7 Live support.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 <style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        font-family: 'Arial', sans-serif;
-    }
-
-    .product-detail {
+    /* Container for quantity buttons and input */
+    .product-variation {
         display: flex;
-        max-width: 1200px;
-        margin: 20px auto;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        padding: 20px;
-        background: #fff;
-    }
-
-    .product-images {
-        flex: 1;
-        padding-right: 20px;
-        display: flex;
-        flex-direction: column;
         align-items: center;
+        gap: 5px; /* Adjusted gap for a more compact look */
     }
 
-        .product-images img {
-            width: 100%;
-            max-width: 400px;
-            height: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            background: #f8f8f8;
+    /* Quantity input wrapper */
+    .pro-qty {
+        display: flex;
+        align-items: center;
+        border-radius: 4px;
+    }
+
+        /* Quantity input field */
+        .pro-qty input {
+            width: 40px; /* Narrower input field */
+            height: 32px;
+            text-align: center;
+            border: none; /* Remove borders inside the wrapper */
+            outline: none;
         }
 
-    .button-group {
+    /* Quantity increment and decrement buttons */
+    .qtybtn {
         display: flex;
         justify-content: center;
+        align-items: center;
+        width: 32px;
+        height: 32px;
+        background-color: #f0f0f0; /* Light background for the buttons */
+        border: 1px solid #ccc; /* Consistent border with the input */
+        cursor: pointer;
+        user-select: none; /* Prevent text selection */
     }
 
-        .button-group form {
-            display: flex;
-            align-items: center;
+        .qtybtn:hover {
+            background-color: #e0e0e0; /* Slightly darker on hover */
         }
 
-        .button-group input[type="number"] {
-            width: 50px;
-            margin-right: 10px;
+        /* Ensure no extra space around the elements */
+        .qtybtn:focus,
+        .pro-qty input:focus {
+            outline: none;
         }
 
-        button, .button-group button {
-            padding: 10px 20px;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            flex-grow: 1;
-            margin: 0 5px;
-            background-color: #ff6f61;
-        }
-
-            button:hover, .button-group button:hover {
-                background-color: #e55a4f;
-            }
-
-    .product-info {
-        flex: 2;
-        padding-left: 20px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    h1 {
-        color: #333;
-        font-size: 28px;
-        margin-bottom: 10px;
-    }
-
-    .price {
-        color: #E63946;
-        font-size: 24px;
-        margin: 10px 0;
-        font-weight: bold;
-    }
-
-    .product-description {
-        font-size: 16px;
-        color: #555;
-        line-height: 1.6;
-    }
-
-    .product-info h3 {
-        font-size: 20px;
-        color: #333;
-        margin-top: 20px;
-    }
-
-    .product-info p {
-        margin: 5px 0;
-    }
-
-    .reviews {
-        margin-top: 30px;
-    }
-
-    .review {
-        border-top: 1px solid #ddd;
-        padding: 10px 0;
-    }
-
-        .review:last-child {
-            border-bottom: 1px solid #ddd;
-        }
-
-        .review p {
-            margin: 5px 0;
-        }
-
-        .review .rating {
-            font-weight: bold;
-        }
-
-        .review .description {
-            color: #555;
-        }
-
-        .review .created-at {
-            color: #999;
-            font-size: 14px;
-        }
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all quantity buttons
+        var qtyButtons = document.querySelectorAll('.qtybtn');
 
-<div class="product-detail">
-    <div class="product-images">
-        <img src="@Model.SHinhanh" alt="@Model.STensanpham" />
-        <div class="button-group">
-            <form method="post" action="@Url.Action("addToCart", "Cart")">
-                <input type="hidden" name="productId" value="@Model.PkISanphamId" />
-                <input type="number" name="quantity" value="1" min="1" />
-                <button type="submit" class="btn btn-primary">Thêm vào giỏ</button>
-            </form>
-        </div>
-    </div>
-    <div class="product-info">
-        <h1>@Model.STensanpham</h1>
-        <p class="price">@Model.FGiaban.ToString("C")</p>
-        <p>Trọng lượng: @Model.FTrongluong</p>
+        qtyButtons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                // Find the quantity input
+                var qtyInput = this.parentElement.querySelector('input');
 
-        @if (ViewBag.BookDetails != null)
-        {
-            <h3>Thông tin chi tiết sách</h3>
-            var book = ViewBag.BookDetails;
-            <p>Tác giả: @book.STacgia</p>
-            <p>Nhà xuất bản: @book.SNhaxuatban</p>
-            <p>Năm xuất bản: @book.SNamxuatban</p>
-            <p>Ngôn ngữ: @book.SNgonngu</p>
-            <p>Số trang: @book.ISotrang</p>
-            <p>ISBN: @book.Isbn</p>
-        }
+                // Get the current value and convert it to a number
+                var currentValue = parseInt(qtyInput.value, 10);
 
-        @if (ViewBag.OfficeSupplyDetails != null)
-        {
-            <h3>Thông tin chi tiết văn phòng phẩm</h3>
-            var officeSupply = ViewBag.OfficeSupplyDetails;
-            <p>Xuất xứ: @officeSupply.SXuatxu</p>
-            <p>Thương hiệu: @officeSupply.SThuonghieu</p>
-            <p>Màu sắc: @officeSupply.SMausac</p>
-            <p>Chất liệu: @officeSupply.SChatlieu</p>
-            <p>Kích thước: @officeSupply.SKichthuoc</p>
-        }
-
-        <div class="product-description">
-            <p>Mô tả: @Model.SMota</p>
-        </div>
-
-        <div class="reviews">
-            <h3>Đánh giá sản phẩm</h3>
-            @if (ViewBag.Reviews != null && ViewBag.Reviews.Count > 0)
-            {
-                foreach (var review in ViewBag.Reviews)
-                {
-                    <div class="review">
-                        <p class="rating">Rating: @review.Rating</p>
-                        <p class="description">@review.Description</p>
-                        <p class="created-at">Created at: @review.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</p>
-                    </div>
+                if (this.classList.contains('inc')) {
+                    // Increment
+                    qtyInput.value = currentValue + 1;
+                } else if (this.classList.contains('dec')) {
+                    // Decrement
+                    if (currentValue > 1) {
+                        qtyInput.value = currentValue - 1;
+                    }
                 }
-            }
-            else
-            {
-                <p>Chưa có đánh giá nào cho sản phẩm này.</p>
-            }
-        </div>
-    </div>
-</div>
+            });
+        });
+    });
+</script>
+
+

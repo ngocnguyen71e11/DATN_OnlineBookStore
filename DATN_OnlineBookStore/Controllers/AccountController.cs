@@ -8,27 +8,23 @@ namespace DATN_OnlineBookStore.Controllers
     public class AccountController : Controller
     {
         DbOnlineBookStoreContext db = new DbOnlineBookStoreContext();
-        public async Task<IActionResult> Register(string email, string password, string firstName, string lastName, string? phone, DateTime? birthDate, string gender)
+        [HttpPost]
+        public async Task<IActionResult> Register(string email, string password, string firstName, string lastName, string? phone, DateTime? birthDate, string gender, string job)
         {
             if (ModelState.IsValid)
             {
-                // Convert gender string to boolean
                 bool? genderBool = gender == "1" ? true : (bool?)false;
-
-                // Kiểm tra xem email đã tồn tại chưa
                 var existingUser = await db.TblTaikhoans.FirstOrDefaultAsync(x => x.SEmail == email);
                 if (existingUser != null)
                 {
-                    ModelState.AddModelError("", "Email đã được sử dụng.");
-                    return View(); // Trả lại trang đăng ký với thông báo lỗi
+                    ModelState.AddModelError("email", "Email đã được sử dụng.");
+                    return View();
                 }
 
-                // Tạo mã tài khoản nếu chưa có
                 int newAccountId;
                 var maxId = await db.TblTaikhoans.MaxAsync(x => (int?)x.PkITaikhoanId);
                 newAccountId = maxId.HasValue ? maxId.Value + 1 : 1;
 
-                // Tạo tài khoản mới
                 var newAccount = new TblTaikhoan
                 {
                     PkITaikhoanId = newAccountId,
@@ -36,28 +32,26 @@ namespace DATN_OnlineBookStore.Controllers
                     SMatkhau = password,
                     FkIQuyenId = 3
                 };
-
                 db.TblTaikhoans.Add(newAccount);
                 await db.SaveChangesAsync();
 
                 var newCustomer = new TblKhachhang
                 {
-                    PkSKhid = newAccountId.ToString(), 
+                    PkSKhid = newAccountId.ToString(),
                     FkITaikhoanId = newAccount.PkITaikhoanId,
                     SHo = firstName,
                     STen = lastName,
                     SSdt = phone,
                     DNgaysinh = birthDate,
-                    IsGioitinh = genderBool
+                    IsGioitinh = genderBool,
+                    SNghenghiep = job
                 };
-
                 db.TblKhachhangs.Add(newCustomer);
                 await db.SaveChangesAsync();
 
                 return RedirectToAction("Login", "Account");
             }
-
-            return View(); // Trả lại trang đăng ký nếu kiểm tra hợp lệ thất bại
+            return View();
         }
 
 
@@ -173,6 +167,8 @@ namespace DATN_OnlineBookStore.Controllers
             {
                 model.PkSKhid = Guid.NewGuid().ToString();
                 db.TblKhachhangs.Add(model);
+                await db.SaveChangesAsync();
+                return RedirectToAction("updateInfo"); // Assuming you have a view to show success
             }
             else
             {
@@ -188,6 +184,8 @@ namespace DATN_OnlineBookStore.Controllers
                     existingCustomer.SNghenghiep = model.SNghenghiep;
 
                     db.TblKhachhangs.Update(existingCustomer);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("updateInfo"); // Assuming you have a view to show success
                 }
                 else
                 {
@@ -195,9 +193,8 @@ namespace DATN_OnlineBookStore.Controllers
                     return View(model);
                 }
             }
-            await db.SaveChangesAsync();
-            return RedirectToAction("updateInfo");
         }
+
         public ActionResult Index()
         {
             List<TblTaikhoan> tblTaikhoans = db.TblTaikhoans.ToList();

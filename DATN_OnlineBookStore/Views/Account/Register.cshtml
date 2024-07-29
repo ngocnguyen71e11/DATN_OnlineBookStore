@@ -4,137 +4,155 @@
     Layout = null;
 }
 
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html class="no-js" lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Register</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>eTrade || Sign Up</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
 
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
+    <!-- CSS
+    ============================================ -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/vendor/font-awesome.css">
+    <link rel="stylesheet" href="/assets/css/vendor/flaticon/flaticon.css">
+    <link rel="stylesheet" href="/assets/css/vendor/slick.css">
+    <link rel="stylesheet" href="/assets/css/vendor/slick-theme.css">
+    <link rel="stylesheet" href="/assets/css/vendor/jquery-ui.min.css">
+    <link rel="stylesheet" href="/assets/css/vendor/sal.css">
+    <link rel="stylesheet" href="/assets/css/vendor/magnific-popup.css">
+    <link rel="stylesheet" href="/assets/css/vendor/base.css">
+    <link rel="stylesheet" href="/assets/css/style.min.css">
 
-        h1 {
-            margin-top: 0;
-            font-size: 24px;
-            color: #333;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-            .form-group label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
-
-            .form-group input[type="text"],
-            .form-group input[type="password"],
-            .form-group input[type="date"],
-            .form-group input[type="radio"] {
-                width: 100%;
-                padding: 8px;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                box-sizing: border-box;
-            }
-
-            .form-group input[type="radio"] {
-                width: auto;
-                margin-right: 5px;
-            }
-
-            .form-group .gender-group {
-                display: flex;
-                align-items: center;
-            }
-
-                .form-group .gender-group label {
-                    margin-right: 15px;
-                }
-
-        button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-            button:hover {
-                background-color: #0056b3;
-            }
-
-        .error {
-            color: #ff0000;
-            font-size: 14px;
-        }
-    </style>
 </head>
+
+
 <body>
-    <div class="container">
-        <h1>Register</h1>
-        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
-        {
-        <div class="form-group">
-            @Html.Label("email", "Email")
-            @Html.TextBox("email", null, new { @class = "form-control", placeholder = "Email", required = "required" })
-        </div>
-        <div class="form-group">
-            @Html.Label("password", "Password")
-            @Html.TextBox("password", null, new { @class = "form-control", type = "password", placeholder = "Password", required = "required" })
-        </div>
-        <div class="form-group">
-            @Html.Label("firstName", "First Name")
-            @Html.TextBox("firstName", null, new { @class = "form-control", placeholder = "First Name", required = "required" })
-        </div>
-        <div class="form-group">
-            @Html.Label("lastName", "Last Name")
-            @Html.TextBox("lastName", null, new { @class = "form-control", placeholder = "Last Name", required = "required" })
-        </div>
-        <div class="form-group">
-            @Html.Label("phone", "Phone")
-            @Html.TextBox("phone", null, new { @class = "form-control", placeholder = "Phone" })
-        </div>
-        <div class="form-group">
-            @Html.Label("birthDate", "Birth Date")
-            @Html.TextBox("birthDate", null, new { @class = "form-control", type = "date" })
-        </div>
-        <div class="form-group">
-            <label>Gender:</label>
-            <div class="gender-group">
-                <label>
-                    @Html.RadioButton("gender", "1") Nam
-                </label>
-                <label>
-                    @Html.RadioButton("gender", "0") Nữ
-                </label>
+    <div class="axil-signin-area">
+
+        <!-- Start Header -->
+        <div class="signin-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <a href="index.html" class="site-logo"><img src="/assets/images/logo/logo.png" alt="logo"></a>
+                </div>
+                <div class="col-md-6">
+                    <div class="singin-header-btn">
+                        <p>Bạn đã sẵn sàng ?</p>
+                        <a href="@Url.Action("Login", "Account")" class="axil-btn btn-bg-secondary sign-up-btn">Đăng nhập</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
-        }
+        <!-- End Header -->
+
+        <div class="row">
+            <div class="col-xl-4 col-lg-6">
+                <div class="axil-signin-banner bg_image bg_image--10">
+                    <h3 class="title">We Offer the Best Products</h3>
+                </div>
+            </div>
+            <div class="col-lg-6 offset-xl-2">
+                <div class="axil-signin-form-wrap">
+                    <div class="axil-signin-form">
+                        <h3 class="title">I'm New Here</h3>
+                        <p class="b2 mb--55">Nhập thông tin chi tiết của bạn dưới đây</p>
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "singin-form" }))
+                        {
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="form-group">
+                                @Html.Label("email", "Email")
+                                @Html.TextBox("email", null, new { @class = "form-control", placeholder = "Email", required = "required" })
+                                @Html.ValidationMessageFor(model => model.SEmail, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("password", "Password")
+                                @Html.TextBox("password", null, new { @class = "form-control", type = "password", placeholder = "Password", required = "required" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("firstName", "First Name")
+                                @Html.TextBox("firstName", null, new { @class = "form-control", placeholder = "First Name", required = "required" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("lastName", "Last Name")
+                                @Html.TextBox("lastName", null, new { @class = "form-control", placeholder = "Last Name", required = "required" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("phone", "Phone")
+                                @Html.TextBox("phone", null, new { @class = "form-control", placeholder = "Phone" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("birthDate", "Ngày sinh")
+                                @Html.TextBox("birthDate", null, new { @class = "form-control", type = "date" })
+                            </div>
+                            <div class="form-group">
+                                <label>Gender:</label>
+                                <div>
+                                    <span>
+                                        @Html.RadioButton("gender", "1", new { style = "opacity: 1 !important; position: static !important;width:9%" })
+                                    </span>
+                                    <span>
+                                        Nam
+                                    </span>
+                                </div>
+                                <div>
+                                    <span style="opacity: 1 !important; position: static !important;">
+                                        @Html.RadioButton("gender", "0", new { style = "opacity: 1 !important; position: static !important; width:9%" })
+                                    </span>
+                                    <span>Nữ</span>
+                                </div>                                  
+                            </div>
+                            <div class="form-group">
+                                @Html.Label("job","Nghề nghiệp")
+                                @Html.TextBox("job", null, new { @class = "form-control", placeholder = "Nghề nghiệp", required = "required" })
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="axil-btn btn-bg-primary submit-btn">Đăng ký</button>
+                            </div>
+                        }     
+                        @section Scripts {
+                            <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+                            <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- JS
+    ============================================ -->
+    <!-- Modernizer JS -->
+    <script src="assets/js/vendor/modernizr.min.js"></script>
+    <!-- jQuery JS -->
+    <script src="assets/js/vendor/jquery.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="assets/js/vendor/popper.min.js"></script>
+    <script src="assets/js/vendor/bootstrap.min.js"></script>
+    <script src="assets/js/vendor/slick.min.js"></script>
+    <script src="assets/js/vendor/js.cookie.js"></script>
+    <!-- <script src="assets/js/vendor/jquery.style.switcher.js"></script> -->
+    <script src="assets/js/vendor/jquery-ui.min.js"></script>
+    <script src="assets/js/vendor/jquery.ui.touch-punch.min.js"></script>
+    <script src="assets/js/vendor/jquery.countdown.min.js"></script>
+    <script src="assets/js/vendor/sal.js"></script>
+    <script src="assets/js/vendor/jquery.magnific-popup.min.js"></script>
+    <script src="assets/js/vendor/imagesloaded.pkgd.min.js"></script>
+    <script src="assets/js/vendor/isotope.pkgd.min.js"></script>
+    <script src="assets/js/vendor/counterup.js"></script>
+    <script src="assets/js/vendor/waypoints.min.js"></script>
+
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
+
 </body>
+
+
+<!-- Mirrored from new.axilthemes.com/demo/template/etrade/sign-up.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 28 Jul 2024 10:00:57 GMT -->
 </html>
