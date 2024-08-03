@@ -1,4 +1,6 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using OfficeOpenXml;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -14,10 +16,10 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseDeveloperExceptionPage();
 app.UseRouting();
 
 app.UseAuthorization();

@@ -1,0 +1,107 @@
+﻿@model DATN_OnlineBookStore.Models.TblPhieunhaphang
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Chi Tiết Nhập Hàng";
+}
+
+<h2>Chi Tiết Nhập Hàng</h2>
+
+<div class="import-details">
+    <div class="import-header">
+        <div class="header-left">
+            <p><strong>Mã nhập hàng:</strong> @Model.PkIPhieunhaphangId</p>
+            <p><strong>Thời gian:</strong> @Model.DThoigiantao.ToString("dd/MM/yyyy")</p>
+            <p><strong>Nhà cung cấp:</strong> @Model.FkSNcc.STenNcc</p>
+        </div>
+        <div class="header-right">
+            <p><strong>Ghi chú:</strong> @Model.SGhichu</p>
+        </div>
+    </div>
+
+    <table class="table import-table">
+        <thead>
+            <tr>
+                <th>Mã hàng</th>
+                <th>Tên hàng</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Chiết khấu</th>
+                <th>Giá nhập</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model.TblCtphieunhaphangs)
+            {
+                <tr>
+                    <td>@detail.FkISanpham.PkISanphamId</td>
+                    <td>@detail.FkISanpham.STensanpham</td>
+                    <td>@detail.ISoluong</td>
+                    <td>@detail.FGianhap.ToString("N0")</td>
+                    <td>@detail.FChietkhau</td>
+                    <td>@detail.FGianhap.ToString("N0")</td>
+                    <td>@(detail.FGianhap * detail.ISoluong - detail.FChietkhau)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="import-summary">
+        <p><strong>Tổng số lượng:</strong> @Model.TblCtphieunhaphangs.Sum(d => d.ISoluong)</p>
+        <p><strong>Tổng số mặt hàng:</strong> @Model.TblCtphieunhaphangs.Count()</p>
+        <p><strong>Tổng tiền:</strong> @Model.TblCtphieunhaphangs.Sum(d => d.FGianhap * d.ISoluong)</p>
+        <p><strong>Giảm giá:</strong> @Model.TblCtphieunhaphangs.Sum(d => d.FChietkhau)</p>
+        <p><strong>Cần trả:</strong> @Model.TblCtphieunhaphangs.Sum(d => d.FGianhap * d.ISoluong - d.FChietkhau)</p>
+    </div>
+</div>
+
+<a href="@Url.Action("viewImportList", "Import")" class="btn btn-primary">Quay lại</a>
+
+<style>
+    .import-details {
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+
+    .import-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .header-left, .header-right {
+        flex: 1;
+    }
+
+        .header-left p, .header-right p {
+            margin: 0;
+            padding: 5px 0;
+        }
+
+    .import-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .import-table th, .import-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .import-table th {
+            background-color: #e9ecef;
+        }
+
+    .import-summary {
+        margin-top: 20px;
+    }
+
+        .import-summary p {
+            margin: 0;
+            padding: 5px 0;
+            padding-left:70%;
+        }
+</style>

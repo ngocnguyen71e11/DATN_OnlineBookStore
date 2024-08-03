@@ -12,34 +12,46 @@ namespace DATN_OnlineBookStore.Controllers
         {
             return View();
         }
-        public ActionResult viewOrderList()
+        public async Task<IActionResult> viewOrderList()
         {
-            var orders = db.TblDonhangs
-         .Include(o => o.TblCtdonhangs)
-             .ThenInclude(d => d.FkISanpham)
-         .OrderBy(o => o.FkITrangthai != 1)  
-         .ThenBy(o => o.DThoigianmua)  
-         .ToList();
+            var donHangs = await db.TblDonhangs
+                .Include(dh => dh.FkSKh)
+                .ToListAsync();
 
-            ViewBag.Orders = orders;
-            return View();
+            return View(donHangs);
         }
-        public ActionResult viewOrderDetails(int orderID)
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeOrderStatus(int orderId, int newStatus)
         {
-            var orderDetails = db.TblDonhangs
-                .Where(o => o.PkIDonhangId == orderID)
-                .Include(o => o.TblCtdonhangs)
-                    .ThenInclude(d => d.FkISanpham)
-                .Include(o => o.FkSKh)
-                    .ThenInclude(kh => kh.TblDiachiKhs)
-                        .ThenInclude(diachi => diachi.FkITinh)  // Bao gồm thông tin tỉnh
-                        .ThenInclude(tinh => tinh.TblHuyens)    // Bao gồm thông tin huyện
-                        .ThenInclude(huyen => huyen.TblXas)      // Bao gồm thông tin xã
-                .FirstOrDefault();
+            var order = await db.TblDonhangs.FindAsync(orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            order.FkITrangthai = newStatus;
+            await db.SaveChangesAsync();
+            return RedirectToAction(nameof(viewOrderList)); // Redirect back to the list to see the updated status
+        }
+
+        public async Task<IActionResult> viewOrderDetails(int orderID)
+        {
+            var orderDetails = await db.TblDonhangs
+              .Include(dh => dh.FkSKh)  // Load customer details
+              .Include(dh => dh.FkSDiachiKh) // Load address details
+                  .ThenInclude(addr => addr.FkIXa) // Load details about the 'Xa'
+                  .Include(dh => dh.FkSDiachiKh)
+                  .ThenInclude(addr => addr.FkIHuyen) // Load details about the 'Huyen'
+                  .Include(dh => dh.FkSDiachiKh)
+                  .ThenInclude(addr => addr.FkITinh) // Load details about the 'Tinh'
+              .Include(dh => dh.TblCtdonhangs) // Include order details
+                  .ThenInclude(ct => ct.FkISanpham) // Include product details for each order detail
+              .FirstOrDefaultAsync(dh => dh.PkIDonhangId == orderID);
 
             if (orderDetails == null)
             {
-                return NotFound("Không tìm thấy đơn hàng.");
+                return NotFound();
             }
 
             return View(orderDetails);

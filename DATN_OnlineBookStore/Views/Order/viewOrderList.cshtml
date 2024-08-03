@@ -1,53 +1,130 @@
-﻿@{
+﻿@using System.Linq
+@model IEnumerable<DATN_OnlineBookStore.Models.TblDonhang>
+@{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewData["Title"] = "viewOrderList";
+    ViewData["Title"] = "Danh sách đơn hàng";
 }
 
-<h2>Danh sách đơn hàng</h2>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4">ĐƠN HÀNG</h2>
+            <!-- Existing content -->
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mã Đơn Hàng</th>
+                        <th>Mã Khách Hàng</th>
+                        <th>Thời Gian</th>
+                        <th>Ghi Chú</th>
+                        <th>Tổng Tiền</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.PkIDonhangId</td>
+                            <td>@item.FkSKhid</td>
+                            <td>@item.DThoigianmua?.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@item.SGhichu</td>
+                            <td>@item.FTongtien?.ToString("N0")</td>
+                            <td>
+                                <form asp-action="ChangeOrderStatus" method="post">
+                                    <input type="hidden" name="orderId" value="@item.PkIDonhangId" />
+                                    <select name="newStatus" onchange="this.form.submit();">
+                                        @foreach (var statusOption in new Dictionary<int, string> { { 1, "Xác nhận" }, { 2, "Đang giao" }, { 3, "Thành công" }, { 4, "Đã hủy" } })
+                                        {
+                                            if (item.FkITrangthai == statusOption.Key)
+                                            {
+                                                <option value="@statusOption.Key" selected>@statusOption.Value</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@statusOption.Key">@statusOption.Value</option>
+                                            }
+                                        }
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("viewOrderDetails", "Order", new { orderID = item.PkIDonhangId })" class="btn btn-primary">Xem chi tiết</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-@if (ViewBag.Orders != null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Mã đơn hàng</th>
-                <th>Ngày mua</th>
-                <th>Tổng tiền</th>
-                <th>Trạng thái</th>
-                <th>Chi tiết</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in ViewBag.Orders)
-            {
-                <tr>
-                    <td>@order.PkIDonhangId</td>
-                    <td>@order.DThoigianmua?.ToString("dd-MM-yyyy")</td>
-                    <td>@order.FTongtien.ToString("N0") VND</td>
-                    <td>
-                        @if (order.FkITrangthai == 1)
-                        {
-                            @:Đang chờ
-                        }
-                        else
-                        {
-                            @:Đã xử lý
-                        }
-                    </td>
-                    <td>
-                        <!-- Sử dụng thẻ form để gửi dữ liệu đến Action OrderDetail -->
-                        <form method="post" action="@Url.Action("viewOrderDetails", "Order")">
-                            <input type="hidden" name="orderID" value="@order.PkIDonhangId" />
-                            <button type="submit" class="btn btn-primary">Chi tiết</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Không có đơn hàng nào.</p>
-}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4; /* Màu nền cho trang */
+        margin: 0;
+        padding: 20px;
+    }
 
+    h2 {
+        color: #333; /* Màu chữ tiêu đề */
+        text-align: left;
+    }
+
+    .table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse; /* Loại bỏ khoảng cách giữa các ô */
+    }
+
+        .table thead {
+            background-color: #e9ecef; /* Màu nền cho tiêu đề của bảng */
+        }
+
+        .table th, .table td {
+            text-align: left;
+            padding: 12px; /* Đệm cho nội dung trong các ô */
+            border: 1px solid #dee2e6; /* Đường viền cho các ô */
+        }
+
+        .table th {
+            font-weight: bold; /* Làm đậm chữ cho tiêu đề bảng */
+        }
+
+        .table tbody tr:nth-child(odd) {
+            background-color: #ffffff; /* Màu nền cho các hàng lẻ */
+        }
+
+        .table tbody tr:nth-child(even) {
+            background-color: #f8f9fa; /* Màu nền cho các hàng chẵn */
+        }
+
+        .table tbody tr:hover {
+            background-color: #eaeaea; /* Màu nền khi hover chuột vào hàng */
+        }
+
+    /* Định nghĩa thêm cho các nút và input nếu cần */
+    input[type="search"] {
+        padding: 10px;
+        margin-top: 10px;
+        width: 200px; /* Chiều rộng cho khung tìm kiếm */
+        border-radius: 5px; /* Bo tròn góc cho khung tìm kiếm */
+        border: 1px solid #ccc; /* Đường viền cho khung tìm kiếm */
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #007bff; /* Màu nền cho nút */
+        color: white;
+        border: none;
+        border-radius: 5px; /* Bo tròn góc cho nút */
+        cursor: pointer; /* Thay đổi con trỏ khi rê chuột vào */
+    }
+
+        button:hover {
+            background-color: #0056b3; /* Màu nền khi hover vào nút */
+        }
+
+</style>

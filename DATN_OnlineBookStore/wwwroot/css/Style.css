@@ -1,43 +1,22 @@
 ﻿body {
-    display: flex;
-    min-height: 100vh;
-    margin: 0;
     font-family: Arial, sans-serif;
 }
 
-.sidebar {
-    width: 200px;
-    background-color: #f4f4f4;
-    padding: 20px;
-    height: 100vh; /* Chiều cao toàn màn hình */
-    box-shadow: 2px 0 5px 0 rgba(0,0,0,0.1);
+.navbar {
+    background-color: #f8f9fa; /* Light gray background */
+    box-shadow: 0 2px 4px rgba(0,0,0,.1); /* Slight shadow for depth */
 }
 
-    .sidebar h1 {
-        padding: 0;
-        margin: 0 0 20px;
+.table {
+    background-color: #ffffff; /* White background for the table */
+    border-collapse: collapse;
+}
+
+    .table th, .table td {
+        border: 1px solid #dee2e6; /* Light gray border for table cells */
+        padding: 8px; /* Padding inside cells */
     }
 
-    .sidebar ul {
-        list-style: none;
-        padding: 0;
-    }
-
-        .sidebar ul li a {
-            text-decoration: none;
-            color: #333;
-            display: block;
-            padding: 8px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-            .sidebar ul li a:hover {
-                background-color: #ddd;
-                color: #000;
-            }
-
-.main-content {
-    flex-grow: 1;
-    padding: 20px;
-    overflow: auto;
+.custom-select {
+    width: 100%; /* Full width for the select dropdown */
 }

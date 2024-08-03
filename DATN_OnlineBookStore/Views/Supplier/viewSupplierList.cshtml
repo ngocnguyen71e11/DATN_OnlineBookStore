@@ -1,0 +1,53 @@
+﻿@model IEnumerable<DATN_OnlineBookStore.Models.TblNhacungcap>
+
+@{
+    ViewData["Title"] = "ListSupplier";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Danh sách nhà cung cấp</h1>
+
+<p>
+    <a asp-action="addSupplier">Thêm mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nhà cung cấp
+            </th>
+            <th>
+                Số điện thoại
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Mã số thuế
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.STenNcc)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SSdt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SMasothue)
+                </td>
+                <td>
+                    <a asp-action="updateSupplierInfo" asp-route-id="@item.PkINccid">Sửa</a> |
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
