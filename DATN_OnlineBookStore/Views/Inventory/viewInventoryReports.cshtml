@@ -1,0 +1,118 @@
+﻿@model DATN_OnlineBookStore.Models.TblPhieukiemke
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Chi Tiết Kiểm Kê";
+}
+
+<h2>Chi Tiết Nhập Hàng</h2>
+
+<div class="import-details">
+    <div class="import-header">
+        <div class="header-left">
+            <p><strong>Mã phiếu kiểm kê:</strong> @Model.PkIPhieukiemkeId</p>
+            <p><strong>Thời gian:</strong> @Model.DThoigiantao.ToString("dd/MM/yyyy")</p>
+        </div>
+        <div class="header-right">
+            <p><strong>Ghi chú:</strong> @Model.SGhichu</p>
+        </div>
+    </div>
+
+    <table class="table import-table">
+        <thead>
+            <tr>
+                <th>Mã hàng</th>
+                <th>Tên hàng</th>
+                <th>Tồn kho</th>
+                <th>Số lượng thực tế</th>
+                <th>Giá vốn</th>
+                <th>Giá trị tồn</th>
+                <th>Giá trị thực tế</th>
+                <th>Lệch</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model.TblCtphieukiemkes)
+            {
+                var giaVon = detail.FkISanpham.FGiavon;
+                var giaTriTon = detail.ITonkho * giaVon;
+                var giaTriThucTe = detail.ISoluongthucte * giaVon;
+                var lech = giaTriThucTe - giaTriTon;
+                <tr>
+                    <td>@detail.FkISanpham.PkISanphamId</td>
+                    <td>@detail.FkISanpham.STensanpham</td>
+                    <td>@detail.ITonkho</td>
+                    <td>@detail.ISoluongthucte</td>
+                    <td>@giaVon</td>
+                    <td>@giaTriTon</td>
+                    <td>@giaTriThucTe</td>
+                    <td>@lech</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @{
+        var tongTon = Model.TblCtphieukiemkes.Sum(x => x.ITonkho);
+        var tongThucTe = Model.TblCtphieukiemkes.Sum(x => x.ISoluongthucte);
+        var tongGiaTriTon = Model.TblCtphieukiemkes.Sum(x => x.ITonkho * x.FkISanpham.FGiavon);
+        var tongGiaTriThucTe = Model.TblCtphieukiemkes.Sum(x => x.ISoluongthucte * x.FkISanpham.FGiavon);
+        var tongLech = tongGiaTriThucTe - tongGiaTriTon;
+    }
+    <div class="import-summary">
+        <p>Tổng số lượng tồn: @tongTon</p>
+        <p>Tổng số lượng thực tế: @tongThucTe</p>
+        <p>Tổng giá trị tồn: @tongGiaTriTon</p>
+        <p>Tổng giá trị thực tế: @tongGiaTriThucTe</p>
+        <p>Tổng chênh lệch: @tongLech</p>
+    </div>
+</div>
+
+<a href="@Url.Action("viewInventoryList", "Inventory")" class="btn btn-primary">Quay lại</a>
+
+<style>
+    .import-details {
+        padding: 20px;
+        border: 1px solid #ccc;
+        background-color: #f9f9f9;
+    }
+
+    .import-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .header-left, .header-right {
+        flex: 1;
+    }
+
+        .header-left p, .header-right p {
+            margin: 0;
+            padding: 5px 0;
+        }
+
+    .import-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .import-table th, .import-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .import-table th {
+            background-color: #e9ecef;
+        }
+
+    .import-summary {
+        margin-top: 20px;
+    }
+
+        .import-summary p {
+            margin: 0;
+            padding: 5px 0;
+            padding-left: 70%;
+        }
+</style>

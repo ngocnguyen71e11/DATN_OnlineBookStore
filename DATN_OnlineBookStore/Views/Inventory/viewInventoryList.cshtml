@@ -1,0 +1,79 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Danh sách phiếu kiểm kê";
+}
+<head>
+    <title>Danh Sách Phiếu Kiểm Kê</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #fff;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .import-button {
+        float: right;
+        padding: 10px 20px;
+        margin: 20px 0;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        width:10%;
+    }
+</style>
+
+</head>
+<body>
+    <div style="padding: 5%">
+        <div style="display:flex">
+            <h1>Danh Sách Phiếu Kiểm Kê</h1>
+            <button class="import-button" style="margin-left: 46%;" onclick="location.href='@Url.Action("importInventoryFile", "Inventory")'">Import</button>
+        </div>        
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã Kiểm Kê</th>
+                    <th>Thời Gian</th>
+                    <th>Tồn</th>
+                    <th>Số Thực Tế</th>
+                    <th>Tổng Giá Trị Tồn</th>
+                    <th>Tổng Giá Trị Thực Tế</th>
+                    <th>Tổng Chênh Lệch</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaKiemKe</td>
+                        <td>@item.ThoiGian.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>@item.Ton</td>
+                        <td>@item.SoThucTe</td>
+                        <td>@item.TongGiaTriTon</td>
+                        <td>@item.TongGiaTriThucTe</td>
+                        <td>@item.TrongChenhLech</td>
+                        <td><a href="@Url.Action("viewInventoryReports", "Inventory", new { id = item.MaKiemKe })" class="btn btn-warning btn-sm">Chi tiết</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+</body>
+</html>

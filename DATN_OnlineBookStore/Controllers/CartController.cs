@@ -323,7 +323,6 @@ namespace DATN_OnlineBookStore.Controllers
                         chiTietDonHangList.Add(chiTietDonHang);
                         totalAmount += quantities[i] * product.FGiaban;
 
-                        // Cập nhật tồn kho
                         product.ITonkho -= quantities[i];
                         db.TblSanphams.Update(product);
                     }
@@ -352,39 +351,71 @@ namespace DATN_OnlineBookStore.Controllers
         }
 
         public IActionResult orderConfirmation()
+        {
+            var taikhoanId = HttpContext.Session.GetInt32("AccountId");
+            if (taikhoanId == null)
             {
-                var taikhoanId = HttpContext.Session.GetInt32("AccountId");
-                if (taikhoanId == null)
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-
-                var user = db.TblKhachhangs.FirstOrDefault(kh => kh.FkITaikhoanId == taikhoanId.Value);
-                if (user == null)
-                {
-                    return NotFound("Không tìm thấy thông tin khách hàng.");
-                }
-
-                var orders = db.TblDonhangs
-                    .Where(dh => dh.FkSKhid == user.PkSKhid)
-                    .Select(dh => new OrderViewModel
-                    {
-                        OrderId = dh.PkIDonhangId,
-                        OrderDate = dh.DThoigianmua ?? DateTime.Now,
-                        TotalPrice = dh.FTongtien ?? 0,
-                        Items = dh.TblCtdonhangs.Select(ct => new OrderItemViewModel
-                        {
-                            ProductName = ct.FkISanpham.STensanpham,
-                            Quantity = ct.ISoluong ?? 0,
-                            Price = ct.FGiaban ?? 0,
-                            Total = (ct.ISoluong ?? 0) * (ct.FGiaban ?? 0),
-                            PkICtdonhangId = ct.PkICtdonhangId,
-                            IsReviewed = ct.TblDanhgia.Any()
-                        }).ToList()
-                    })
-                    .ToList();
-
-                return View(orders);
+                return RedirectToAction("Login", "Account");
             }
+
+            var user = db.TblKhachhangs.FirstOrDefault(kh => kh.FkITaikhoanId == taikhoanId.Value);
+            if (user == null)
+            {
+                return NotFound("Không tìm thấy thông tin khách hàng.");
+            }
+
+            Dictionary<int, string> orderStatusDescriptions = new Dictionary<int, string>
+    {
+        { 1, "Đang chờ" },
+        { 2, "Đang giao" },
+        { 3, "Giao thành công" },
+        { 4, "Đã hủy" }
+    };
+
+            var orders = db.TblDonhangs
+                .Where(dh => dh.FkSKhid == user.PkSKhid)
+                .Select(dh => new OrderViewModel
+                {
+                    OrderId = dh.PkIDonhangId,
+                    OrderDate = dh.DThoigianmua ?? DateTime.Now,
+                    TotalPrice = dh.FTongtien ?? 0,
+                    OrderStatus = orderStatusDescriptions[dh.FkITrangthai],
+                    Items = dh.TblCtdonhangs.Select(ct => new OrderItemViewModel
+                    {
+                        ProductName = ct.FkISanpham.STensanpham,
+                        Quantity = ct.ISoluong ?? 0,
+                        Price = ct.FGiaban ?? 0,
+                        Total = (ct.ISoluong ?? 0) * (ct.FGiaban ?? 0),
+                        PkICtdonhangId = ct.PkICtdonhangId,
+                        IsReviewed = ct.TblDanhgia.Any()
+                    }).ToList()
+                })
+                .ToList();
+
+            return View(orders);
+        }
+
+
+        public async Task<IActionResult> viewOrderDetails(int orderId)
+        {
+            var orderDetails = await db.TblDonhangs
+              .Include(dh => dh.FkSKh)
+              .Include(dh => dh.FkSDiachiKh)
+                  .ThenInclude(addr => addr.FkIXa)
+                  .Include(dh => dh.FkSDiachiKh)
+                  .ThenInclude(addr => addr.FkIHuyen)
+                  .Include(dh => dh.FkSDiachiKh)
+                  .ThenInclude(addr => addr.FkITinh)
+              .Include(dh => dh.TblCtdonhangs)
+                  .ThenInclude(ct => ct.FkISanpham)
+              .FirstOrDefaultAsync(dh => dh.PkIDonhangId == orderId);
+
+            if (orderDetails == null)
+            {
+                return NotFound();
+            }
+
+            return View(orderDetails);
+        }
     }
 }

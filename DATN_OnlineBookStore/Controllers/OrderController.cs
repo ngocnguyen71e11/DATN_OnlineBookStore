@@ -32,21 +32,21 @@ namespace DATN_OnlineBookStore.Controllers
 
             order.FkITrangthai = newStatus;
             await db.SaveChangesAsync();
-            return RedirectToAction(nameof(viewOrderList)); // Redirect back to the list to see the updated status
+            return RedirectToAction(nameof(viewOrderList)); 
         }
 
         public async Task<IActionResult> viewOrderDetails(int orderID)
         {
             var orderDetails = await db.TblDonhangs
-              .Include(dh => dh.FkSKh)  // Load customer details
-              .Include(dh => dh.FkSDiachiKh) // Load address details
-                  .ThenInclude(addr => addr.FkIXa) // Load details about the 'Xa'
+              .Include(dh => dh.FkSKh)  
+              .Include(dh => dh.FkSDiachiKh) 
+                  .ThenInclude(addr => addr.FkIXa) 
                   .Include(dh => dh.FkSDiachiKh)
-                  .ThenInclude(addr => addr.FkIHuyen) // Load details about the 'Huyen'
+                  .ThenInclude(addr => addr.FkIHuyen) 
                   .Include(dh => dh.FkSDiachiKh)
-                  .ThenInclude(addr => addr.FkITinh) // Load details about the 'Tinh'
-              .Include(dh => dh.TblCtdonhangs) // Include order details
-                  .ThenInclude(ct => ct.FkISanpham) // Include product details for each order detail
+                  .ThenInclude(addr => addr.FkITinh)
+              .Include(dh => dh.TblCtdonhangs)
+                  .ThenInclude(ct => ct.FkISanpham)
               .FirstOrDefaultAsync(dh => dh.PkIDonhangId == orderID);
 
             if (orderDetails == null)
@@ -56,6 +56,7 @@ namespace DATN_OnlineBookStore.Controllers
 
             return View(orderDetails);
         }
+
         [HttpPost]
         public JsonResult confirmOrderStatus(int orderID)
         {
@@ -75,6 +76,21 @@ namespace DATN_OnlineBookStore.Controllers
         public ActionResult searchOrders()
         {
             return View();
+        }
+        public IActionResult CancelOrder(int orderId)
+        {
+            var order = db.TblDonhangs.Find(orderId);
+            if (order == null)
+            {
+                return NotFound();
+            }
+            if (DateTime.Now.Subtract(order.DThoigianmua.GetValueOrDefault()).TotalHours > 24)
+            {
+                return NotFound();
+            }
+            order.FkITrangthai = 4;
+            db.SaveChanges();
+            return RedirectToAction("orderConfirmation", "Cart", new { id = orderId });
         }
     }
 }

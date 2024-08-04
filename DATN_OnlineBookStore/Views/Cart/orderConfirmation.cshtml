@@ -19,7 +19,9 @@
                                         <th scope="col">Số lượng</th>
                                         <th scope="col">Giá</th>
                                         <th scope="col">Tổng tiền</th>
+                                        <th scope="col">Trạng thái</th>
                                         <th scope="col">Đánh giá</th>
+                                        <th scope="col">Chi tiết đơn hàng</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -28,8 +30,9 @@
                                         <tr>
                                             <td product-title>@item.ProductName</td>
                                             <td product-title>@item.Quantity</td>
-                                            <td product-title>@item.Price.ToString("C")</td>
-                                            <td product-title>@item.Total.ToString("C")</td>
+                                            <td product-title>@item.Price</td>
+                                            <td product-title>@item.Total</td>
+                                            <td>@order.OrderStatus</td>
                                             <td product-title>
                                                 @if (item.IsReviewed)
                                                 {
@@ -40,11 +43,14 @@
                                                     <a href="@Url.Action("CreateReview", "Review", new { orderItemId = item.PkICtdonhangId })">Đánh giá sản phẩm</a>
                                                 }
                                             </td>
+                                            <td>
+                                                <a href="@Url.Action("viewOrderDetails", "Cart", new { orderId = order.OrderId })">Xem chi tiết</a>
+                                            </td>
                                         </tr>
                                     }
                                     <tr>
                                         <td class="order-total-amount total" colspan="3">Tổng tiền:</td>
-                                        <td class="total">@order.TotalPrice.ToString("C")</td>
+                                        <td class="total">@order.TotalPrice</td>
                                         <td></td>
                                     </tr>
                                 </tbody>

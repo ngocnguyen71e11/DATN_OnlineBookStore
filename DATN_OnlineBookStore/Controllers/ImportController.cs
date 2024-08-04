@@ -48,7 +48,7 @@ namespace DATN_OnlineBookStore.Controllers
                 return View("ImportImportFile");
             }
 
-            var data = new List<Tuple<int, double, int, double>>(); // Tuple cho ProductId, Price, Quantity, Discount
+            var data = new List<Tuple<int, double, int, double>>();
             try
             {
                 using (var stream = new MemoryStream())
@@ -87,7 +87,7 @@ namespace DATN_OnlineBookStore.Controllers
                 return View("ImportImportFile");
             }
 
-            var data = new List<Tuple<int, double, int, double>>(); // Tuple cho ProductId, Price, Quantity, Discount
+            var data = new List<Tuple<int, double, int, double>>(); 
             try
             {
                 using (var stream = new MemoryStream())
@@ -116,58 +116,54 @@ namespace DATN_OnlineBookStore.Controllers
 
             try
             {
-                // Lấy ID lớn nhất hiện có từ cơ sở dữ liệu và tăng thêm 1 cho ID mới
+                
                 int maxPhieuNhapHangId = db.TblPhieunhaphangs.Max(p => (int?)p.PkIPhieunhaphangId) ?? 0;
                 int newPhieuNhapHangId = maxPhieuNhapHangId + 1;
 
                 var purchaseOrder = new TblPhieunhaphang
                 {
-                    PkIPhieunhaphangId = newPhieuNhapHangId, // Mã phiếu nhập hàng mới
-                    FkSNccid = int.Parse(supplier), // Mã nhà cung cấp
-                    FChietkhau = invoiceDiscount, // Chiết khấu hóa đơn
-                    DThoigiantao = DateTime.Now, // Thời gian tạo
-                    SGhichu = notes // Ghi chú
+                    PkIPhieunhaphangId = newPhieuNhapHangId, 
+                    FkSNccid = int.Parse(supplier), 
+                    FChietkhau = invoiceDiscount, 
+                    DThoigiantao = DateTime.Now, 
+                    SGhichu = notes 
                 };
 
                 db.TblPhieunhaphangs.Add(purchaseOrder);
-                await db.SaveChangesAsync(); // Lưu thay đổi để có mã phiếu nhập hàng mới
+                await db.SaveChangesAsync(); 
 
-                // Lấy ID lớn nhất hiện có của chi tiết phiếu nhập hàng và tăng thêm 1 cho ID mới
                 int maxChiTietPhieuNhapHangId = db.TblCtphieunhaphangs.Max(p => (int?)p.PkICtphieunhapId) ?? 0;
                 int newChiTietPhieuNhapHangId = maxChiTietPhieuNhapHangId + 1;
-
-                // Thêm các chi tiết đơn hàng
                 foreach (var item in data)
                 {
                     var orderDetail = new TblCtphieunhaphang
                     {
-                        PkICtphieunhapId = newChiTietPhieuNhapHangId++, // Mã chi tiết phiếu nhập hàng mới
-                        FkIPhieunhaphangId = newPhieuNhapHangId, // Liên kết với phiếu nhập hàng mới tạo
-                        FkISanphamId = item.Item1, // Mã sản phẩm
-                        FGianhap = item.Item2, // Giá nhập
-                        ISoluong = item.Item3, // Số lượng
-                        FChietkhau = item.Item4 // Chiết khấu
+                        PkICtphieunhapId = newChiTietPhieuNhapHangId++, 
+                        FkIPhieunhaphangId = newPhieuNhapHangId, 
+                        FkISanphamId = item.Item1, 
+                        FGianhap = item.Item2, 
+                        ISoluong = item.Item3, 
+                        FChietkhau = item.Item4 
                     };
-                    db.TblCtphieunhaphangs.Add(orderDetail); // Thêm chi tiết đơn hàng vào cơ sở dữ liệu
+                    db.TblCtphieunhaphangs.Add(orderDetail);
                 }
 
-                await db.SaveChangesAsync(); // Lưu tất cả thay đổi vào cơ sở dữ liệu
+                await db.SaveChangesAsync(); 
 
-                // Cập nhật bảng tblSanpham với thông tin từ tblCtphieunhaphang
                 foreach (var item in data)
                 {
                     var sanpham = db.TblSanphams.FirstOrDefault(p => p.PkISanphamId == item.Item1);
                     if (sanpham != null)
                     {
-                        sanpham.ITonkho += item.Item3; // Cập nhật số lượng tồn kho
-                        sanpham.FGiavon = item.Item2; // Cập nhật giá vốn
+                        sanpham.ITonkho += item.Item3; 
+                        sanpham.FGiavon = item.Item2; 
                     }
                 }
 
-                await db.SaveChangesAsync(); // Lưu thay đổi vào bảng tblSanpham
+                await db.SaveChangesAsync(); 
 
                 TempData["Success"] = "Dữ liệu đã được lưu thành công.";
-                return RedirectToAction("viewImportList"); // Chuyển hướng đến danh sách nhập hàng sau khi lưu thành công
+                return RedirectToAction("viewImportList");
             }
             catch (Exception ex)
             {

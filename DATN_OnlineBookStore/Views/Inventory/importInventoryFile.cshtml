@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Import phiếu kiểm kê";
+}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4; 
+    }
+
+    h2 {
+        color: #333; 
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #666; 
+    }
+
+    input[type="file"],
+    input[type="text"] {
+        width: 100%; 
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc; 
+        border-radius: 4px; 
+    }
+
+    button {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px; 
+    }
+
+        button:hover {
+            background-color: #45a049; 
+        }
+
+    .btn-secondary {
+        background-color: #ccc; 
+    }
+
+        .btn-secondary:hover {
+            background-color: #bbb; 
+        }
+
+    .alert {
+        padding: 15px;
+        margin-top: 20px; 
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .alert-success {
+        background-color: #dff0d8;
+        border-color: #d6e9c6;
+        color: #3c763d;
+    }
+
+    .alert-danger {
+        background-color: #f2dede;
+        border-color: #ebccd1;
+        color: #a94442;
+    }
+
+</style>
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="importInventoryFile" enctype="multipart/form-data" method="post">
+    <div style="display:flex">
+        <div class="form-group" style="    width: 50%;">
+            <label for="file">Tải file dữ liệu:</label>
+            <input style="height: 350px;" type="file" name="file" id="file" class="form-control" required />
+        </div>
+        <div class="form-group" style="width: 20%;margin-left: 10%;margin-top: 5%;">
+            <label for="notes">Ghi chú:</label>
+            <input style="padding-left:2%;" type="text" name="notes" id="notes" class="form-control" />
+        </div>
+    </div>
+   
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}

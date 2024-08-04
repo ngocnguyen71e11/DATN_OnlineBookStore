@@ -19,14 +19,12 @@ namespace DATN_OnlineBookStore.Controllers
 
             var orderItem = db.TblCtdonhangs
                 .Include(o => o.FkISanpham)
-                .Include(o => o.FkIDonhang)  // Include the order to check its status
+                .Include(o => o.FkIDonhang)  
                 .FirstOrDefault(c => c.PkICtdonhangId == orderItemId);
             if (orderItem == null)
             {
                 return NotFound("Không tìm thấy sản phẩm trong đơn hàng.");
             }
-
-            // Check if the order status is 2
             if (orderItem.FkIDonhang.FkITrangthai != 2)
             {
                 return BadRequest("Sản phẩm này không thể đánh giá vì đơn hàng không đủ điều kiện.");
@@ -36,9 +34,6 @@ namespace DATN_OnlineBookStore.Controllers
             ViewBag.ProductName = orderItem.FkISanpham.STensanpham;
             return View("createReview");
         }
-
-
-        // POST: Tạo đánh giá mới
         [HttpPost]
         public IActionResult submitProductReview(int orderItemId, double rating, string description)
         {
@@ -67,7 +62,6 @@ namespace DATN_OnlineBookStore.Controllers
 
             return RedirectToAction("viewReviewsList");
         }
-        // GET: Danh sách đánh giá của người dùng
         public IActionResult viewReviewsList()
         {
             var taikhoanId = HttpContext.Session.GetInt32("AccountId");
