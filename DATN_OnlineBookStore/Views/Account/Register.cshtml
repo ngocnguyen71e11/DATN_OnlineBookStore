@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>eTrade || Sign Up</title>
+    <title>eTrade || Đăng ký</title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -32,7 +32,6 @@
 
 </head>
 
-
 <body>
     <div class="axil-signin-area">
 
@@ -44,7 +43,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="singin-header-btn">
-                        <p>Bạn đã sẵn sàng ?</p>
+                        <p>Bạn đã sẵn sàng?</p>
                         <a href="@Url.Action("Login", "Account")" class="axil-btn btn-bg-secondary sign-up-btn">Đăng nhập</a>
                     </div>
                 </div>
@@ -55,13 +54,13 @@
         <div class="row">
             <div class="col-xl-4 col-lg-6">
                 <div class="axil-signin-banner bg_image bg_image--10">
-                    <h3 class="title">We Offer the Best Products</h3>
+                    <h3 class="title">Chúng tôi cung cấp sản phẩm tốt nhất</h3>
                 </div>
             </div>
             <div class="col-lg-6 offset-xl-2">
                 <div class="axil-signin-form-wrap">
                     <div class="axil-signin-form">
-                        <h3 class="title">I'm New Here</h3>
+                        <h3 class="title">Tôi là người mới</h3>
                         <p class="b2 mb--55">Nhập thông tin chi tiết của bạn dưới đây</p>
                         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "singin-form" }))
                         {
@@ -72,27 +71,27 @@
                                 @Html.ValidationMessageFor(model => model.SEmail, "", new { @class = "text-danger" })
                             </div>
                             <div class="form-group">
-                                @Html.Label("password", "Password")
-                                @Html.TextBox("password", null, new { @class = "form-control", type = "password", placeholder = "Password", required = "required" })
+                                @Html.Label("password", "Mật khẩu")
+                                @Html.Password("password", null, new { @class = "form-control", placeholder = "Mật khẩu", required = "required" })
                             </div>
                             <div class="form-group">
-                                @Html.Label("firstName", "First Name")
-                                @Html.TextBox("firstName", null, new { @class = "form-control", placeholder = "First Name", required = "required" })
+                                @Html.Label("firstName", "Họ")
+                                @Html.TextBox("firstName", null, new { @class = "form-control", placeholder = "Tên", required = "required" })
                             </div>
                             <div class="form-group">
-                                @Html.Label("lastName", "Last Name")
-                                @Html.TextBox("lastName", null, new { @class = "form-control", placeholder = "Last Name", required = "required" })
+                                @Html.Label("lastName", "Tên")
+                                @Html.TextBox("lastName", null, new { @class = "form-control", placeholder = "Họ", required = "required" })
                             </div>
                             <div class="form-group">
-                                @Html.Label("phone", "Phone")
-                                @Html.TextBox("phone", null, new { @class = "form-control", placeholder = "Phone" })
+                                @Html.Label("phone", "Số điện thoại")
+                                @Html.TextBox("phone", null, new { @class = "form-control", placeholder = "Số điện thoại" })
                             </div>
                             <div class="form-group">
                                 @Html.Label("birthDate", "Ngày sinh")
                                 @Html.TextBox("birthDate", null, new { @class = "form-control", type = "date" })
                             </div>
                             <div class="form-group">
-                                <label>Gender:</label>
+                                <label>Giới tính:</label>
                                 <div>
                                     <span>
                                         @Html.RadioButton("gender", "1", new { style = "opacity: 1 !important; position: static !important;width:9%" })
@@ -106,16 +105,16 @@
                                         @Html.RadioButton("gender", "0", new { style = "opacity: 1 !important; position: static !important; width:9%" })
                                     </span>
                                     <span>Nữ</span>
-                                </div>                                  
+                                </div>
                             </div>
                             <div class="form-group">
-                                @Html.Label("job","Nghề nghiệp")
+                                @Html.Label("job", "Nghề nghiệp")
                                 @Html.TextBox("job", null, new { @class = "form-control", placeholder = "Nghề nghiệp", required = "required" })
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="axil-btn btn-bg-primary submit-btn">Đăng ký</button>
                             </div>
-                        }     
+                        }
                         @section Scripts {
                             <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
                             <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
@@ -152,7 +151,4 @@
     <script src="assets/js/main.js"></script>
 
 </body>
-
-
-<!-- Mirrored from new.axilthemes.com/demo/template/etrade/sign-up.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 28 Jul 2024 10:00:57 GMT -->
 </html>
