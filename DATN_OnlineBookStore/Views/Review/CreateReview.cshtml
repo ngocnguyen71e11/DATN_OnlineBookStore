@@ -1,8 +1,4 @@
-﻿@{
-    ViewBag.Title = "Đánh giá sản phẩm";
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>Đánh giá sản phẩm</title>
@@ -55,6 +51,24 @@
             .button:hover {
                 background-color: #0056b3;
             }
+
+        .stars {
+            padding-top:25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .star {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            fill: #ddd;
+            transition: fill 0.2s;
+        }
+
+            .star.filled {
+                fill: #FFD700;
+            }
     </style>
 </head>
 <body>
@@ -68,7 +82,24 @@
             </div>
             <div class="form-group">
                 <label for="rating">Xếp hạng (1-5)</label>
-                <input type="number" id="rating" name="rating" min="1" max="5" required />
+                <div class="stars">
+                    <svg class="star" viewBox="0 0 24 24">
+                        <polygon points="12,17.27 18.18,21 15.64,13.47 21.5,8.54 13.81,8.18 12,1 10.19,8.18 2.5,8.54 8.36,13.47 5.82,21" />
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24">
+                        <polygon points="12,17.27 18.18,21 15.64,13.47 21.5,8.54 13.81,8.18 12,1 10.19,8.18 2.5,8.54 8.36,13.47 5.82,21" />
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24">
+                        <polygon points="12,17.27 18.18,21 15.64,13.47 21.5,8.54 13.81,8.18 12,1 10.19,8.18 2.5,8.54 8.36,13.47 5.82,21" />
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24">
+                        <polygon points="12,17.27 18.18,21 15.64,13.47 21.5,8.54 13.81,8.18 12,1 10.19,8.18 2.5,8.54 8.36,13.47 5.82,21" />
+                    </svg>
+                    <svg class="star" viewBox="0 0 24 24">
+                        <polygon points="12,17.27 18.18,21 15.64,13.47 21.5,8.54 13.81,8.18 12,1 10.19,8.18 2.5,8.54 8.36,13.47 5.82,21" />
+                    </svg>
+                </div>
+                <input type="hidden" id="rating" name="rating" value="0">
             </div>
             <div class="form-group">
                 <label for="description">Mô tả</label>
@@ -77,5 +108,23 @@
             <button type="submit" class="button">Gửi đánh giá</button>
         </form>
     </div>
+
+    <script>
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating');
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                stars.forEach((s, i) => {
+                    if (i <= index) {
+                        s.classList.add('filled');
+                    } else {
+                        s.classList.remove('filled');
+                    }
+                });
+                ratingInput.value = index + 1;
+            });
+        });
+    </script>
 </body>
 </html>

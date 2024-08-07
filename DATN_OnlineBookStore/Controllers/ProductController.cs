@@ -43,8 +43,8 @@ namespace DATN_OnlineBookStore.Controllers
 
             var pagedList = new PagedList<TblSanpham>(lstSanpham, pageNumber, pageSize);
             int userId = HttpContext.Session.GetInt32("AccountId") ?? 1;
-            var recommendations = await GetRecommendations(userId, 5);
-            ViewBag.Recommendations = recommendations;
+           // var recommendations = await GetRecommendations(userId, 5);
+           // ViewBag.Recommendations = recommendations;
 
             return View(pagedList);
         }

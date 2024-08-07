@@ -27,7 +27,7 @@ app.UseSession(); // Session middleware
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Product}/{action=viewProduct}/{id?}");
+    pattern: "{controller=Review}/{action=createReview}/{id?}");
 
 app.Run();
 
