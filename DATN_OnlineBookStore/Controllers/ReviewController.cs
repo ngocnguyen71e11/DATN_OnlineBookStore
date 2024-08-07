@@ -25,7 +25,7 @@ namespace DATN_OnlineBookStore.Controllers
             {
                 return NotFound("Không tìm thấy sản phẩm trong đơn hàng.");
             }
-            if (orderItem.FkIDonhang.FkITrangthai != 2)
+            if (orderItem.FkIDonhang.FkITrangthai != 3)
             {
                 return BadRequest("Sản phẩm này không thể đánh giá vì đơn hàng không đủ điều kiện.");
             }
