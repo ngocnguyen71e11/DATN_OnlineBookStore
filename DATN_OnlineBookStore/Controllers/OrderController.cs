@@ -15,8 +15,9 @@ namespace DATN_OnlineBookStore.Controllers
         public async Task<IActionResult> viewOrderList()
         {
             var donHangs = await db.TblDonhangs
-                .Include(dh => dh.FkSKh)
-                .ToListAsync();
+         .Include(dh => dh.FkSKh)
+         .OrderByDescending(dh => dh.DThoigianmua) 
+         .ToListAsync();
 
             return View(donHangs);
         }
