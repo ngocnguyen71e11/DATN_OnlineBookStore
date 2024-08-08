@@ -1,7 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Đánh giá sản phẩm</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -72,7 +71,7 @@
     </style>
 </head>
 <body>
-    <div class="review-container">
+    <div class="review-container" style="margin-top:5%; margin-bottom:10%;">
         <h2>Đánh giá sản phẩm</h2>
         <form method="post" action="@Url.Action("submitProductReview", "Review")">
             <input type="hidden" name="orderItemId" value="@ViewBag.OrderItemId" />

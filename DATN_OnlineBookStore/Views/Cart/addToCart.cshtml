@@ -1,141 +1,424 @@
-﻿@model List<Tuple<string, int?, double, double?, int>>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model List<Tuple<string, int?, double, double?, int>>
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = null;
 }
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<main class="main-wrapper">
-
-    <!-- Start Cart Area  -->
-    <div class="axil-product-cart-area axil-section-gap">
-        <div class="container">
-            <div class="axil-product-cart-wrap">
-                <div class="product-table-heading">
-                    <h4 class="title">Your Cart</h4>
-                    <a href="#" class="cart-clear">Clear Shoping Cart</a>
-                </div>
-                <div class="table-responsive">
-                    <form id="cartForm" method="post" action="@Url.Action("checkoutCart", "Cart")">
-                        <table class="table axil-product-table axil-cart-table mb--40">
-                            <tr>
-                                <th>Chọn</th>
-                                <th>Sản phẩm</th>
-                                <th>Số lượng</th>
-                                <th>Giá</th>
-                                <th>Thành tiền</th>
-                                <th>Thao tác</th>
-                            </tr>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td><input type="checkbox" name="selectedItems" value="@item.Item5" data-price="@item.Item4" data-quantity="@item.Item2" data-name="@item.Item1" data-price-per-unit="@item.Item3" style="opacity: 1 !important; position: static !important;" onchange="calculateTotalPrice()"></td>
-                                    <td>@item.Item1</td>
-                                    <td class="product-quantity" data-title="Qty">
-                                        <div class="pro-qty">
-                                            <span class="dec qtybtn">-</span>
-                                            <input type="number" class="quantity-input" value="@item.Item2" onchange="updateCartItem('@item.Item5', this.value)">
-                                            <span class="inc qtybtn">+</span>
-                                        </div>
-                                    </td>
-                                    <td>@item.Item3.ToString("C")</td>
-                                    <td>@item.Item4</td>
-                                    <td><button type="button" onclick="removeFromCart('@item.Item5')">Xóa</button></td>
-                                </tr>
-                            }
-                            <tr>
-                                <td colspan="4" style="text-align:right">Tổng tiền:</td>
-                                <td id="totalPrice">0</td>
-                                <td></td>
-                            </tr>
-                        </table>
-                        <div class="product-cupon-btn">
-                            <button type="submit" class="axil-btn btn-outline">Thanh toán</button>
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>eTrade || Home-06</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/favicon.png">
+    <link rel="stylesheet" href="/assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/vendor/font-awesome.css">
+    <link rel="stylesheet" href="/assets/css/vendor/flaticon/flaticon.css">
+    <link rel="stylesheet" href="/assets/css/vendor/slick.css">
+    <link rel="stylesheet" href="/assets/css/vendor/slick-theme.css">
+    <link rel="stylesheet" href="/assets/css/vendor/jquery-ui.min.css">
+    <link rel="stylesheet" href="/assets/css/vendor/sal.css">
+    <link rel="stylesheet" href="/assets/css/vendor/magnific-popup.css">
+    <link rel="stylesheet" href="/assets/css/vendor/base.css">
+    <link rel="stylesheet" href="/assets/css/style.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <header class="header axil-header header-style-2">
+        <div class="axil-header-top">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-2 col-sm-3 col-5">
+                        <div class="header-brand">
+                            <a href="index.html" class="logo logo-dark">
+                                <img src="/assets/images/logo/logo.png" alt="Site Logo">
+                            </a>
+                            <a href="index.html" class="logo logo-light">
+                                <img src="/assets/images/logo/logo-light.png" alt="Site Logo">
+                            </a>
                         </div>
-                    </form>
+                    </div>
+                    <div class="col-lg-10 col-sm-9 col-7">
+                        <div class="header-top-dropdown dropdown-box-style">
+                            <div class="container mt-3">
+                                <form class="form-inline" method="get" action="@Url.Action("searchProducts", "Product")">
+                                    <div class="input-group">
+                                        <input type="search" class="form-control" id="searchQuery" name="query" placeholder="Bạn đang tìm kiếm..." aria-label="Search" maxlength="128" autocomplete="off">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary" type="submit">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="axil-mainmenu aside-category-menu">
+            <div class="container">
+                <div class="header-navbar">
+                    <div class="header-nav-department">
+                        <aside class="header-department">
+                            <button class="header-department-text department-title">
+                                <span class="icon"><i class="fal fa-bars"></i></span>
+                                <span class="text">Thể loại</span>
+                            </button>
+                            <nav class="department-nav-menu">
+                                <button class="sidebar-close"><i class="fas fa-times"></i></button>
+                                <ul class="nav-menu-list">
+                                </ul>
+                            </nav>
+                        </aside>
+                    </div>
+                    <div class="header-main-nav">
+                        <nav class="mainmenu-nav">
+                            <button class="mobile-close-btn mobile-nav-toggler"><i class="fas fa-times"></i></button>
+                            <div class="mobile-nav-brand">
+                                <a href="@Url.Action("updateInfo", "Product")" class="logo">
+                                    <img src="/assets/images/logo/logo.png" alt="Site Logo">
+                                </a>
+                            </div>
+                            <ul class="mainmenu">
+                                <li class="menu-item-has-children menu-item-open">
+                                    <a asp-area="" asp-controller="Product" asp-action="viewProduct">Home</a>
+                                </li>
+                                <li class="menu-item-has-children">
+                                    <a href="#">Shop</a>
+                                </li>
+                                <li class="menu-item-has-children">
+                                    <a href="#">Pages</a>
+                                    <ul class="axil-submenu">
+                                        <li><a href="wishlist.html">Wishlist</a></li>
+                                        <li><a href="cart.html">Cart</a></li>
+                                        <li><a href="checkout.html">Checkout</a></li>
+                                        <li><a href="my-account.html">Account</a></li>
+                                        <li><a href="sign-up.html">Sign Up</a></li>
+                                        <li><a href="sign-in.html">Sign In</a></li>
+                                        <li><a href="forgot-password.html">Forgot Password</a></li>
+                                        <li><a href="reset-password.html">Reset Password</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="header-action">
+                        <ul class="action-list">
+                            <!-- Search Icon -->
+                            <li class="axil-search d-sm-none d-block">
+                                <a href="javascript:void(0)" class="header-search-icon" title="Search">
+                                    <i class="flaticon-magnifying-glass"></i>
+                                </a>
+                            </li>
 
+                            <!-- Wishlist Link -->
+                            <li class="wishlist">
+                                <a href="wishlist.html">
+                                    <i class="flaticon-heart"></i>
+                                </a>
+                            </li>
+
+                            <!-- Shopping Cart Link -->
+                            <li class="shopping-cart">
+                                <a href="@Url.Action("ViewCart", "Cart")">
+                                    <i class="flaticon-shopping-cart"></i>
+                                </a>
+                            </li>
+
+                            <!-- My Account Dropdown -->
+                            <li class="my-account">
+                                @if (HttpContextAccessor.HttpContext != null && HttpContextAccessor.HttpContext.Session != null && HttpContextAccessor.HttpContext.Session.GetInt32("AccountId") != null)
+                                {
+                                    <a href="javascript:void(0)" class="account-trigger">
+                                        <i class="flaticon-person"></i>
+                                    </a>
+                                    <div class="my-account-dropdown">
+                                        <ul>
+                                            <li><a href="@Url.Action("updateInfo", "Account")">Thông tin chung</a></li>
+                                            <li><a href="@Url.Action("orderConfirmation", "Cart")">Thông tin đơn hàng</a></li>
+                                            <li><a href="@Url.Action("ChangePassword", "Account")">Đổi mật khẩu</a></li>
+                                            <li><a href="@Url.Action("Logout", "Account")">Đăng xuất</a></li>
+                                        </ul>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a href="@Url.Action("Login", "Account")" class="login-btn">Đăng nhập</a>
+                                }
+                            </li>
+
+                            <!-- Mobile Navigation Toggle Button -->
+                            <li class="axil-mobile-toggle">
+                                <button class="menu-btn mobile-nav-toggler">
+                                    <i class="flaticon-menu-2"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div>
+        <main class="main-wrapper">
+
+            <!-- Start Cart Area  -->
+            <div class="axil-product-cart-area axil-section-gap">
+                <div class="container">
+                    <div class="axil-product-cart-wrap">
+                        <div class="product-table-heading">
+                            <h4 class="title">Your Cart</h4>
+                            <a href="#" class="cart-clear">Clear Shoping Cart</a>
+                        </div>
+                        <div class="table-responsive">
+                            <form id="cartForm" method="post" action="@Url.Action("checkoutCart", "Cart")">
+                                <table class="table axil-product-table axil-cart-table mb--40">
+                                    <tr>
+                                        <th>Chọn</th>
+                                        <th>Sản phẩm</th>
+                                        <th>Số lượng</th>
+                                        <th>Giá</th>
+                                        <th>Thành tiền</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td><input type="checkbox" name="selectedItems" value="@item.Item5" data-price="@item.Item4" data-quantity="@item.Item2" data-name="@item.Item1" data-price-per-unit="@item.Item3" style="opacity: 1 !important; position: static !important;" onchange="calculateTotalPrice()"></td>
+                                            <td>@item.Item1</td>
+                                            <td class="product-quantity" data-title="Qty">
+                                                <div class="pro-qty">
+                                                    <span class="dec qtybtn">-</span>
+                                                    <input type="number" class="quantity-input" value="@item.Item2" onchange="updateCartItem('@item.Item5', this.value)">
+                                                    <span class="inc qtybtn">+</span>
+                                                </div>
+                                            </td>
+                                            <td>@item.Item3.ToString("C")</td>
+                                            <td>@item.Item4</td>
+                                            <td><button type="button" onclick="removeFromCart('@item.Item5')">Xóa</button></td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td colspan="4" style="text-align:right">Tổng tiền:</td>
+                                        <td id="totalPrice">0</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                                <div class="product-cupon-btn">
+                                    <button type="submit" class="axil-btn btn-outline">Thanh toán</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Cart Area  -->
+
+        </main>
+    </div>
+    <div class="service-area">
+        <div class="container">
+            <div class="row row-cols-xl-4 row-cols-sm-2 row-cols-1 row--20">
+                <div class="col">
+                    <div class="service-box service-style-2">
+                        <div class="icon">
+                            <img src="/assets/images/icons/service1.png" alt="Service">
+                        </div>
+                        <div class="content">
+                            <h6 class="title">Giao hàng nhanh và an toàn</h6>
+                            <p>Về dịch vụ của bạn.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="service-box service-style-2">
+                        <div class="icon">
+                            <img src="/assets/images/icons/service2.png" alt="Service">
+                        </div>
+                        <div class="content">
+                            <h6 class="title">Bảo hành 1 đổi 1</h6>
+                            <p>Về dịch vụ của bạn.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="service-box service-style-2">
+                        <div class="icon">
+                            <img src="/assets/images/icons/service3.png" alt="Service">
+                        </div>
+                        <div class="content">
+                            <h6 class="title">Thanh toán an toàn</h6>
+                            <p>Về dịch vụ của bạn.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="service-box service-style-2">
+                        <div class="icon">
+                            <img src="/assets/images/icons/service4.png" alt="Service">
+                        </div>
+                        <div class="content">
+                            <h6 class="title">Hỗ trợ khách hàng 24/7</h6>
+                            <p>Về dịch vụ của bạn.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Cart Area  -->
+    <footer class="footer footer-style-2">
+        <div class="footer-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                        <div class="footer-about">
+                            <div class="footer-logo">
+                                <a href="index.html" class="logo logo-dark">
+                                    <img src="/assets/images/logo/logo.png" alt="Site Logo">
+                                </a>
+                                <a href="index.html" class="logo logo-light">
+                                    <img src="/assets/images/logo/logo-light.png" alt="Site Logo">
+                                </a>
+                            </div>
+                            <p>Về dịch vụ của bạn.</p>
+                            <div class="footer-social">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                        <div class="footer-widget">
+                            <h5 class="footer-title">Liên hệ</h5>
+                            <ul class="footer-contact">
+                                <li><i class="fas fa-map-marker-alt"></i> Địa chỉ</li>
+                                <li><i class="fas fa-phone"></i> <a href="tel:123456789">123-456-789</a></li>
+                                <li><i class="fas fa-envelope"></i> <a href="mailto:info@company.com">info@company.com</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                        <div class="footer-widget">
+                            <h5 class="footer-title">Thông tin</h5>
+                            <ul class="footer-menu">
+                                <li><a href="#">Trang chủ</a></li>
+                                <li><a href="#">Sản phẩm</a></li>
+                                <li><a href="#">Giới thiệu</a></li>
+                                <li><a href="#">Tin tức</a></li>
+                                <li><a href="#">Liên hệ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                        <div class="footer-widget">
+                            <h5 class="footer-title">Bản tin</h5>
+                            <form action="#" method="post">
+                                <input type="email" placeholder="Nhập email của bạn">
+                                <button type="submit">Đăng ký</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-12">
+                        <ul class="footer-menu">
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Main JS -->
+    <script src="/assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Xử lý sự kiện nhấn nút giảm số lượng
+            document.querySelectorAll('.dec.qtybtn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var input = this.parentNode.querySelector('.quantity-input');
+                    var currentValue = parseInt(input.value, 10);
+                    if (currentValue > 1) { // Giá trị tối thiểu là 1
+                        input.value = currentValue - 1;
+                        updateCartItem(input.getAttribute('data-id'), input.value);
+                    }
+                });
+            });
 
-</main>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Xử lý sự kiện nhấn nút giảm số lượng
-        document.querySelectorAll('.dec.qtybtn').forEach(function (button) {
-            button.addEventListener('click', function () {
-                var input = this.parentNode.querySelector('.quantity-input');
-                var currentValue = parseInt(input.value, 10);
-                if (currentValue > 1) { // Giá trị tối thiểu là 1
-                    input.value = currentValue - 1;
+            // Xử lý sự kiện nhấn nút tăng số lượng
+            document.querySelectorAll('.inc.qtybtn').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var input = this.parentNode.querySelector('.quantity-input');
+                    var currentValue = parseInt(input.value, 10);
+                    input.value = currentValue + 1;
                     updateCartItem(input.getAttribute('data-id'), input.value);
-                }
+                });
             });
         });
-
-        // Xử lý sự kiện nhấn nút tăng số lượng
-        document.querySelectorAll('.inc.qtybtn').forEach(function (button) {
-            button.addEventListener('click', function () {
-                var input = this.parentNode.querySelector('.quantity-input');
-                var currentValue = parseInt(input.value, 10);
-                input.value = currentValue + 1;
-                updateCartItem(input.getAttribute('data-id'), input.value);
+        function calculateTotalPrice() {
+            let totalPrice = 0;
+            $('input[name="selectedItems"]:checked').each(function () {
+                totalPrice += parseFloat($(this).data('price'));
             });
-        });
-    });
-    function calculateTotalPrice() {
-        let totalPrice = 0;
-        $('input[name="selectedItems"]:checked').each(function () {
-            totalPrice += parseFloat($(this).data('price'));
-        });
-        $('#totalPrice').text(totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
-    }
+            $('#totalPrice').text(totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }));
+        }
 
-    function updateCartItem(cartItemId, quantity) {
-        $.ajax({
-            url: '@Url.Action("UpdateCartItem", "Cart")',
-            type: 'POST',
-            data: { cartItemId: cartItemId, newQuantity: quantity },
-            success: function (response) {
-                if (response.success) {
-                    var row = $('input[value="' + cartItemId + '"]').closest('tr');
-                    row.find('input').val(quantity); // Cập nhật số lượng trong ô input
-                    var pricePerItem = parseFloat(row.find('td:eq(2)').text()); // Lấy giá mỗi sản phẩm
-                    var totalPriceCell = row.find('td.total-price');
-                    var totalPrice = (quantity * pricePerItem).toFixed(2);
-                    totalPriceCell.text(totalPrice); // Cập nhật thành tiền
-
-                    calculateTotalPrice(); // Tính lại tổng tiền của giỏ hàng
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function () {
-                alert('Có lỗi xảy ra, vui lòng thử lại.');
-            }
-        });
-    }
-
-    function removeFromCart(cartItemId) {
-        if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?')) {
+        function updateCartItem(cartItemId, quantity) {
             $.ajax({
-                url: '@Url.Action("removeFromCart", "Cart")',
+                url: '@Url.Action("UpdateCartItem", "Cart")',
                 type: 'POST',
-                data: { cartItemId: cartItemId },
+                data: { cartItemId: cartItemId, newQuantity: quantity },
                 success: function (response) {
-                    location.reload();
-                },
-                error: function () {
-                    alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    if (response.success) {
+                        var row = $('input[value="' + cartItemId + '"]').closest('tr');
+                        row.find('input').val(quantity); // Cập nhật số lượng trong ô input
+                        var pricePerItem = parseFloat(row.find('td:eq(2)').text()); // Lấy giá mỗi sản phẩm
+                        var totalPriceCell = row.find('td.total-price');
+                        var totalPrice = (quantity * pricePerItem).toFixed(2);
+                        totalPriceCell.text(totalPrice); // Cập nhật thành tiền
+
+                        calculateTotalPrice(); // Tính lại tổng tiền của giỏ hàng
+                    } else {
+                        alert(response.message);
+                    }
                 }
             });
         }
-    }
 
-    $(document).ready(function () {
-        calculateTotalPrice();
-    });
-</script>
+        function removeFromCart(cartItemId) {
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?')) {
+                $.ajax({
+                    url: '@Url.Action("removeFromCart", "Cart")',
+                    type: 'POST',
+                    data: { cartItemId: cartItemId },
+                    success: function (response) {
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    }
+                });
+            }
+        }
 
-
-
+        $(document).ready(function () {
+            calculateTotalPrice();
+        });
+    </script>
+</body>
+</html>

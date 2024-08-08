@@ -45,7 +45,7 @@
                                     <div class="input-group">
                                         <input type="search" class="form-control" id="searchQuery" name="query" placeholder="Bạn đang tìm kiếm..." aria-label="Search" maxlength="128" autocomplete="off">
                                         <div class="input-group-append">
-                                            <button class="btn btn-outline-secondary" type="submit">
+                                            <button class="btn btn-outline-secondary" type="submit" style="height: 38px;">
                                                 <i class="fas fa-search"></i>
                                             </button>
                                         </div>
@@ -85,7 +85,7 @@
                                 <li class="menu-item-has-children menu-item-open">
                                     <a asp-area="" asp-controller="Product" asp-action="viewProduct">Home</a>
                                 </li>
-                                <li class="menu-item-has-children">
+                                @* <li class="menu-item-has-children">
                                     <a href="#">Shop</a>
                                 </li>
                                 <li class="menu-item-has-children">
@@ -100,7 +100,7 @@
                                         <li><a href="forgot-password.html">Forgot Password</a></li>
                                         <li><a href="reset-password.html">Reset Password</a></li>
                                     </ul>
-                                </li>
+                                </li> *@
                             </ul>
                         </nav>
                     </div>
@@ -218,6 +218,7 @@
         </div>
     </div>
     <footer class="footer footer-style-2">
+        <hr width="70%" align="center"/>
         <div class="footer-top">
             <div class="container">
                 <div class="row">
@@ -292,7 +293,7 @@
     </footer>
     <script src="/assets/js/vendor/modernizr.min.js"></script>
     <!-- jQuery JS -->
-    <script src="assets/js/vendor/jquery.js"></script>
+    <script src="/assets/js/vendor/jquery.js"></script>
     <!-- Bootstrap JS -->
     <script src="/assets/js/vendor/popper.min.js"></script>
     <script src="/assets/js/vendor/bootstrap.min.js"></script>
@@ -310,7 +311,7 @@
     <script src="/assets/js/vendor/waypoints.min.js"></script>
 
     <!-- Main JS -->
-    <script src="assets/js/main.js"></script>
+    <script src="/assets/js/main.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -43,9 +43,36 @@ namespace DATN_OnlineBookStore.Controllers
 
             var pagedList = new PagedList<TblSanpham>(lstSanpham, pageNumber, pageSize);
             int userId = HttpContext.Session.GetInt32("AccountId") ?? 1;
-           // var recommendations = await GetRecommendations(userId, 5);
-           // ViewBag.Recommendations = recommendations;
+            //var recommendations = await GetRecommendations(userId, 5);
+            //ViewBag.Recommendations = recommendations;
 
+            return View(pagedList);
+        }
+        public async Task<IActionResult> viewAllProduct(int? page)
+        {
+            int pageSize = 10;
+            int pageNumber = page == null || page < 0 ? 1 : page.Value;
+
+            var lstSanpham = await db.TblSanphams
+                .AsNoTracking()
+                .OrderBy(x => x.STensanpham)
+                .ToListAsync();
+            var productRatings = lstSanpham.ToDictionary(
+                p => p.PkISanphamId,
+                p => {
+                    var ratings = db.TblDanhgia
+                                    .Where(d => d.FkICtdonhangId == p.PkISanphamId)
+                                    .Select(d => d.FXephang)
+                                    .ToList();
+
+                    return ratings.Any() ? ratings.Average() : 0.0;
+                }
+            );
+
+            ViewBag.ProductRatings = productRatings;
+
+            var pagedList = new PagedList<TblSanpham>(lstSanpham, pageNumber, pageSize);
+            int userId = HttpContext.Session.GetInt32("AccountId") ?? 1;
             return View(pagedList);
         }
         private async Task<List<TblSanpham>> GetRecommendations(int userId, int nRecommendations)

@@ -135,7 +135,7 @@ namespace DATN_OnlineBookStore.Controllers
                 return Json(new { success = true, updatedQuantity = newQuantity });
             }
 
-            return Json(new { success = false, message = "Không tìm thấy sản phẩm trong giỏ hàng." });
+            return View(ViewCart);
         }
         [HttpPost]
         public IActionResult removeFromCart(int cartItemId)
