@@ -418,13 +418,26 @@ namespace DATN_OnlineBookStore.Controllers
         {
             return View();
         }
-        public IActionResult viewCategory()
+        public ActionResult viewCategory()
+        {
+            List<TblTheloai> tblTheloais = db.TblTheloais.ToList();
+            return View(tblTheloais);
+        }
+        public ActionResult addProductCategory()
         {
             return View();
         }
-        public IActionResult addProductCategory()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult addProductCategory(TblTheloai model)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                db.TblTheloais.Add(model);
+                db.SaveChanges();
+                return RedirectToAction("viewCategory");
+            }
+            return View(model);
         }
         public IActionResult updateProductCategory(int categoryId)
         {

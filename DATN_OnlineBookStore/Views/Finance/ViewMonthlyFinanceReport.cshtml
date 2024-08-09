@@ -2,16 +2,22 @@
 
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewBag.Title = "Báo cáo doanh thu hàng ngày";
+    ViewBag.Title = "Báo cáo doanh thu tháng";
     var totalMonthlyData = ViewBag.TotalMonthlyData as DATN_OnlineBookStore.Models.DailyFinanceReportModel;
 }
 
 <h2>@ViewBag.Title</h2>
 
-<form method="get" action="@Url.Action("ViewDailyFinanceReport")">
+@if (totalMonthlyData != null)
+{
+    <h3>Tổng số hóa đơn tháng: @totalMonthlyData.SoHoaDon</h3>
+    <h3>Tổng số tiền tháng: @totalMonthlyData.TongTien</h3>
+}
+
+<form method="get" action="@Url.Action("ViewMonthlyFinanceReport")">
     <div class="form-group">
-        <label for="days">Chọn số ngày:</label>
-        <input type="number" id="days" name="items" class="form-control" />
+        <label for="month">Chọn tháng:</label>
+        <input type="month" id="month" name="selectedMonth" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Xem báo cáo</button>
 </form>

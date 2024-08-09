@@ -24,7 +24,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="@Url.Action("viewProductList", "Product")">Sản phẩm</a>
-                        <a class="dropdown-item" href="@Url.Action("viewProductList", "Product")">Thể loại</a>
+                        <a class="dropdown-item" href="@Url.Action("viewCategory", "Product")">Thể loại</a>
                         <a class="dropdown-item" href="@Url.Action("viewImportList", "Import")">Nhập hàng</a>
                         <a class="dropdown-item" href="@Url.Action("viewInventoryList", "Inventory")">Kiểm kê</a>
                     </div>
@@ -41,8 +41,15 @@
                         <a class="dropdown-item" href="@Url.Action("viewSupplierList", "Supplier")">Nhà cung cấp</a>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Khuyến mãi</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Doanh thu
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="nav-link" href="@Url.Action("ViewDailyFinanceReport", "Finance")">Doanh thu ngày</a>
+                        <a class="nav-link" href="@Url.Action("ViewMonthlyFinanceReport", "Finance")">Doanh thu tháng</a>
+                        <a class="dropdown-item" href="@Url.Action("viewMonthlySalesReport", "Finance")">Doanh số</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href=" @Url.Action("Index", "Employee")">Nhân viên</a>

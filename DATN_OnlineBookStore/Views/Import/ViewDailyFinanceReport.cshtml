@@ -1,12 +1,18 @@
 ﻿@model IEnumerable<DATN_OnlineBookStore.Models.DailyFinanceReportModel>
 
 @{
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "ViewDailyFinanceReport";
     ViewBag.Title = "Báo cáo doanh thu hàng ngày";
     var totalMonthlyData = ViewBag.TotalMonthlyData as DATN_OnlineBookStore.Models.DailyFinanceReportModel;
 }
 
 <h2>@ViewBag.Title</h2>
+
+@if (totalMonthlyData != null)
+{
+    <h3>Tổng số hóa đơn tháng: @totalMonthlyData.SoHoaDon</h3>
+    <h3>Tổng số tiền tháng: @totalMonthlyData.TongTien</h3>
+}
 
 <form method="get" action="@Url.Action("ViewDailyFinanceReport")">
     <div class="form-group">

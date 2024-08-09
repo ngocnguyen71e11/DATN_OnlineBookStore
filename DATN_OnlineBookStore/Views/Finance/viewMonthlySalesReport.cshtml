@@ -1,0 +1,30 @@
+﻿@model IEnumerable<DATN_OnlineBookStore.Models.SalesReport>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.Title = "Báo cáo doanh số hiện tại";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã hàng</th>
+            <th>Tên hàng</th>
+            <th>Tổng số mặt hàng</th>
+            <th>Tổng số lượng đã bán</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaHang</td>
+                <td>@item.TenHang</td>
+                <td>@item.TongSoMatHang</td>
+                <td>@item.TongSoLuongDaBan</td>
+            </tr>
+        }
+    </tbody>
+</table>

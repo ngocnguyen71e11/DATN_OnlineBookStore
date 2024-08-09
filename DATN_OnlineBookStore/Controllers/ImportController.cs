@@ -13,7 +13,6 @@ namespace DATN_OnlineBookStore.Controllers
     public class ImportController : Controller
     {
         DbOnlineBookStoreContext db = new DbOnlineBookStoreContext();
-
         public async Task<IActionResult> viewImportList()
         {
             var orders = await db.TblPhieunhaphangs
@@ -23,7 +22,7 @@ namespace DATN_OnlineBookStore.Controllers
                     PhieuNhapHangId = p.PkIPhieunhaphangId,
                     NgayTao = p.DThoigiantao,
                     TenNhaCungCap = p.FkSNcc.STenNcc,
-                    TongTien = p.TblCtphieunhaphangs.Sum(ct => ct.FGianhap * ct.ISoluong- ct.FChietkhau)
+                    TongTien = p.TblCtphieunhaphangs.Sum(ct => ct.FGianhap * ct.ISoluong - ct.FChietkhau)
                 })
                 .ToListAsync();
 
