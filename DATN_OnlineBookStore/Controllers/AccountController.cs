@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace DATN_OnlineBookStore.Controllers
 {
@@ -193,6 +194,47 @@ namespace DATN_OnlineBookStore.Controllers
                     return View(model);
                 }
             }
+        }
+        public IActionResult AddOrUpdateAddress(AddressViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Get the customer based on FkITaikhoanId
+                var customer = db.TblKhachhangs
+                    .FirstOrDefault(kh => kh.FkITaikhoanId == model.FkITaikhoanId);
+
+                if (customer == null)
+                {
+                    ModelState.AddModelError("", "Customer not found.");
+                    return View("UpdateInfo", model);
+                }
+
+                // Find or create the address
+                var address = db.TblDiachiKhs
+                    .FirstOrDefault(a => a.FkSKhid == customer.PkSKhid);
+
+                if (address == null)
+                {
+                    address = new TblDiachiKh
+                    {
+                        FkSKhid = customer.PkSKhid
+                    };
+                    db.TblDiachiKhs.Add(address);
+                }
+
+                // Update address details
+                address.SDiachicuthe = model.Address;
+                address.FkIXaId = model.FkIXaId;
+                address.FkIHuyenId = model.FkIHuyenId;
+                address.FkITinhId = model.FkITinhId;
+                address.IsTrangthai = true;
+
+                db.SaveChanges();
+
+                return RedirectToAction("UpdateInfo");
+            }
+
+            return View("UpdateInfo", model);
         }
 
         public ActionResult Index()

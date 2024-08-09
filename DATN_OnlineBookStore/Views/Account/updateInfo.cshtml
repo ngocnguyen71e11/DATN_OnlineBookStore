@@ -38,61 +38,61 @@
         <!-- Start Header -->
         <!-- End Header -->
 
-        <main class="main-wrapper">
-            <!-- Start Breadcrumb Area  -->
-            <!-- End Breadcrumb Area  -->
-            <!-- Start My Account Area  -->
-            <div class="axil-dashboard-area axil-section-gap">
-                <div class="container">
-                    <div class="axil-dashboard-warp">                     
-                        <div class="row">
-                            <div class="col-xl-3 col-md-4">                               
-                            </div>
-                            <div class="col-xl-9 col-md-8">
-                                <div class="tab-content">
-                                        <div class="col-lg-9">
-                                            <div class="axil-dashboard-account">
-                                            <form asp-action="updateInfo" method="post" class="account-details-form" novalidate>
-                                                <div class="row">
-                                                    <input type="hidden" name="FkITaikhoanId" value="@Model.FkITaikhoanId" />
-                                                    <input type="hidden" name="PkSKhid" value="@Model.PkSKhid" />
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group">
-                                                            <label for="SHo">Họ:</label>
-                                                            <input type="text" class="form-control" id="SHo" name="SHo" value="@Model.SHo" />
-                                                        </div>
+    <main class="main-wrapper">
+        <!-- Start My Account Area -->
+        <div class="axil-dashboard-area axil-section-gap">
+            <div class="container">
+                <div class="axil-dashboard-warp">
+                    <div class="row">
+                        <div class="col-xl-3 col-md-4">
+                        </div>
+                        <div class="col-xl-9 col-md-8">
+                            <div class="tab-content">
+                                <div class="col-lg-9">
+                                    <div class="axil-dashboard-account">
+                                        <!-- Update Info Form -->
+                                        <form asp-action="updateInfo" method="post" class="account-details-form" novalidate>
+                                            <div class="row">
+                                                <input type="hidden" name="FkITaikhoanId" value="@Model.FkITaikhoanId" />
+                                                <input type="hidden" name="PkSKhid" value="@Model.PkSKhid" />
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="SHo">Họ:</label>
+                                                        <input type="text" class="form-control" id="SHo" name="SHo" value="@Model.SHo" />
                                                     </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group">
-                                                            <label for="STen">Tên:</label>
-                                                            <input type="text" class="form-control" id="STen" name="STen" value="@Model.STen" />
-                                                        </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="STen">Tên:</label>
+                                                        <input type="text" class="form-control" id="STen" name="STen" value="@Model.STen" />
                                                     </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group">
-                                                            <label for="SSdt">SĐT:</label>
-                                                            <input type="text" class="form-control" id="SSdt" name="SSdt" value="@Model.SSdt" />
-                                                        </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="SSdt">SĐT:</label>
+                                                        <input type="text" class="form-control" id="SSdt" name="SSdt" value="@Model.SSdt" />
                                                     </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group">
-                                                            <label for="DNgaysinh">Ngày sinh:</label>
-                                                            <input type="date" class="form-control" id="DNgaysinh" name="DNgaysinh" value="@Model.DNgaysinh?.ToString("yyyy-MM-dd")" />
-                                                        </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="DNgaysinh">Ngày sinh:</label>
+                                                        <input type="date" class="form-control" id="DNgaysinh" name="DNgaysinh" value="@Model.DNgaysinh?.ToString("yyyy-MM-dd")" />
                                                     </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group">
-                                                            <label for="SNghenghiep">Nghề nghiệp:</label>
-                                                            <input type="text" class="form-control" id="SNghenghiep" name="SNghenghiep" value="@Model.SNghenghiep" />
-                                                        </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="SNghenghiep">Nghề nghiệp:</label>
+                                                        <input type="text" class="form-control" id="SNghenghiep" name="SNghenghiep" value="@Model.SNghenghiep" />
                                                     </div>
-                                                    <div class="form-group mb--0">
-                                                        <input type="submit" class="axil-btn" value="Lưu thông tin">
-                                                    </div>
-                                                   </div>
-                                            </form>                                               
+                                                </div>
+                                                <div class="form-group mb--0">
+                                                    <input type="submit" class="axil-btn" value="Lưu thông tin">
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
+                                       
+                                    </div>
+                                    <div>
                                     </div>
                                 </div>
                             </div>
@@ -100,11 +100,9 @@
                     </div>
                 </div>
             </div>
-            <!-- End My Account Area  -->
-            <!-- Start Axil Newsletter Area  -->
-            
-            <!-- End Axil Newsletter Area  -->
-        </main>
+        </div>
+        <!-- End My Account Area -->
+    </main>
 
         <div class="cart-dropdown" id="cart-dropdown">
             <div class="cart-content-wrap">

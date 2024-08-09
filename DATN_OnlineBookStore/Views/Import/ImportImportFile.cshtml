@@ -5,18 +5,42 @@
 
 <h2>Import Nhập Hàng</h2>
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
 <div class="import-container">
     <div class="upload-section">
-        <form id="uploadForm" asp-action="SaveData" asp-controller="Import" method="post" enctype="multipart/form-data" style="display: flex;">
+        <form id="uploadForm" asp-action="ImportImportFile" asp-controller="Import" method="post" enctype="multipart/form-data" style="display: flex;">
             <div class="upload-box">
-                <label for="file-input" class="upload-label">+ Tải file dữ liệu</label>
+                <label for="file-input" class="upload-label" id="upload-label">+ Tải file dữ liệu</label>
                 <input type="file" id="file-input" name="file" style="display:none;" onchange="previewFile();" />
+                <div id="file-info" style="margin-top: 10px; display: none;">
+                    <p id="file-name"></p>
+                    <p id="file-size"></p>
+                </div>
             </div>
 
             <div class="form-section">
                 <div class="form-group">
                     <label for="supplier">Nhà cung cấp:</label>
-                    <input type="text" id="supplier" name="supplier" class="form-control" required />
+                    <select id="supplier" name="supplier" class="form-control" required>
+                        <option value="">-- Chọn nhà cung cấp --</option>
+                        @if (ViewBag.Suppliers != null)
+                        {
+                            foreach (var supplier in ViewBag.Suppliers)
+                            {
+                                <option value="@supplier.PkINccid">@supplier.STenNcc</option>
+                            }
+                        }
+                        else
+                        {
+                            <option value="">Không nhà cung cấp nào</option>
+                        }
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -42,8 +66,19 @@
     function previewFile() {
         var fileInput = document.getElementById('file-input');
         var file = fileInput.files[0];
+        var fileInfo = document.getElementById('file-info');
+        var fileName = document.getElementById('file-name');
+        var fileSize = document.getElementById('file-size');
+        var uploadLabel = document.getElementById('upload-label');
+
         if (file) {
-            console.log("File ready to be uploaded with the form.");
+            fileName.textContent = 'Tên tệp: ' + file.name;
+            fileSize.textContent = 'Kích thước tệp: ' + (file.size / 1024).toFixed(2) + ' KB';
+            fileInfo.style.display = 'block';
+            uploadLabel.style.display = 'none'; // Ẩn dòng chữ "Tải file dữ liệu"
+        } else {
+            fileInfo.style.display = 'none';
+            uploadLabel.style.display = 'block'; // Hiển thị lại dòng chữ "Tải file dữ liệu"
         }
     }
 </script>
@@ -62,6 +97,7 @@
     }
 
     .upload-box {
+        width:815px;
         flex: 3;
         height: 400px;
         background-color: #e0e0e0;
@@ -69,7 +105,6 @@
         justify-content: center;
         align-items: center;
         border: 2px dashed #007bff;
-        width: 1250px;
     }
 
     .upload-label {
@@ -95,7 +130,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
